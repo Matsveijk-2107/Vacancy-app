@@ -274,8 +274,15 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
         if not on_trusted_external and not base_is_ats:
             if not any(h in abs_href.lower() for h in _JOB_PATH_HINTS):
                 continue
+
+        if abs_href in seen:
             continue
         seen.add(abs_href)
+
+        # Skip obvious non-job strings: descriptions (contain colon),
+        # sentences (end with punctuation), or section/page headings.
+        if ":" in title or title.endswith((".", "!", "?")):
+            continue
 
         matched = match_keywords(title, ANALYTICS_KEYWORDS)
         if not matched:

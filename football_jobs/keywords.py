@@ -16,7 +16,8 @@ ANALYTICS_KEYWORDS = [
     "scouting analyst",
     "recruitment analyst",
     "opposition analyst",
-    "statistical",
+    "statistical analyst",
+    "statistical performance",
     "data engineer",
     "data infrastructure",
     "python",
@@ -24,7 +25,10 @@ ANALYTICS_KEYWORDS = [
     "tableau",
     "power bi",
     "match analyst",
-    "insight",
+    "insight analyst",
+    "insights analyst",
+    "insights manager",
+    "head of insight",
     "business intelligence",
     "data-driven",
     "sports analytics",
@@ -38,7 +42,11 @@ ANALYTICS_KEYWORDS = [
     "head of analysis",
     "head of data",
     "data manager",
-    "scout",                  # broad but needed for "scouting analyst" misses
+    "chief scout",
+    "head of scouting",
+    "data scout",
+    "technical scout",
+    "lead scout",
 
     # ── Dutch (NL / BE) ──────────────────────────────────────────────────
     "analist",                # analyst (wedstrijdanalist, spelersanalist, etc.)
