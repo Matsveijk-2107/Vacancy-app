@@ -224,7 +224,7 @@ CLUBS = [
         "name": "1. FSV Mainz 05",
         "country": "Germany",
         "league": "Bundesliga",
-        "careers_url": "https://www.mainz05.de/jobs",  # [live]
+        "careers_url": "https://jobapplication.hrworks.de/de?companyId=ba8e529b",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "1. FSV Mainz 05",
         "linkedin_id": "166302",
