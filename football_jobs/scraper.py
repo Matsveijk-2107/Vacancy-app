@@ -20,7 +20,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeou
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 
-from clubs import CLUBS
+from clubs import CLUBS, CLUBS_BY_LEAGUE
 from keywords import ANALYTICS_KEYWORDS
 from utils import (
     DEFAULT_HEADERS,
@@ -444,12 +444,12 @@ def scrape_all_clubs(progress_callback=None) -> dict:
     init_db()
     clear_all_vacancies()
     started_at  = now_iso()
-    total_clubs = sum(len(v) for v in CLUBS.values())
+    total_clubs = sum(len(v) for v in CLUBS_BY_LEAGUE.values())
     processed   = 0
     total_found = 0
     errors: dict[str, str] = {}
 
-    for league, clubs in CLUBS.items():
+    for league, clubs in CLUBS_BY_LEAGUE.items():
         country = league.split(" - ")[0] if " - " in league else league
         for club in clubs:
             if progress_callback:

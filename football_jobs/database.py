@@ -99,6 +99,15 @@ def get_last_scraped() -> str | None:
     return row["last"] if row else None
 
 
+def log_scrape_session(started_at: str, finished_at: str, clubs_scraped: int, vacancies_found: int) -> None:
+    sql = """
+    INSERT INTO scrape_sessions (started_at, finished_at, clubs_scraped, vacancies_found)
+    VALUES (?, ?, ?, ?)
+    """
+    with _conn() as con:
+        con.execute(sql, (started_at, finished_at, clubs_scraped, vacancies_found))
+
+
 def clear_vacancies_older_than(hours: int = 24) -> None:
     with _conn() as con:
         con.execute(

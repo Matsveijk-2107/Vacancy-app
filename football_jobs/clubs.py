@@ -2071,6 +2071,29 @@ CLUBS = [
 #  HELPER LOOKUPS                                                    #
 # ================================================================= #
 
+# ================================================================= #
+#  CLUBS_BY_LEAGUE                                                   #
+#  Dict used by app.py and scraper.py.  Keys are the display names  #
+#  expected by the UI (country or "country - league" format).       #
+# ================================================================= #
+
+CLUBS_BY_LEAGUE: dict[str, list] = {
+    "Netherlands":              [c for c in CLUBS if c["league"] == "Eredivisie"],
+    "Belgium":                  [c for c in CLUBS if c["league"] == "Jupiler Pro League"],
+    "Germany":                  [c for c in CLUBS if c["league"] in ("Bundesliga", "2. Bundesliga")],
+    "France":                   [c for c in CLUBS if c["league"] == "Ligue 1"],
+    "Spain - La Liga":          [c for c in CLUBS if c["league"] == "La Liga"],
+    "Spain - La Liga 2":        [c for c in CLUBS if c["league"] == "La Liga 2"],
+    "England - Premier League": [c for c in CLUBS if c["league"] == "Premier League"],
+    "England - Championship":   [c for c in CLUBS if c["league"] == "Championship"],
+    "Italy - Serie A":          [c for c in CLUBS if c["league"] == "Serie A"],
+    "Italy - Serie B":          [c for c in CLUBS if c["league"] == "Serie B"],
+    "Scotland":                 [c for c in CLUBS if c["league"] == "Scottish Premiership"],
+    "Portugal":                 [c for c in CLUBS if c["league"] == "Primeira Liga"],
+    "Denmark":                  [c for c in CLUBS if c["league"] == "Superliga"],
+}
+
+
 def get_clubs_by_country(country: str) -> list:
     """Return all clubs for a given country (case-insensitive)."""
     return [c for c in CLUBS if c["country"].lower() == country.lower()]

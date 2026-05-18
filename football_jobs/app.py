@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime, timedelta, timezone
 
-from clubs import CLUBS
+from clubs import CLUBS_BY_LEAGUE as CLUBS
 from database import get_last_scraped, get_vacancies, init_db
 from scraper import scrape_all_clubs
 
