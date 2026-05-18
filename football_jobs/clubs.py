@@ -33,6 +33,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "PSV",
         "linkedin_id": "166281",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/psv/jobs/",
         "notes": "Main careers page confirmed by user.",
     },
     {
@@ -43,6 +44,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "AFC Ajax",
         "linkedin_id": "10928",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/afc-ajax/jobs/",
         "notes": None,
     },
     {
@@ -53,6 +55,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "AZ",
         "linkedin_id": "228996",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/az/jobs/",
         "notes": "Strong data culture.",
     },
     {
@@ -63,6 +66,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Feyenoord Rotterdam",
         "linkedin_id": "10792",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/feyenoord-rotterdam-nv/jobs/",
         "notes": "vacatures.feyenoord.nl redirects here.",
     },
     {
@@ -73,6 +77,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Utrecht",
         "linkedin_id": "571371",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-utrecht/jobs/",
         "notes": None,
     },
 
@@ -87,6 +92,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Royal Antwerp FC",
         "linkedin_id": "2454480",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/royal-antwerp-fc/jobs/",
         "notes": None,
     },
     {
@@ -97,6 +103,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Royale Union Saint-Gilloise",
         "linkedin_id": "71388384",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/royale-union-saint-gilloise/jobs/",
         "notes": "Brighton-affiliated.",
     },
     {
@@ -107,6 +114,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "RSC Anderlecht",
         "linkedin_id": "166614",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/rsc-anderlecht/jobs/",
         "notes": None,
     },
     {
@@ -117,6 +125,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "KRC Genk",
         "linkedin_id": "1176476",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/krc-genk/jobs/",
         "notes": "Strong analytics culture.",
     },
     {
@@ -127,6 +136,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Club Brugge KV",
         "linkedin_id": "166516",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/club-brugge-kv/jobs/",
         "notes": "Also accessible via clubbrugge.be/en/vacancies.",
     },
 
@@ -141,6 +151,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Bayern München",
         "linkedin_id": "5298",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fcbayern/jobs/",
         "notes": "URL confirmed by user. Main portal: careers.fcbayern.com",
     },
     {
@@ -151,6 +162,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Borussia Dortmund",
         "linkedin_id": "21497",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/borussia-dortmund/jobs/",
         "notes": "Dedicated careers subdomain karriere.bvb.de.",
     },
     {
@@ -161,6 +173,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Bayer 04 Leverkusen",
         "linkedin_id": "166292",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/bayer-04-leverkusen/jobs/",
         "notes": None,
     },
     {
@@ -171,6 +184,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "RB Leipzig",
         "linkedin_id": "3628791",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/rb-leipzig/jobs/",
         "notes": "Note: /de/ is added by redirect. Red Bull network.",
     },
     {
@@ -181,6 +195,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "VfB Stuttgart",
         "linkedin_id": "166305",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/vfb-stuttgart-1893-ag/jobs/",
         "notes": None,
     },
     {
@@ -191,6 +206,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Eintracht Frankfurt",
         "linkedin_id": "166296",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/eintrachtfrankfurt/jobs/",
         "notes": None,
     },
     {
@@ -201,6 +217,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Sport-Club Freiburg",
         "linkedin_id": "166300",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sport-club-freiburg-e.v./jobs/",
         "notes": None,
     },
     {
@@ -211,6 +228,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "1. FSV Mainz 05",
         "linkedin_id": "166302",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/mainz05/jobs/",
         "notes": None,
     },
     {
@@ -221,6 +239,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Borussia Mönchengladbach",
         "linkedin_id": "166303",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/borussia/jobs/",
         "notes": None,
     },
     {
@@ -231,6 +250,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "VfL Wolfsburg",
         "linkedin_id": "166299",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/vfl-wolfsburg/jobs/",
         "notes": "Volkswagen-owned.",
     },
     {
@@ -241,6 +261,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Augsburg",
         "linkedin_id": "1513394",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fcaugsburg/jobs/",
         "notes": "Uses HRworks ATS at jobs.fcaugsburg.de (same system as St. Pauli).",
     },
     {
@@ -251,6 +272,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "SV Werder Bremen",
         "linkedin_id": "166304",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/svwerderbremen/jobs/",
         "notes": None,
     },
     {
@@ -261,6 +283,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "TSG 1899 Hoffenheim",
         "linkedin_id": "974798",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/tsg-1899-hoffenheim-fu%C3%9Fball-spielbetriebs-gmbh/jobs/",
         "notes": "Strong analytics culture (SAP partnership). High priority.",
     },
     {
@@ -271,6 +294,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "1. FC Union Berlin",
         "linkedin_id": "6572290",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-union-berlin/jobs/",
         "notes": "Sub-pages have random slugs (/vollzeit-Q8DA etc); scraper should list all /de/jobs/* URLs.",
     },
     {
@@ -281,6 +305,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC St. Pauli",
         "linkedin_id": "1029280",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/football-cooperative-st-pauli-von-2024-eg/jobs/",
         "notes": "Uses HRworks ATS at jobs.fcstpauli.com.",
     },
     {
@@ -291,6 +316,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "1. FC Heidenheim 1846",
         "linkedin_id": "2490756",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fch1846/jobs/",
         "notes": None,
     },
     {
@@ -301,6 +327,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Holstein Kiel",
         "linkedin_id": "3201573",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/holstein-kiel/jobs/",
         "notes": None,
     },
     {
@@ -311,6 +338,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "VfL Bochum 1848",
         "linkedin_id": "166307",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/vflbochum1848/jobs/",
         "notes": "Uses Talention ATS at jobs.vfl-bochum.de.",
     },
     {
@@ -321,6 +349,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Hamburger SV",
         "linkedin_id": "166295",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/hamburger-sport-verein/jobs/",
         "notes": None,
     },
     {
@@ -331,6 +360,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "1. FC Köln",
         "linkedin_id": "166293",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fckoeln/jobs/",
         "notes": None,
     },
 
@@ -345,6 +375,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Paris Saint-Germain",
         "linkedin_id": "166376",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/paris-saint-germain/jobs/",
         "notes": "Official Workday recruitment portal. Also see psg.fr/club/carrieres for overview.",
     },
     {
@@ -355,6 +386,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Olympique de Marseille",
         "linkedin_id": "166375",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sasp-olympique-de-marseille/jobs/",
         "notes": "Posts jobs via LinkedIn (primary) and Welcome to the Jungle (welcometothejungle.com). No dedicated careers page on om.fr.",
     },
     {
@@ -365,6 +397,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "AS Monaco FC",
         "linkedin_id": "166370",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/as-monaco/jobs/",
         "notes": "No confirmed public careers page. Open applications via rh@asmonaco.com. LinkedIn is main channel for executive roles.",
     },
     {
@@ -375,6 +408,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Olympique Lyonnais",
         "linkedin_id": "166371",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/olympique-lyonnais-groupe/jobs/",
         "notes": "Eagle Football Group ownership. All EFG clubs (OL, Botafogo etc.) listed here.",
     },
     {
@@ -385,6 +419,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "LOSC Lille",
         "linkedin_id": "166372",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/loscofficiel/jobs/",
         "notes": None,
     },
     {
@@ -395,6 +430,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "OGC Nice",
         "linkedin_id": "166373",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/ogcnice/jobs/",
         "notes": (
             "INEOS-owned. No permanent careers page. Posts via LinkedIn (primary). "
             "Academy: formation@ogcnice.com. Scouting: recrutement@ogcnice.com. "
@@ -409,6 +445,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "RC Lens",
         "linkedin_id": "1347985",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/racingclubdelens/jobs/",
         "notes": "No permanent careers page. LinkedIn is primary channel. Hospitality/events roles via SPORTFIVE and Adecco (official partner). Also posts on sportjobshunter.com.",
     },
     {
@@ -419,6 +456,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Stade Rennais FC",
         "linkedin_id": "166374",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/staderennaisfc/jobs/",
         "notes": "Official recruitment partner is Hellowork (URL above). LinkedIn also active. Matchday roles via Samsic Emploi (main sponsor/HR partner). Regional jobs fair: offres-stade-emploi.staderennais.com.",
     },
     {
@@ -429,6 +467,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Stade Brestois 29",
         "linkedin_id": "3118977",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/stade-brestois-29/jobs/",
         "notes": "Management open application form confirmed. Academy/youth form: sb29.bzh/candidature.php. LinkedIn for corporate updates. Regional jobs project: sb29.bzh/supporters-de-l-emploi.php.",
     },
     {
@@ -439,6 +478,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Toulouse FC",
         "linkedin_id": "2485756",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/toulousefc/jobs/",
         "notes": "RedBird Capital ownership. LinkedIn is primary channel. Ticketing/admin: recrutement.billetterie@toulousefc.com. Scouting/analytics: recrutement.scouting@toulousefc.com.",
     },
     {
@@ -449,6 +489,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "RC Strasbourg Alsace",
         "linkedin_id": "1765823",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/racing-club-strasbourg-alsace/jobs/",
         "notes": "BlueCo (Chelsea) ownership. LinkedIn primary. Corporate: recrutement@rcstrasbourg.eu. Scouting/sports roles: scouting@rcstrasbourg.eu. Also on sportsjobs.fr.",
     },
     {
@@ -459,6 +500,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Nantes",
         "linkedin_id": "1194291",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-nantes/jobs/",
         "notes": "Posts vacancies as news articles on their website (URL above) rather than a dedicated jobs page. LinkedIn also active. Sports/academy roles: written applications to Centre Sportif José Arribas, La Jonelière, 44240 La Chapelle-sur-Erdre.",
     },
     {
@@ -469,6 +511,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Montpellier Hérault Sport Club",
         "linkedin_id": "1500266",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/montpellier-herault-sc/jobs/",
         "notes": "No careers portal. LinkedIn primary. No direct HR email confirmed; call +33 4 67 15 46 00 for HR contacts. Sports roles via mhscfoot.com/en/formation/directors-and-sports-staff/.",
     },
     {
@@ -479,6 +522,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "AJ Auxerre",
         "linkedin_id": "3203009",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/aj-auxerre/jobs/",
         "notes": "LinkedIn primary. Academy/internaat roles on Hellowork and Indeed. Sporttechnical roles via UNECATEF. International roles on futboljobs.com.",
     },
     {
@@ -489,6 +533,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Le Havre Athletic Club",
         "linkedin_id": "5116397",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/havre-ac-foot/jobs/",
         "notes": "LinkedIn primary. No permanent careers page. Academy (La Cavée Verte) trained Pogba and Mahrez. Sports/academy roles via internal networks; written applications to training complex.",
     },
     {
@@ -499,6 +544,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Angers SCO",
         "linkedin_id": "2551879",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/angerssco/jobs/",
         "notes": "LinkedIn primary. Commercial/shop roles: commercial@angers-sco.fr. Admin/legal: secretariat@angers-sco.fr. Also posts on futboljobs.com.",
     },
     {
@@ -509,6 +555,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Metz",
         "linkedin_id": "1481893",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fcmetz/jobs/",
         "notes": "Contact page has 'Recrutement Administratif' dropdown for direct HR applications. Email: recrutement@fcmetz.com. Also posts via Ligue du Grand Est (lgef.fff.fr) and sportjobshunter.com.",
     },
     {
@@ -519,6 +566,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Lorient",
         "linkedin_id": "2453093",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-lorient/jobs/",
         "notes": "Official 'nous rejoindre' page confirmed. Contact form also allows direct CV submissions per department. LinkedIn very active for corporate roles. Matchday hospitality via Actual Group (actual.events@actualgroup.com).",
     },
 
@@ -533,6 +581,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Real Madrid C.F.",
         "linkedin_id": "166456",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/realmadrid/jobs/",
         "notes": (
             "No public corporate careers page. Operational roles (stadium, hospitality, shops) "
             "are posted via partner Legends Global at the URL above. "
@@ -549,6 +598,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Barcelona",
         "linkedin_id": "166459",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-barcelona/jobs/",
         "notes": (
             "No general careers page. Corporate roles (marketing, sponsoring, data, IT) posted "
             "primarily via LinkedIn. Analytics/data roles also appear via Barca Innovation Hub "
@@ -564,6 +614,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Valencia CF",
         "linkedin_id": "166457",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/valencia-cf/jobs/",
         "notes": (
             "HR page confirmed. Retail/shop roles: email RRHH@valenciacf.es with 'VACANTE TIENDAS'. "
             "Analytics/data/IT roles also via VCF Innovation Hub LinkedIn page. "
@@ -578,6 +629,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Club Atlético de Madrid",
         "linkedin_id": "166460",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/atleticodemadrid/jobs/",
         "notes": None,
     },
     {
@@ -588,6 +640,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Real Betis",
         "linkedin_id": "166461",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/real-betis-balompie/jobs/",
         "notes": "No dedicated careers page. Posts jobs (data analysts, commercial, admin) primarily via LinkedIn.",
     },
     {
@@ -598,6 +651,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Sevilla FC",
         "linkedin_id": "166462",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sevillafc/jobs/",
         "notes": (
             "Official careers/open application portal confirmed. CVs stored up to 1 year. "
             "Data/analytics roles also via Sevilla FC Innovation Center "
@@ -613,6 +667,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Real Sociedad",
         "linkedin_id": "166463",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/real-sociedad/jobs/",
         "notes": (
             "No public careers portal. Posts via InfoJobs (infojobs.net) and LaLiga talent pool "
             "(laliga.com/trabaja-con-nosotros). Open applications via realsoc@realsociedad.eus. "
@@ -628,6 +683,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Athletic Club",
         "linkedin_id": "166464",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/athleticclub/jobs/",
         "notes": (
             "No public careers portal. Corporate/IT/marketing roles posted via LinkedIn. "
             "Also uses LaLiga talent pool (laliga.com/trabaja-con-nosotros) and "
@@ -643,6 +699,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "RCD Mallorca",
         "linkedin_id": "2562993",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/real-mallorca/jobs/",
         "notes": (
             "No careers portal. Open applications via marketing@rcdmallorca.es or "
             "comunicacion@rcdmallorca.es. Shop/retail roles via Sports Emotion careers portal "
@@ -657,6 +714,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Villarreal CF",
         "linkedin_id": "166465",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/villarreal-cf-sad/jobs/",
         "notes": (
             "Official open-application portal confirmed. Also actively posts on InfoJobs "
             "(villarrealcf.ofertas-trabajo.infojobs.net) and LinkedIn for data, IT and "
@@ -671,6 +729,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "RC Celta de Vigo",
         "linkedin_id": "1229279",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/rccelta/jobs/",
         "notes": "English-language portal confirmed. Spanish version: rccelta.es/grupo-rccelta/trabaja-con-nosotros/",
     },
     {
@@ -681,6 +740,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "CA Osasuna",
         "linkedin_id": "2338753",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/ca-osasuna/jobs/",
         "notes": "Member-owned club, no recruitment portal. Open applications via osasuna@osasuna.es. LinkedIn for networking; rarely posts vacancies directly.",
     },
     {
@@ -691,6 +751,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Rayo Vallecano",
         "linkedin_id": "2529175",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/rayo-vallecano-de-madrid-s-a-d/jobs/",
         "notes": "No recruitment portal. Open applications via direct contact (rayovallecano.es/datos-del-club). LinkedIn is main digital channel.",
     },
     {
@@ -701,6 +762,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Elche CF",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/elche-cf-sad/jobs/",
         "notes": "Academy careers portal confirmed (English version). Spanish: academy.elchecf.es/trabaja-con-nosotros/. Also posts on InfoJobs for admin roles.",
     },
     {
@@ -711,6 +773,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Getafe C.F.",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/getafe-c-f-s-a-d/jobs/",
         "notes": (
             "No recruitment portal. Open applications via admon@getafecf.com (general/HR) "
             "or contabilidad@getafecf.com (finance). LinkedIn active but small club. "
@@ -725,6 +788,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Girona FC",
         "linkedin_id": "3283183",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/gironafc/jobs/",
         "notes": "City Football Group affiliate. English portal confirmed. Spanish: gironafc.cat/es/trabaja-con-nosotros. Corporate roles also via futboljobs.com.",
     },
     {
@@ -735,6 +799,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Deportivo Alavés",
         "linkedin_id": "1765918",
+        "linkedin_jobs_url": "https://www.linkedin.com/showcase/deportivo-alav%C3%A9s-sad/jobs/",
         "notes": (
             "Part of Grupo Baskonia-Alavés (also includes Baskonia basketball). "
             "All vacancies also on group Join portal: join.com/companies/bkndagroup. "
@@ -749,6 +814,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Levante UD",
         "linkedin_id": "2469213",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/levanteud/jobs/",
         "notes": "No careers portal. Open applications via info@levanteud.es. Also posts on InfoJobs. LinkedIn active for institutional updates and selective recruitment campaigns.",
     },
     {
@@ -759,6 +825,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Real Oviedo",
         "linkedin_id": "3202850",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/realoviedo/jobs/",
         "notes": (
             "Full careers portal confirmed with upload form. Covers both deportivas "
             "(scouting, video analysis, medical) and corporativas (data, IT, marketing, finance). "
@@ -778,6 +845,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "RCD Espanyol de Barcelona",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/rcd-espanyol-de-barcelona/jobs/",
         "notes": "English portal confirmed. Spanish: rcdespanyol.com/es/trabaja-con-nosotros. Also posts on InfoJobs and futboljobs.com. Corporate departments selectable in form (marketing, IT, finance, ticketing etc.).",
     },
     {
@@ -788,6 +856,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Real Racing Club de Santander",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/realracingclub/jobs/",
         "notes": "No permanent careers page. LinkedIn primary for corporate/admin roles. Commercial roles sometimes via external consultancies (e.g. BDR Consultores). International youth focus via Wakatake Group partnership.",
     },
     {
@@ -798,6 +867,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "UD Las Palmas",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/ud-las-palmas-sad/jobs/",
         "notes": "LinkedIn primary. Creative/media roles via InfoJobs (UD Las Palmas Creative SL). No permanent careers page.",
     },
     {
@@ -808,6 +878,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "UD Almería",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/ud-almer%C3%ADa/jobs/",
         "notes": "LinkedIn primary. No careers page; management contacts via udalmeriasad.com/organigrama. Open applications directly to relevant department.",
     },
     {
@@ -818,6 +889,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Málaga CF",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/m%C3%A1laga-cf/jobs/",
         "notes": "Posts via Impulsyn (confirmed). Open applications/internships via malagacf.com/en/contacta-con-nosotros. LinkedIn for management roles.",
     },
     {
@@ -828,6 +900,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "CD Castellón",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/club-deportivo-castell%C3%B3n-sad/jobs/",
         "notes": "No permanent careers page. LinkedIn primary. Growing club with international (incl. Dutch) staff. Open applications via cdcastellon.com contact form.",
     },
     {
@@ -838,6 +911,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "RC Deportivo de La Coruña",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/rcdeportivo/jobs/",
         "notes": "LinkedIn primary. Youth/coaching roles via Escola de Adestradores (escolaadestradoresrcd.es/formacion/). Open applications via rcdeportivo.es/es/contacto.",
     },
     {
@@ -848,6 +922,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Burgos CF",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/burgos-cf/jobs/",
         "notes": "Open application form confirmed. Also posts on futboljobs.com and LinkedIn.",
     },
     {
@@ -858,6 +933,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "SD Eibar",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sd-eibar/jobs/",
         "notes": "Careers/employment page confirmed. Direct HR email: rrhh@sdeibar.com. LinkedIn for commercial/admin roles.",
     },
     {
@@ -868,6 +944,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Córdoba CF",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/cordobacf/jobs/",
         "notes": "Primary channel is InfoJobs (URL above). LinkedIn for commercial/management roles. Commercial dept: comercial@cordobacf.com.",
     },
     {
@@ -878,6 +955,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Andorra",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-andorra/jobs/",
         "notes": "Gerard Pique ownership. No careers page. Open applications via rrhh@fcandorra.com (Catalan/Spanish preferred). LinkedIn for media/admin roles. Note: Andorra is not EU; work permit rules apply.",
     },
     {
@@ -888,6 +966,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Real Sporting de Gijón",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/realsporting/jobs/",
         "notes": "Owned by Orlegi Sports (Mexico). Vacancies via Orlegi Sports LinkedIn and club LinkedIn. Open applications via info@realsporting.com. Known academy: Escuela de Fútbol de Mareo.",
     },
     {
@@ -898,6 +977,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Albacete Balompié",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/albacete-balompi%C3%A9/jobs/",
         "notes": "No careers page. LinkedIn and InfoJobs primary. Open applications via club@albacetebalompie.com or contact form at albacetebalompie.es/contacto.",
     },
     {
@@ -908,6 +988,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Granada CF",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/granada-cf/jobs/",
         "notes": "Dedicated careers page confirmed. HR email: rrhh@granadacf.es. LinkedIn for commercial/management roles.",
     },
     {
@@ -918,6 +999,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Real Valladolid CF",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/real-valladolid-club-de-f-tbol-s.a.d./jobs/",
         "notes": "Careers page confirmed. HR email: rrhh@realvalladolid.es. Ronaldo (Brazilian) ownership. LinkedIn for management roles.",
     },
     {
@@ -928,6 +1010,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Club Deportivo Leganés",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/club-deportivo-legan%C3%A9s/jobs/",
         "notes": "HR email: recursoshumanos@cdleganes.com. InfoJobs confirmed. Official partnership with futboljobs.com for sports/operational roles. LinkedIn for management.",
     },
     {
@@ -938,6 +1021,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Cádiz CF",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/c-diz-cf/jobs/",
         "notes": "Careers page confirmed. HR email for open applications: curriculum@cadizcf.es. Also on InfoJobs. LinkedIn for management/commercial roles.",
     },
     {
@@ -948,6 +1032,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Real Zaragoza",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/real-zaragoza/jobs/",
         "notes": "Careers portal confirmed. LinkedIn for corporate/admin roles. Retail/shop roles via Fútbol Emotion (careers.sportsemotion.com).",
     },
 
@@ -962,6 +1047,7 @@ CLUBS = [
         "teamtailor_slug": "careers.arsenal",
         "linkedin_company": "Arsenal FC",
         "linkedin_id": "166529",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/arsenal-f-c/jobs/",
         "notes": "Teamtailor ATS. Strong analytics dept.",
     },
     {
@@ -972,6 +1058,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Manchester City FC",
         "linkedin_id": "166526",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/manchester-city-football-club/jobs/",
         "notes": "Jobs via City Football Group portal. All CFG clubs listed there.",
     },
     {
@@ -982,6 +1069,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Manchester United",
         "linkedin_id": "10263",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/manchester-united/jobs/",
         "notes": "Uses Candidate Manager ATS (confirmed). Talent pool registration: candidatemanager.net/cm/p/pLogin.aspx?mid=YFDU&sid=YAZAZEV. INEOS takeover.",
     },
     {
@@ -992,6 +1080,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Liverpool FC",
         "linkedin_id": "166531",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/liverpool-football-club/jobs/",
         "notes": "Main jobs portal. Also see recruitment.liverpoolfc.com for overview.",
     },
     {
@@ -1002,6 +1091,7 @@ CLUBS = [
         "teamtailor_slug": "careers.avfc",
         "linkedin_company": "Aston Villa FC",
         "linkedin_id": "166533",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/aston-villa-football-club/jobs/",
         "notes": "Teamtailor ATS at careers.avfc.co.uk.",
     },
     {
@@ -1012,6 +1102,7 @@ CLUBS = [
         "teamtailor_slug": "careers.afcb",
         "linkedin_company": "AFC Bournemouth",
         "linkedin_id": "166534",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/afc-bournemouth/jobs/",
         "notes": "Teamtailor ATS.",
     },
     {
@@ -1022,6 +1113,7 @@ CLUBS = [
         "teamtailor_slug": "hiring.brentfordfc",
         "linkedin_company": "Brentford FC",
         "linkedin_id": "166535",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/brentford-football-club/jobs/",
         "notes": "Teamtailor for corporate roles. Football/sports roles via Workday: brentfordfootballclub.wd107.myworkdayjobs.com/BrentfordFC. Community trust jobs: brentfordfccommunitysportstrust.teamtailor.com. Extremely data-driven. High priority.",
     },
     {
@@ -1032,6 +1124,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Brighton & Hove Albion FC",
         "linkedin_id": "166536",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/brighton-&-hove-albion-fc/jobs/",
         "notes": "Tony Bloom ownership. Data-driven. Also owns USG. No speculative CVs accepted - must apply to open role. Matchday team: teamtalent@brightonandhovealbion.com. Hospitality via Sodexo Live: staffing.bhafc.uk@sodexo.com.",
     },
     {
@@ -1042,6 +1135,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Chelsea FC",
         "linkedin_id": "166537",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/chelsea-football-club/jobs/",
         "notes": "BlueCo ownership (also owns Strasbourg). Uses CoreHR ATS (linked from careers page). Also on globalsportsjobs.com. LinkedIn very active.",
     },
     {
@@ -1052,6 +1146,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Everton FC",
         "linkedin_id": "166538",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/everton-football-club/jobs/",
         "notes": "Uses Talos ATS at careers.evertonfc.com.",
     },
     {
@@ -1062,6 +1157,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Fulham FC",
         "linkedin_id": "166539",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fulham-fc/jobs/",
         "notes": "Uses HiBob ATS (confirmed). General careers info: fulhamfc.com/club/careers. LinkedIn active for commercial/academy roles.",
     },
     {
@@ -1072,6 +1168,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Sunderland AFC",
         "linkedin_id": "166540",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sunderlandafc/jobs/",
         "notes": "Uses Talos ATS.",
     },
     {
@@ -1082,6 +1179,7 @@ CLUBS = [
         "teamtailor_slug": "careers.newcastleunited",
         "linkedin_company": "Newcastle United FC",
         "linkedin_id": "166541",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/newcastle-united-football-club/jobs/",
         "notes": "Teamtailor ATS. PIF ownership. Growing analytics dept.",
     },
     {
@@ -1092,6 +1190,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Leeds United FC",
         "linkedin_id": "166542",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/leedsunited/jobs/",
         "notes": "49ers Enterprises ownership.",
     },
     {
@@ -1102,6 +1201,7 @@ CLUBS = [
         "teamtailor_slug": "careers.cpfc",
         "linkedin_company": "Crystal Palace FC",
         "linkedin_id": "166543",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/crystal-palace-football-club/jobs/",
         "notes": "Teamtailor ATS. Foundation jobs via palaceforlifefoundation.teamtailor.com (recruitment@palaceforlife.org).",
     },
     {
@@ -1112,6 +1212,7 @@ CLUBS = [
         "teamtailor_slug": "careers.nottinghamforest",
         "linkedin_company": "Nottingham Forest FC",
         "linkedin_id": "166544",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/nottingham-forest-fc/jobs/",
         "notes": "Teamtailor ATS. Evangelos Marinakis ownership. Community Trust jobs: careers.nottinghamforestcommunitytrust.co.uk. Matchday hospitality via Constellation.",
     },
     {
@@ -1122,6 +1223,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Tottenham Hotspur FC",
         "linkedin_id": "166545",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/tottenham-hotspur-ltd/jobs/",
         "notes": "Vacancies posted via LinkedIn (primary). HR email: thf.recruitment@tottenhamhotspur.com. Matchday hospitality via Constellation (jobs.constellation.co.uk/tottenham-hotspur).",
     },
     {
@@ -1132,6 +1234,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "West Ham United FC",
         "linkedin_id": "166546",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/west-ham-united/jobs/",
         "notes": "careers.whufc.com redirects here.",
     },
     {
@@ -1142,6 +1245,7 @@ CLUBS = [
         "teamtailor_slug": "careers.burnleyfootballclub",
         "linkedin_company": "Burnley FC",
         "linkedin_id": "166547",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/burnleyofficial/jobs/",
         "notes": "Teamtailor ATS. ALK Capital ownership. Community jobs: vacancies.burnleyfccommunity.org/jobs. Matchday hospitality via Constellation (jobs.constellation.co.uk/burnley-fc).",
     },
     {
@@ -1152,6 +1256,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Wolverhampton Wanderers FC",
         "linkedin_id": "166548",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/wolverhampton-wanderers-fc/jobs/",
         "notes": "Fosun International ownership. Applications via jobs@wolves.co.uk. Foundation jobs: foundation.wolves.co.uk/about-us/vacancies. Matchday hospitality via Constellation (jobs.constellation.co.uk/wolverhampton-wanderers).",
     },
 
@@ -1166,6 +1271,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Birmingham City FC",
         "linkedin_id": "166549",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/birmingham-city-fc/jobs/",
         "notes": "Tom Brady / Knighthead Capital ownership.",
     },
     {
@@ -1176,6 +1282,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Blackburn Rovers FC",
         "linkedin_id": "1757987",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/blackburn-rovers-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1186,6 +1293,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Bristol City FC",
         "linkedin_id": "1553887",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/bristol-city-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1196,6 +1304,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Charlton Athletic FC",
         "linkedin_id": "1502673",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/charlton-athletic-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1206,6 +1315,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Coventry City FC",
         "linkedin_id": "2260984",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/coventry-city-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1216,6 +1326,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Derby County FC",
         "linkedin_id": "1631568",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/derby-county-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1226,6 +1337,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Hull City AFC",
         "linkedin_id": "1739040",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/hull-city/jobs/",
         "notes": None,
     },
     {
@@ -1236,6 +1348,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Ipswich Town FC",
         "linkedin_id": "1561019",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/ipswich-town-fc/jobs/",
         "notes": None,
     },
     {
@@ -1246,6 +1359,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Leicester City FC",
         "linkedin_id": "166551",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/leicester-city-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1256,6 +1370,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Middlesbrough FC",
         "linkedin_id": "1650040",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/middlesbrough-fc/jobs/",
         "notes": None,
     },
     {
@@ -1266,6 +1381,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Millwall FC",
         "linkedin_id": "2270668",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/millwall-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1276,6 +1392,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Norwich City FC",
         "linkedin_id": "166553",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/norwich-city-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1286,6 +1403,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Oxford United FC",
         "linkedin_id": "4070949",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/oufc1893/jobs/",
         "notes": None,
     },
     {
@@ -1296,6 +1414,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Portsmouth FC",
         "linkedin_id": "1680948",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/portsmouth-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1306,6 +1425,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Preston North End FC",
         "linkedin_id": "2317183",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/pnefcofficial/jobs/",
         "notes": None,
     },
     {
@@ -1316,6 +1436,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Queens Park Rangers FC",
         "linkedin_id": "166554",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/qprfc/jobs/",
         "notes": None,
     },
     {
@@ -1326,6 +1447,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Sheffield United FC",
         "linkedin_id": "166555",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sheffieldunited/jobs/",
         "notes": None,
     },
     {
@@ -1336,6 +1458,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Sheffield Wednesday FC",
         "linkedin_id": "1576016",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sheffield-wednesday-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1346,6 +1469,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Southampton FC",
         "linkedin_id": "166556",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/southampton-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1356,6 +1480,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Stoke City FC",
         "linkedin_id": "166557",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/stoke-city-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1366,6 +1491,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Swansea City AFC",
         "linkedin_id": "1633012",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/swansea-city-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1376,6 +1502,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Watford FC",
         "linkedin_id": "166558",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/watford-football-club/jobs/",
         "notes": "Pozzo family (same as Udinese).",
     },
     {
@@ -1386,6 +1513,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "West Bromwich Albion FC",
         "linkedin_id": "166559",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/west-bromwich-albion-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1396,6 +1524,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Wrexham AFC",
         "linkedin_id": "4765870",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/wrexhamafc/jobs/",
         "notes": "Ryan Reynolds / Rob McElhenney ownership.",
     },
 
@@ -1410,6 +1539,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Inter Milan",
         "linkedin_id": "166601",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-internazionale-milano/jobs/",
         "notes": "Oaktree Capital ownership since 2024.",
     },
     {
@@ -1420,6 +1550,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "SSC Napoli",
         "linkedin_id": "166602",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sscnapoli/jobs/",
         "notes": None,
     },
     {
@@ -1430,6 +1561,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "AC Milan",
         "linkedin_id": "166603",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/ac-milan/jobs/",
         "notes": "RedBird Capital ownership.",
     },
     {
@@ -1440,6 +1572,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Juventus FC",
         "linkedin_id": "166604",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/juventus-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1450,6 +1583,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "AS Roma",
         "linkedin_id": "166605",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/as-roma/jobs/",
         "notes": "Dan Friedkin ownership.",
     },
     {
@@ -1460,6 +1594,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Como 1907",
         "linkedin_id": "80584516",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/como-1907/jobs/",
         "notes": "Hartono family ownership.",
     },
     {
@@ -1470,6 +1605,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Atalanta BC",
         "linkedin_id": "166606",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/atalantabc/jobs/",
         "notes": None,
     },
     {
@@ -1480,6 +1616,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "SS Lazio",
         "linkedin_id": "166607",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sslaziospa/jobs/",
         "notes": None,
     },
     {
@@ -1490,6 +1627,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Bologna FC 1909",
         "linkedin_id": "166608",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/bologna-f-c-1909-s-p-a-/jobs/",
         "notes": None,
     },
     {
@@ -1500,6 +1638,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "ACF Fiorentina",
         "linkedin_id": "166609",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/acf-fiorentina-s-p-a-/jobs/",
         "notes": None,
     },
     {
@@ -1510,6 +1649,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Torino FC",
         "linkedin_id": "166610",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/torino-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1520,6 +1660,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Udinese Calcio",
         "linkedin_id": "166611",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/udinese-calcio-spa/jobs/",
         "notes": "Pozzo family (same as Watford).",
     },
     {
@@ -1530,6 +1671,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Parma Calcio 1913",
         "linkedin_id": "3563267",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/parma-calcio-1913/jobs/",
         "notes": None,
     },
     {
@@ -1540,6 +1682,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Genoa CFC",
         "linkedin_id": "3282817",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/genoa-cricket-and-football-club-s.p.a./jobs/",
         "notes": "777 Partners ownership.",
     },
     {
@@ -1550,6 +1693,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Cagliari Calcio",
         "linkedin_id": "3283042",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/cagliari-calcio/jobs/",
         "notes": None,
     },
     {
@@ -1560,6 +1704,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Hellas Verona FC",
         "linkedin_id": "3202872",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/hellas-verona-f-c-/jobs/",
         "notes": None,
     },
     {
@@ -1570,6 +1715,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "US Lecce",
         "linkedin_id": "3282918",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/uslecce/jobs/",
         "notes": None,
     },
     {
@@ -1580,6 +1726,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "US Cremonese",
         "linkedin_id": "3283198",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/uscremonese/jobs/",
         "notes": None,
     },
     {
@@ -1590,6 +1737,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "US Sassuolo Calcio",
         "linkedin_id": "2268714",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sassuolocalcio/jobs/",
         "notes": None,
     },
     {
@@ -1600,6 +1748,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Pisa Sporting Club",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/pisa-sporting-club-1909/jobs/",
         "notes": "Alexander Knaster ownership.",
     },
 
@@ -1614,6 +1763,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "US Avellino",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/u-s-avellino-1912/jobs/",
         "notes": None,
     },
     {
@@ -1624,6 +1774,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "SSC Bari",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/ssc-bari/jobs/",
         "notes": "De Laurentiis family.",
     },
     {
@@ -1634,6 +1785,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Carrarese Calcio",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/carrarese-calcio-1908/jobs/",
         "notes": None,
     },
     {
@@ -1644,6 +1796,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "US Catanzaro 1929",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/uscatanzaro1929/jobs/",
         "notes": None,
     },
     {
@@ -1654,6 +1807,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Cesena FC",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/cesenafc/jobs/",
         "notes": None,
     },
     {
@@ -1664,6 +1818,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Empoli FC",
         "linkedin_id": "3283024",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/empoli-fc/jobs/",
         "notes": None,
     },
     {
@@ -1674,6 +1829,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Frosinone Calcio",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/frosinone-calcio-s.r.l./jobs/",
         "notes": None,
     },
     {
@@ -1684,6 +1840,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "SS Juve Stabia",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/s.s.-juve-stabia-s.r.l./jobs/",
         "notes": None,
     },
     {
@@ -1694,6 +1851,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Mantova 1911",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/mantova-1911-s-r-l/jobs/",
         "notes": None,
     },
     {
@@ -1704,6 +1862,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Modena FC",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/modena-football-club/jobs/",
         "notes": None,
     },
     {
@@ -1714,6 +1873,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "AC Monza",
         "linkedin_id": "35524924",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/acmonza/jobs/",
         "notes": "Berlusconi / Fininvest.",
     },
     {
@@ -1724,6 +1884,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Calcio Padova",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/calcio-padova/jobs/",
         "notes": None,
     },
     {
@@ -1734,6 +1895,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Palermo FC",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/palermocalcio/jobs/",
         "notes": "City Football Group affiliate.",
     },
     {
@@ -1744,6 +1906,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Pescara Calcio",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/pescaracalcio/jobs/",
         "notes": None,
     },
     {
@@ -1754,6 +1917,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "AC Reggiana 1919",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/acreggiana1919/jobs/",
         "notes": None,
     },
     {
@@ -1764,6 +1928,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "UC Sampdoria",
         "linkedin_id": "3283045",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/u-c--sampdoria/jobs/",
         "notes": None,
     },
     {
@@ -1774,6 +1939,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Spezia Calcio",
         "linkedin_id": "3283155",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/spezia-calcio-s.r.l.---societa-sportiva-professionistica/jobs/",
         "notes": None,
     },
     {
@@ -1784,6 +1950,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Südtirol",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-s%C3%BCdtirol/jobs/",
         "notes": None,
     },
     {
@@ -1794,6 +1961,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Venezia FC",
         "linkedin_id": "10572893",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/veneziafc/jobs/",
         "notes": "US ownership.",
     },
     {
@@ -1804,6 +1972,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Virtus Entella",
         "linkedin_id": None,
+        "linkedin_jobs_url": "https://www.linkedin.com/company/virtus-entella/jobs/",
         "notes": None,
     },
 
@@ -1818,6 +1987,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Rangers FC",
         "linkedin_id": "166676",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/rangersfc/jobs/",
         "notes": "Uses People First ATS.",
     },
     {
@@ -1828,6 +1998,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Celtic FC",
         "linkedin_id": "166677",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/celtic-football-club/jobs/",
         "notes": None,
     },
 
@@ -1842,6 +2013,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Sport Lisboa e Benfica",
         "linkedin_id": "166720",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sport-lisboa-e-benfica/jobs/",
         "notes": "Dedicated recruitment portal. Uses SAP SuccessFactors. Strong analytics culture.",
     },
     {
@@ -1852,6 +2024,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "Sporting CP",
         "linkedin_id": "166721",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/sporting-clube-de-portugal/jobs/",
         "notes": None,
     },
     {
@@ -1862,6 +2035,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Porto",
         "linkedin_id": "166722",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fcporto/jobs/",
         "notes": "Dedicated candidaturas subdomain. Requires JS.",
     },
 
@@ -1876,6 +2050,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Copenhagen",
         "linkedin_id": "166751",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/f-c--k%C3%B8benhavn/jobs/",
         "notes": None,
     },
     {
@@ -1886,6 +2061,7 @@ CLUBS = [
         "teamtailor_slug": None,
         "linkedin_company": "FC Midtjylland",
         "linkedin_id": "1674127",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-midtjylland/jobs/",
         "notes": "Matthew Benham/Smartodds ownership. Extremely data-driven. High priority.",
     },
 ]
