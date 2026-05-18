@@ -200,6 +200,18 @@ def _slugs(name: str) -> list[str]:
 # Layer 1 – Direct careers page
 # ---------------------------------------------------------------------------
 
+# URL path fragments that indicate a link points to a specific job posting.
+# Used to filter out nav/footer/content links on a club's own domain.
+# Trusted external domains (ATS platforms) and careers pages already hosted on
+# a trusted ATS domain bypass this check entirely.
+_JOB_PATH_HINTS = (
+    "/job", "/vacanc", "/career", "/opening", "/position", "/offre",
+    "/empleo", "/stelle", "/lavoro", "/werken", "/jobs", "/posting",
+    "/apply", "/application", "/bewerbung", "/aanmelding", "/sollicit",
+    "/emploi", "/anuncio", "/annonce", "/stilling",
+    "jobdetail", "jobdetails", "jobid=", "jid=", "vacancy_id=", "vacancyid=",
+    "requisition", "req_id", "reqid=", "referenceid=",
+)
 
 
 def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
@@ -215,6 +227,10 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
     results: list[dict] = []
     seen:    set[str]   = set()
     base    = url
+
+    # If the careers URL is already hosted on a trusted ATS domain, all same-domain
+    # links are job links — no path-hint filtering needed.
+    base_is_ats = _is_trusted_url(base)
 
     for a in soup.find_all("a", href=True):
         title    = a.get_text(" ", strip=True)
@@ -244,15 +260,20 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
         if not title or not (4 < len(title) < 300):
             continue
 
-        # Only links on the club's own domain or a known ATS/form host.
-        # We intentionally do NOT filter by URL path patterns here — ATS platforms
-        # use wildly different URL structures (query strings, hashed IDs, etc.).
-        # Keyword matching on the link text is the real gate against nav/footer links.
+        # Only follow links on the club's own domain or a known ATS/form host.
         on_trusted_external = _is_trusted_url(abs_href) and not _is_same_domain(abs_href, base)
         if not (_is_same_domain(abs_href, base) or on_trusted_external):
             continue
 
-        if abs_href in seen:
+        # For same-domain links on a regular club website, require the URL to look
+        # like a job posting (path hints). This prevents nav/footer/content links
+        # whose text happens to match a keyword from being treated as vacancies.
+        # Exceptions: (a) links to trusted external ATS domains skip this check,
+        # (b) if the careers page itself is hosted on a trusted ATS domain every
+        #     same-domain link is a job link by definition.
+        if not on_trusted_external and not base_is_ats:
+            if not any(h in abs_href.lower() for h in _JOB_PATH_HINTS):
+                continue
             continue
         seen.add(abs_href)
 
