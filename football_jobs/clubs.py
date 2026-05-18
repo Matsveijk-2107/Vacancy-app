@@ -29,7 +29,7 @@ CLUBS = [
         "name": "PSV",
         "country": "Netherlands",
         "league": "Eredivisie",
-        "careers_url": "https://www.psv.nl/club/organisatie/werken-bij",  # [live]
+        "careers_url": "https://werkenbij.psv.nl/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "PSV",
         "linkedin_id": "166281",
@@ -40,7 +40,7 @@ CLUBS = [
         "name": "Ajax",
         "country": "Netherlands",
         "league": "Eredivisie",
-        "careers_url": "https://werkenbij.ajax.nl/",  # [live]
+        "careers_url": "https://werkenbij.ajax.nl/vacatures",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "AFC Ajax",
         "linkedin_id": "10928",
@@ -62,7 +62,7 @@ CLUBS = [
         "name": "Feyenoord",
         "country": "Netherlands",
         "league": "Eredivisie",
-        "careers_url": "https://www.feyenoord.com/nl/werken-bij-feyenoord",  # [live]
+        "careers_url": "https://www.feyenoord.com/nl/vacatures",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Feyenoord Rotterdam",
         "linkedin_id": "10792",
@@ -158,7 +158,7 @@ CLUBS = [
         "name": "Borussia Dortmund",
         "country": "Germany",
         "league": "Bundesliga",
-        "careers_url": "https://karriere.bvb.de/en/",  # [confirmed]
+        "careers_url": "https://karriere.bvb.de/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Borussia Dortmund",
         "linkedin_id": "21497",
@@ -202,7 +202,7 @@ CLUBS = [
         "name": "Eintracht Frankfurt",
         "country": "Germany",
         "league": "Bundesliga",
-        "careers_url": "https://klub.eintracht.de/jobs/",  # [live]
+        "careers_url": "https://klub.eintracht.de/jobs/ag/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Eintracht Frankfurt",
         "linkedin_id": "166296",
@@ -213,7 +213,7 @@ CLUBS = [
         "name": "SC Freiburg",
         "country": "Germany",
         "league": "Bundesliga",
-        "careers_url": "https://www.scfreiburg.com/verein/jobs/",  # [live]
+        "careers_url": "https://jobs.scfreiburg.com/en",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Sport-Club Freiburg",
         "linkedin_id": "166300",
@@ -235,7 +235,7 @@ CLUBS = [
         "name": "Borussia Mönchengladbach",
         "country": "Germany",
         "league": "Bundesliga",
-        "careers_url": "https://www.borussia.de/jobs",  # [live]
+        "careers_url": "https://job.borussia.de/de",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Borussia Mönchengladbach",
         "linkedin_id": "166303",
@@ -246,7 +246,7 @@ CLUBS = [
         "name": "VfL Wolfsburg",
         "country": "Germany",
         "league": "Bundesliga",
-        "careers_url": "https://www.vfl-wolfsburg.de/der-vfl/jobs/",  # [live]
+        "careers_url": "https://www.vfl-wolfsburg.de/der-vfl/jobs/direkteinstieg",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "VfL Wolfsburg",
         "linkedin_id": "166299",
@@ -290,7 +290,7 @@ CLUBS = [
         "name": "1. FC Union Berlin",
         "country": "Germany",
         "league": "Bundesliga",
-        "careers_url": "https://www.fc-union-berlin.de/de/jobs/",  # [confirmed]
+        "careers_url": "https://www.altefoersterei.berlin/en/career-OIiJ",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "1. FC Union Berlin",
         "linkedin_id": "6572290",
@@ -345,7 +345,7 @@ CLUBS = [
         "name": "Hamburger SV",
         "country": "Germany",
         "league": "2. Bundesliga",
-        "careers_url": "https://www.hsv.de/unser-hsv/karriere-beim-hsv/jobs",  # [live]
+        "careers_url": "https://www.hsv.de/unser-hsv/karriere-beim-hsv/jobs/festanstellungen",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Hamburger SV",
         "linkedin_id": "166295",
@@ -382,7 +382,7 @@ CLUBS = [
         "name": "Olympique de Marseille",
         "country": "France",
         "league": "Ligue 1",
-        "careers_url": None,  # [search-only]
+        "careers_url": "https://olympique-de-marseille.taleez.com/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Olympique de Marseille",
         "linkedin_id": "166375",
@@ -404,7 +404,7 @@ CLUBS = [
         "name": "Olympique Lyonnais",
         "country": "France",
         "league": "Ligue 1",
-        "careers_url": "https://careers.eaglefootballgroup.com/go/All-Jobs/8800302/",  # [confirmed]
+        "careers_url": "https://careers.eaglefootballgroup.com/search",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Olympique Lyonnais",
         "linkedin_id": "166371",
@@ -452,7 +452,7 @@ CLUBS = [
         "name": "Stade Rennais FC",
         "country": "France",
         "league": "Ligue 1",
-        "careers_url": "https://www.hellowork.com/fr-fr/entreprises/stade-rennais-football-club-170554.html",  # [confirmed]
+        "careers_url": "https://www.hellowork.com/fr-fr/entreprises/stade-rennais-football-club-170554.html#offres-emploi",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Stade Rennais FC",
         "linkedin_id": "166374",
@@ -463,7 +463,7 @@ CLUBS = [
         "name": "Stade Brestois 29",
         "country": "France",
         "league": "Ligue 1",
-        "careers_url": "https://www.sb29.bzh/candidature-dirigeant.php",  # [confirmed]
+        "careers_url": "https://www.indeed.com/cmp/Stade-Brestois-29/jobs",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Stade Brestois 29",
         "linkedin_id": "3118977",
@@ -474,7 +474,7 @@ CLUBS = [
         "name": "Toulouse FC",
         "country": "France",
         "league": "Ligue 1",
-        "careers_url": None,  # [search-only]
+        "careers_url": "https://fr.indeed.com/q-toulouse-football-club-emplois.html?vjk=234ef2c7bfeb4f7e",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Toulouse FC",
         "linkedin_id": "2485756",
@@ -485,7 +485,7 @@ CLUBS = [
         "name": "RC Strasbourg Alsace",
         "country": "France",
         "league": "Ligue 1",
-        "careers_url": None,  # [search-only]
+        "careers_url": "https://sportsjobs.fr/companyprofile?company=racing-club-de-strasbourg-alsace-6930244b42a23784be612196",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "RC Strasbourg Alsace",
         "linkedin_id": "1765823",
@@ -885,7 +885,7 @@ CLUBS = [
         "name": "Malaga CF",
         "country": "Spain",
         "league": "La Liga 2",
-        "careers_url": "https://www.impulsyn.com/empleo/trabaja-con-nosotros-malaga-club-de-futbol/malaga-club-de-futbol",  # [confirmed]
+        "careers_url": "https://www.impulsyn.com/organizacion/malaga-club-de-futbol/empleo",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Málaga CF",
         "linkedin_id": None,
@@ -1087,8 +1087,8 @@ CLUBS = [
         "name": "Aston Villa FC",
         "country": "England",
         "league": "Premier League",
-        "careers_url": "https://careers.avfc.co.uk/jobs",  # [live]
-        "teamtailor_slug": "careers.avfc",
+        "careers_url": "https://avfc.wd502.myworkdayjobs.com/avfc_careers",  # [live]
+        "teamtailor_slug": None,
         "linkedin_company": "Aston Villa FC",
         "linkedin_id": "166533",
         "linkedin_jobs_url": "https://www.linkedin.com/company/aston-villa-football-club/jobs/",
@@ -1098,7 +1098,7 @@ CLUBS = [
         "name": "AFC Bournemouth",
         "country": "England",
         "league": "Premier League",
-        "careers_url": "https://careers.afcb.co.uk/",  # [live]
+        "careers_url": "https://careers.afcb.co.uk/#js-careers-jobs-block",  # [live]
         "teamtailor_slug": "careers.afcb",
         "linkedin_company": "AFC Bournemouth",
         "linkedin_id": "166534",
@@ -1131,7 +1131,7 @@ CLUBS = [
         "name": "Chelsea FC",
         "country": "England",
         "league": "Premier League",
-        "careers_url": "https://www.chelseafc.com/en/careers",  # [live]
+        "careers_url": "https://secure.workforceready.eu/ta/6189861.careers?CareersSearch=&lang=en-GB",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Chelsea FC",
         "linkedin_id": "166537",
@@ -1153,7 +1153,7 @@ CLUBS = [
         "name": "Fulham FC",
         "country": "England",
         "league": "Premier League",
-        "careers_url": "https://fulhamfc.careers.hibob.com/",  # [confirmed]
+        "careers_url": "https://fulhamfc.careers.hibob.com/jobs",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Fulham FC",
         "linkedin_id": "166539",
@@ -1219,7 +1219,7 @@ CLUBS = [
         "name": "Tottenham Hotspur FC",
         "country": "England",
         "league": "Premier League",
-        "careers_url": "https://www.tottenhamhotspur.com/the-club/careers",  # [live]
+        "careers_url": "https://ce0812li.webitrent.com/ce0812li_webrecruitment/wrd/run/etrec179gf.open?wvid=9447152BOp",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Tottenham Hotspur FC",
         "linkedin_id": "166545",
@@ -1278,7 +1278,7 @@ CLUBS = [
         "name": "Blackburn Rovers FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.rovers.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.rovers.co.uk/club/job-vacancies",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Blackburn Rovers FC",
         "linkedin_id": "1757987",
@@ -1289,7 +1289,7 @@ CLUBS = [
         "name": "Bristol City FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.bcfc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.bristol-sport.co.uk/careers/bristol-city/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Bristol City FC",
         "linkedin_id": "1553887",
@@ -1300,7 +1300,7 @@ CLUBS = [
         "name": "Charlton Athletic FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.cafc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.charltonafc.com/vacancies",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Charlton Athletic FC",
         "linkedin_id": "1502673",
@@ -1311,8 +1311,8 @@ CLUBS = [
         "name": "Coventry City FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.ccfc.co.uk/club/careers/",  # [best-guess]
-        "teamtailor_slug": None,
+        "careers_url": "https://coventrycityfootballclub.teamtailor.com/jobs",  # [live]
+        "teamtailor_slug": "coventrycityfootballclub",
         "linkedin_company": "Coventry City FC",
         "linkedin_id": "2260984",
         "linkedin_jobs_url": "https://www.linkedin.com/company/coventry-city-football-club/jobs/",
@@ -1322,7 +1322,7 @@ CLUBS = [
         "name": "Derby County FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.dcfc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.dcfc.co.uk/page/permanent-roles",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Derby County FC",
         "linkedin_id": "1631568",
@@ -1333,7 +1333,7 @@ CLUBS = [
         "name": "Hull City AFC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.hullcitytigers.com/club/careers/",  # [best-guess]
+        "careers_url": "https://www.wearehullcity.co.uk/club/careers",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Hull City AFC",
         "linkedin_id": "1739040",
@@ -1344,7 +1344,7 @@ CLUBS = [
         "name": "Ipswich Town FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.itfc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.itfc.co.uk/club/careers/vacancies",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Ipswich Town FC",
         "linkedin_id": "1561019",
@@ -1366,7 +1366,7 @@ CLUBS = [
         "name": "Middlesbrough FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.mfc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.mfc.co.uk/careers/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Middlesbrough FC",
         "linkedin_id": "1650040",
@@ -1377,7 +1377,7 @@ CLUBS = [
         "name": "Millwall FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.millwallfc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.millwallfc.co.uk/club-information/work-for-the-lions",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Millwall FC",
         "linkedin_id": "2270668",
@@ -1388,7 +1388,7 @@ CLUBS = [
         "name": "Norwich City FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.canaries.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://careers.canaries.co.uk/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Norwich City FC",
         "linkedin_id": "166553",
@@ -1399,7 +1399,7 @@ CLUBS = [
         "name": "Oxford United FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.oufc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.oufc.co.uk/vacancies-oxford-united",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Oxford United FC",
         "linkedin_id": "4070949",
@@ -1410,7 +1410,7 @@ CLUBS = [
         "name": "Portsmouth FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.portsmouthfc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.portsmouthfc.co.uk/club/work-for-us",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Portsmouth FC",
         "linkedin_id": "1680948",
@@ -1421,7 +1421,7 @@ CLUBS = [
         "name": "Preston North End FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.pnefc.net/club/careers/",  # [best-guess]
+        "careers_url": "https://www.pnefc.net/pnecet/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Preston North End FC",
         "linkedin_id": "2317183",
@@ -1432,7 +1432,7 @@ CLUBS = [
         "name": "Queens Park Rangers FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.qpr.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.qpr.co.uk/club/careers",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Queens Park Rangers FC",
         "linkedin_id": "166554",
@@ -1443,7 +1443,7 @@ CLUBS = [
         "name": "Sheffield United FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.sufc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.sufc.co.uk/club/vacancies/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Sheffield United FC",
         "linkedin_id": "166555",
@@ -1465,7 +1465,7 @@ CLUBS = [
         "name": "Southampton FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.southamptonfc.com/en/careers",  # [live]
+        "careers_url": "https://saintsfc.wd3.myworkdayjobs.com/SFC001",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Southampton FC",
         "linkedin_id": "166556",
@@ -1476,7 +1476,7 @@ CLUBS = [
         "name": "Stoke City FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.stokecityfc.com/club/careers/",  # [best-guess]
+        "careers_url": "https://www.stokecityfc.com/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Stoke City FC",
         "linkedin_id": "166557",
@@ -1487,7 +1487,7 @@ CLUBS = [
         "name": "Swansea City AFC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.swanseacity.com/club/careers/",  # [best-guess]
+        "careers_url": "https://www.swanseacity.com/vacancies",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Swansea City AFC",
         "linkedin_id": "1633012",
@@ -1498,7 +1498,7 @@ CLUBS = [
         "name": "Watford FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.watfordfc.com/club/careers/",  # [best-guess]
+        "careers_url": "https://www.watfordfc.com/club/careers",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Watford FC",
         "linkedin_id": "166558",
@@ -1509,7 +1509,7 @@ CLUBS = [
         "name": "West Bromwich Albion FC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.wba.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://www.wba.co.uk/club/vacancies",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "West Bromwich Albion FC",
         "linkedin_id": "166559",
@@ -1520,7 +1520,7 @@ CLUBS = [
         "name": "Wrexham AFC",
         "country": "England",
         "league": "Championship",
-        "careers_url": "https://www.wrexhamafc.co.uk/club/careers/",  # [best-guess]
+        "careers_url": "https://careers.wrexhamafc.co.uk/vacancies",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Wrexham AFC",
         "linkedin_id": "4765870",
@@ -1535,7 +1535,7 @@ CLUBS = [
         "name": "Inter Milan",
         "country": "Italy",
         "league": "Serie A",
-        "careers_url": "https://www.inter.it/it/club/lavora-con-noi",  # [best-guess]
+        "careers_url": "https://www.inter.it/en/club/job-opportunities",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Inter Milan",
         "linkedin_id": "166601",
@@ -1557,7 +1557,7 @@ CLUBS = [
         "name": "AC Milan",
         "country": "Italy",
         "league": "Serie A",
-        "careers_url": "https://www.acmilan.com/it/club/lavora-con-noi",  # [best-guess]
+        "careers_url": "https://www.acmilan.com/en/club/work-with-us",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "AC Milan",
         "linkedin_id": "166603",
@@ -1579,7 +1579,7 @@ CLUBS = [
         "name": "AS Roma",
         "country": "Italy",
         "league": "Serie A",
-        "careers_url": "https://www.asroma.com/it/club/lavora-con-noi",  # [best-guess]
+        "careers_url": "https://asroma.altamiraweb.com/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "AS Roma",
         "linkedin_id": "166605",
@@ -1983,7 +1983,7 @@ CLUBS = [
         "name": "Rangers FC",
         "country": "Scotland",
         "league": "Scottish Premiership",
-        "careers_url": "https://rangershr.jobs.people-first.com/",  # [live]
+        "careers_url": "https://uk.indeed.com/cmp/Rangers-Football-Club/jobs",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Rangers FC",
         "linkedin_id": "166676",
@@ -1994,7 +1994,7 @@ CLUBS = [
         "name": "Celtic FC",
         "country": "Scotland",
         "league": "Scottish Premiership",
-        "careers_url": "https://www.celticfc.com/club/jobs-at-celtic/",  # [live]
+        "careers_url": "https://www.celticfc.com/club/jobs-at-celtic/permanent-and-fixed-term-roles/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Celtic FC",
         "linkedin_id": "166677",
@@ -2009,7 +2009,7 @@ CLUBS = [
         "name": "SL Benfica",
         "country": "Portugal",
         "league": "Primeira Liga",
-        "careers_url": "https://recrutamento.slbenfica.pt/?locale=en_US",  # [live]
+        "careers_url": "https://recrutamento.slbenfica.pt/go/Job-Opportunities/9183055/?locale=en_US",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Sport Lisboa e Benfica",
         "linkedin_id": "166720",
@@ -2020,7 +2020,7 @@ CLUBS = [
         "name": "Sporting CP",
         "country": "Portugal",
         "league": "Primeira Liga",
-        "careers_url": "https://www.sporting.pt/en/come-work-with-us",  # [live]
+        "careers_url": "https://www.indeed.com/cmp/Sporting-Clube-De-Portugal/jobs",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Sporting CP",
         "linkedin_id": "166721",
