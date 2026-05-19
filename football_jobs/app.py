@@ -141,6 +141,7 @@ html, body, [data-testid="stAppViewContainer"] {
 .pg-lbl   { font-size: 0.68rem; color: #6e7681; margin-bottom: 10px; }
 .pills    { display: flex; flex-wrap: wrap; gap: 4px; }
 .pill {
+    display: inline-flex; align-items: center; gap: 4px;
     font-size: 0.66rem; font-weight: 600;
     padding: 2px 7px; border-radius: 20px; border: 1px solid;
     white-space: nowrap;
@@ -233,6 +234,195 @@ SOURCE_BADGE = {
     "webitrent":     "b-wt",
 }
 
+CLUB_LOGO: dict[str, str] = {
+    # Netherlands
+    "PSV":                       "PSV.png",
+    "Ajax":                      "Ajax.png",
+    "AZ Alkmaar":                "AZ.png",
+    "Feyenoord":                 "Feyenoord.png",
+    "FC Utrecht":                "FC Utrecht.png",
+    # Belgium
+    "Royal Antwerp FC":          "Royal Antwerp.png",
+    "Royale Union Saint-Gilloise": "Royale Union SG.png",
+    "RSC Anderlecht":            "RSC Anderlecht.png",
+    "KRC Genk":                  "KRC Genk.png",
+    "Club Brugge":               "Club Brugge.png",
+    # Germany
+    "FC Bayern Munich":          "Bayern Munich.png",
+    "Borussia Dortmund":         "Borussia Dortmund.png",
+    "Bayer 04 Leverkusen":       "Bayer Leverkusen.png",
+    "RB Leipzig":                "RB Leipzig.png",
+    "VfB Stuttgart":             "VfB Stuttgart.png",
+    "Eintracht Frankfurt":       "Eintracht Frankfurt.png",
+    "SC Freiburg":               "SC Freiburg.png",
+    "1. FSV Mainz 05":           "Mainz 05.png",
+    "Borussia M\u00c3\u00b6nchengladbach": "Borussia Mgladbach.png",
+    "VfL Wolfsburg":             "VfL Wolfsburg.png",
+    "FC Augsburg":               "FC Augsburg.png",
+    "Werder Bremen":             "Werder Bremen.png",
+    "TSG Hoffenheim":            "TSG Hoffenheim.png",
+    "1. FC Union Berlin":        "Union Berlin.png",
+    "FC St. Pauli":              "FC St Pauli.png",
+    "1. FC Heidenheim":          "FC Heidenheim.png",
+    "Holstein Kiel":             "Holstein Kiel.png",
+    "VfL Bochum":                "VfL Bochum.png",
+    "Hamburger SV":              "Hamburger SV.png",
+    "1. FC K\u00c3\u00b6ln":     "FC Koeln.png",
+    # France
+    "Paris Saint-Germain":       "Paris Saint-Germain.png",
+    "Olympique de Marseille":    "Olympique Marseille.png",
+    "AS Monaco":                 "AS Monaco.png",
+    "Olympique Lyonnais":        "Olympique Lyonnais.png",
+    "Lille OSC":                 "Lille OSC.png",
+    "OGC Nice":                  "OGC Nice.png",
+    "RC Lens":                   "RC Lens.png",
+    "Stade Rennais FC":          "Stade Rennais.png",
+    "Stade Brestois 29":         "Stade Brestois.png",
+    "Toulouse FC":               "Toulouse FC.png",
+    "RC Strasbourg Alsace":      "RC Strasbourg.png",
+    "FC Nantes":                 "FC Nantes.png",
+    "Montpellier HSC":           "Montpellier HSC.png",
+    "AJ Auxerre":                "AJ Auxerre.png",
+    "Le Havre AC":               "Le Havre AC.png",
+    "Angers SCO":                "Angers SCO.png",
+    "FC Metz":                   "FC Metz.png",
+    "FC Lorient":                "FC Lorient.png",
+    # Spain - La Liga
+    "Real Madrid CF":            "Real Madrid.png",
+    "FC Barcelona":              "FC Barcelona.png",
+    "Valencia CF":               "Valencia CF.png",
+    "Club Atletico de Madrid":   "Atletico Madrid.png",
+    "Real Betis Balompie":       "Real Betis.png",
+    "Sevilla FC":                "Sevilla FC.png",
+    "Real Sociedad":             "Real Sociedad.png",
+    "Athletic Club Bilbao":      "Club_Athletic_Bilbao.png",
+    "RCD Mallorca":              "RCD Mallorca.png",
+    "Villarreal CF":             "Villarreal CF.png",
+    "RC Celta de Vigo":          "Celta Vigo.png",
+    "CA Osasuna":                "CA Osasuna.png",
+    "Rayo Vallecano":            "Rayo Vallecano.png",
+    "Girona FC":                 "Girona FC.png",
+    "Deportivo Alaves":          "Deportivo Alaves.png",
+    "Levante UD":                "Levante UD.png",
+    "Real Oviedo":               "Real Oviedo.png",
+    # Spain - La Liga 2
+    "Real Racing Santander":     "Racing Santander.png",
+    "UD Las Palmas":             "UD Las Palmas.png",
+    "UD Almeria":                "UD Almeria.png",
+    "Malaga CF":                 "Malaga CF.png",
+    "CD Castellon":              "CD Castellon.png",
+    "RC Deportivo de La Coruna": "RC Deportivo.png",
+    "Burgos CF":                 "Burgos CF.png",
+    "SD Eibar":                  "SD Eibar.png",
+    "Cordoba CF":                "Cordoba CF.png",
+    "FC Andorra":                "FC Andorra.png",
+    "Real Sporting de Gijon":    "Sporting de Gijon.png",
+    "Albacete Balompie":         "Albacete Balompie.png",
+    "Granada CF":                "Granada CF.png",
+    "Real Valladolid CF":        "Real Valladolid.png",
+    "CD Leganes":                "CD Leganes.png",
+    "Cadiz CF":                  "Cadiz CF.png",
+    "Real Zaragoza":             "Real Zaragoza.png",
+    # England - Premier League
+    "Arsenal FC":                "Arsenal FC.png",
+    "Manchester City FC":        "Manchester City.png",
+    "Manchester United FC":      "Manchester United.png",
+    "Liverpool FC":              "Liverpool FC.png",
+    "Aston Villa FC":            "Aston Villa.png",
+    "AFC Bournemouth":           "AFC Bournemouth.png",
+    "Brentford FC":              "Brentford FC.png",
+    "Brighton & Hove Albion FC": "Brighton Hove Albion.png",
+    "Chelsea FC":                "Chelsea FC.png",
+    "Everton FC":                "Everton FC.png",
+    "Fulham FC":                 "Fulham FC.png",
+    "Sunderland AFC":            "Sunderland AFC.png",
+    "Newcastle United FC":       "Newcastle United.png",
+    "Leeds United FC":           "Leeds United.png",
+    "Crystal Palace FC":         "Crystal Palace.png",
+    "Nottingham Forest FC":      "Nottingham Forest.png",
+    "Tottenham Hotspur FC":      "Tottenham Hotspur.png",
+    "West Ham United FC":        "West Ham United.png",
+    "Burnley FC":                "Burnley FC.png",
+    "Wolverhampton Wanderers FC": "Wolverhampton Wanderers.png",
+    # England - Championship
+    "Birmingham City FC":        "Birmingham City.png",
+    "Blackburn Rovers FC":       "Blackburn Rovers.png",
+    "Bristol City FC":           "Bristol City.png",
+    "Charlton Athletic FC":      "Charlton Athletic.png",
+    "Coventry City FC":          "Coventry City.png",
+    "Derby County FC":           "Derby County.png",
+    "Hull City AFC":             "Hull City.png",
+    "Ipswich Town FC":           "Ipswich Town.png",
+    "Leicester City FC":         "Leicester City.png",
+    "Middlesbrough FC":          "Middlesbrough.png",
+    "Millwall FC":               "Millwall.png",
+    "Norwich City FC":           "Norwich City.png",
+    "Oxford United FC":          "Oxford United.png",
+    "Portsmouth FC":             "Portsmouth.png",
+    "Preston North End FC":      "Preston North End.png",
+    "Queens Park Rangers FC":    "QPR.png",
+    "Sheffield United FC":       "Sheffield United.png",
+    "Sheffield Wednesday FC":    "Sheffield Wednesday.png",
+    "Southampton FC":            "Southampton.png",
+    "Stoke City FC":             "Stoke City.png",
+    "Swansea City AFC":          "Swansea City.png",
+    "Watford FC":                "Watford.png",
+    "West Bromwich Albion FC":   "West Bromwich Albion.png",
+    "Wrexham AFC":               "Wrexham.png",
+    # Italy - Serie A
+    "Inter Milan":               "Inter Milan.png",
+    "SSC Napoli":                "SSC Napoli.png",
+    "AC Milan":                  "AC Milan.png",
+    "Juventus FC":               "Juventus.png",
+    "AS Roma":                   "AS Roma.png",
+    "Como 1907":                 "Como 1907.png",
+    "Atalanta BC":               "Atalanta BC.png",
+    "SS Lazio":                  "SS Lazio.png",
+    "Bologna FC 1909":           "Bologna FC.png",
+    "ACF Fiorentina":            "ACF Fiorentina.png",
+    "Torino FC":                 "Torino FC.png",
+    "Udinese Calcio":            "Udinese Calcio.png",
+    "Parma Calcio 1913":         "Parma Calcio.png",
+    "Genoa CFC":                 "Genoa CFC.png",
+    "Cagliari Calcio":           "Cagliari Calcio.png",
+    "Hellas Verona FC":          "Hellas Verona.png",
+    "US Lecce":                  "US Lecce.png",
+    "US Cremonese":              "US Cremonese.png",
+    "Sassuolo Calcio":           "Sassuolo.png",
+    "Pisa SC":                   "Pisa SC.png",
+    # Italy - Serie B
+    "US Avellino":               "US Avellino.png",
+    "SSC Bari":                  "SSC Bari.png",
+    "Carrarese Calcio":          "Carrarese Calcio.png",
+    "US Catanzaro":              "US Catanzaro.png",
+    "Cesena FC":                 "AC Cesena.png",
+    "Empoli FC":                 "Empoli FC.png",
+    "Frosinone Calcio":          "Frosinone Calcio.png",
+    "SS Juve Stabia":            "SS Juve Stabia.png",
+    "Mantova 1911":              "Mantova 1911.png",
+    "Modena FC":                 "Modena FC.png",
+    "AC Monza":                  "AC Monza.png",
+    "Calcio Padova":             "Calcio Padova.png",
+    "Palermo FC":                "Palermo FC.png",
+    "Delfino Pescara":           "Delfino Pescara.png",
+    "AC Reggiana":               "AC Reggiana.png",
+    "UC Sampdoria":              "UC Sampdoria.png",
+    "Spezia Calcio":             "Spezia Calcio.png",
+    "FC Sudtirol":               "FC Sudtirol.png",
+    "Venezia FC":                "Venezia FC.png",
+    "Virtus Entella":            "Virtus Entella.png",
+    # Scotland
+    "Rangers FC":                "Rangers FC.png",
+    "Celtic FC":                 "Celtic FC.png",
+    # Portugal
+    "SL Benfica":                "SL Benfica.png",
+    "Sporting CP":               "Sporting CP.png",
+    "FC Porto":                  "FC Porto.png",
+    # Denmark
+    "FC Copenhagen":             "FC Copenhagen.png",
+    "FC Midtjylland":            "FC Midtjylland.png",
+}
+
 ALL_LEAGUES   = list(CLUBS.keys())
 ALL_COUNTRIES = sorted({lg.split(" - ")[0] if " - " in lg else lg for lg in ALL_LEAGUES})
 
@@ -265,6 +455,17 @@ def _badge(source: str) -> str:
     return f'<span class="badge {css}">{source}</span>'
 
 
+def _logo_img(club: str, size: int = 28) -> str:
+    fname = CLUB_LOGO.get(club)
+    if not fname:
+        return ""
+    return (
+        f'<img src="/app/static/logos/{fname}" '
+        f'style="width:{size}px;height:{size}px;object-fit:contain;'
+        f'border-radius:3px;background:#fff;padding:1px;vertical-align:middle;">'
+    )
+
+
 def _run_scrape(placeholder) -> None:
     _load_vacancies.clear()
     with placeholder.container():
@@ -293,7 +494,8 @@ def _league_card(league: str, clubs: list[dict], clubs_with_jobs: set[str]) -> s
     pct   = int(found / total * 100) if total else 0
     short = league.replace("England - ", "").replace("Spain - ", "").replace("Italy - ", "")
     pills = "".join(
-        f'<span class="pill {"pill-on" if c["name"] in clubs_with_jobs else "pill-off"}">{c["name"]}</span>'
+        f'<span class="pill {"pill-on" if c["name"] in clubs_with_jobs else "pill-off"}">'
+        f'{_logo_img(c["name"], 14)}{c["name"]}</span>'
         for c in clubs
     )
     return f"""
@@ -484,17 +686,23 @@ with tab_vac:
                 date   = f"📅 {row['posted_date']}" if row.get("posted_date") else ""
                 kw_str = row.get("keywords_matched", "")
                 url    = row.get("url", "#")
+                logo   = _logo_img(row["club_name"], 36)
                 st.markdown(f"""
                 <div class="vc" style="border-left-color:{color};">
-                  <div class="vc-title">{row['job_title']}</div>
-                  <div class="vc-meta">
-                    <span class="vc-club" style="color:{color};">⚽ {row['club_name']}</span>
-                    <span>{row['league']}</span>
-                    {badge}
-                    {date}
+                  <div style="display:flex;align-items:flex-start;gap:10px;">
+                    {f'<div style="flex-shrink:0;padding-top:2px;">{logo}</div>' if logo else ''}
+                    <div style="flex:1;">
+                      <div class="vc-title">{row['job_title']}</div>
+                      <div class="vc-meta">
+                        <span class="vc-club" style="color:{color};">{row['club_name']}</span>
+                        <span>{row['league']}</span>
+                        {badge}
+                        {date}
+                      </div>
+                      {"<div class='vc-kw'>🏷 " + kw_str + "</div>" if kw_str else ""}
+                      <a class="vc-link" href="{url}" target="_blank">Open posting ↗</a>
+                    </div>
                   </div>
-                  {"<div class='vc-kw'>🏷 " + kw_str + "</div>" if kw_str else ""}
-                  <a class="vc-link" href="{url}" target="_blank">Open posting ↗</a>
                 </div>
                 """, unsafe_allow_html=True)
 
