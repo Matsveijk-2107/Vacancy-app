@@ -459,8 +459,10 @@ def _logo_img(club: str, size: int = 28) -> str:
     fname = CLUB_LOGO.get(club)
     if not fname:
         return ""
+    from urllib.parse import quote
+    encoded = quote(fname)
     return (
-        f'<img src="/app/static/logos/{fname}" '
+        f'<img src="/app/static/logos/{encoded}" '
         f'style="width:{size}px;height:{size}px;object-fit:contain;'
         f'border-radius:3px;background:#fff;padding:1px;vertical-align:middle;">'
     )
