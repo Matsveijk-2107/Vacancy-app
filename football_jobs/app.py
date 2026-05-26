@@ -10,7 +10,7 @@ import streamlit as st
 from datetime import datetime, timedelta, timezone
 
 from clubs import CLUBS_BY_LEAGUE as CLUBS
-from database import get_last_scraped, get_vacancies, init_db
+from database import get_last_scraped, get_vacancies, init_db, mark_as_replied
 from scraper import scrape_all_clubs
 
 # ── Page config ──────────────────────────────────────────────────────────────
@@ -435,7 +435,12 @@ def _country_of(lg: str) -> str:
 
 @st.cache_data(ttl=CACHE_TTL)
 def _load_vacancies() -> list[dict]:
-    return get_vacancies()
+    return get_vacancies(replied=False)
+
+
+@st.cache_data(ttl=CACHE_TTL)
+def _load_replied() -> list[dict]:
+    return get_vacancies(replied=True)
 
 
 def _stale(last: str | None) -> bool:
@@ -470,6 +475,7 @@ def _logo_img(club: str, size: int = 28) -> str:
 
 def _run_scrape(placeholder) -> None:
     _load_vacancies.clear()
+    _load_replied.clear()
     with placeholder.container():
         prog = st.progress(0.0, text="Starting scraper…")
         def cb(f: float, msg: str) -> None:
@@ -484,6 +490,7 @@ def _run_scrape(placeholder) -> None:
                 for club, msg in result["errors"].items():
                     st.caption(f"• **{club}**: {msg}")
     _load_vacancies.clear()
+    _load_replied.clear()
     st.rerun()
 
 
@@ -546,6 +553,7 @@ if refresh_clicked:
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 raw_vacancies   = _load_vacancies()
+replied_vacancies = _load_replied()
 clubs_with_jobs = {v["club_name"] for v in raw_vacancies}
 total_clubs     = sum(len(c) for c in CLUBS.values())
 leagues_active  = len({v["league"] for v in raw_vacancies})
@@ -573,7 +581,9 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
-tab_vac, tab_overview = st.tabs(["💼  Vacancies", "🗺️  League Overview"])
+done_count = len(replied_vacancies)
+done_label = f"✅  Done ({done_count})" if done_count else "✅  Done"
+tab_vac, tab_overview, tab_done = st.tabs(["💼  Vacancies", "🗺️  League Overview", done_label])
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -689,24 +699,33 @@ with tab_vac:
                 kw_str = row.get("keywords_matched", "")
                 url    = row.get("url", "#")
                 logo   = _logo_img(row["club_name"], 36)
-                st.markdown(f"""
-                <div class="vc" style="border-left-color:{color};">
-                  <div style="display:flex;align-items:flex-start;gap:10px;">
-                    {f'<div style="flex-shrink:0;padding-top:2px;">{logo}</div>' if logo else ''}
-                    <div style="flex:1;">
-                      <div class="vc-title">{row['job_title']}</div>
-                      <div class="vc-meta">
-                        <span class="vc-club" style="color:{color};">{row['club_name']}</span>
-                        <span>{row['league']}</span>
-                        {badge}
-                        {date}
+                col_card, col_btn = st.columns([11, 1])
+                with col_card:
+                    st.markdown(f"""
+                    <div class="vc" style="border-left-color:{color};">
+                      <div style="display:flex;align-items:flex-start;gap:10px;">
+                        {f'<div style="flex-shrink:0;padding-top:2px;">{logo}</div>' if logo else ''}
+                        <div style="flex:1;">
+                          <div class="vc-title">{row['job_title']}</div>
+                          <div class="vc-meta">
+                            <span class="vc-club" style="color:{color};">{row['club_name']}</span>
+                            <span>{row['league']}</span>
+                            {badge}
+                            {date}
+                          </div>
+                          {"<div class='vc-kw'>🏷 " + kw_str + "</div>" if kw_str else ""}
+                          <a class="vc-link" href="{url}" target="_blank">Open posting ↗</a>
+                        </div>
                       </div>
-                      {"<div class='vc-kw'>🏷 " + kw_str + "</div>" if kw_str else ""}
-                      <a class="vc-link" href="{url}" target="_blank">Open posting ↗</a>
                     </div>
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
+                    """, unsafe_allow_html=True)
+                with col_btn:
+                    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+                    if st.button("✅", key=f"reply_{row['id']}", help="Mark as replied"):
+                        mark_as_replied(row["id"])
+                        _load_vacancies.clear()
+                        _load_replied.clear()
+                        st.rerun()
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -762,3 +781,53 @@ with tab_overview:
                             unsafe_allow_html=True)
 
 
+# ════════════════════════════════════════════════════════════════════════════
+# TAB 3 – Done (replied)
+# ════════════════════════════════════════════════════════════════════════════
+with tab_done:
+    if not replied_vacancies:
+        st.markdown("""
+        <div class="empty">
+          <div class="ei">📭</div>
+          <h3>Nothing here yet</h3>
+          <p>Click ✅ on a vacancy to mark it as replied.</p>
+        </div>""", unsafe_allow_html=True)
+    else:
+        st.markdown(
+            f'<div style="font-size:0.8rem;color:#8b949e;margin-bottom:16px;">'
+            f'<strong style="color:#3fb950;">{len(replied_vacancies)}</strong> vacancies marked as replied</div>',
+            unsafe_allow_html=True,
+        )
+        for row in replied_vacancies:
+            color  = LEAGUE_META.get(row["league"], {}).get("color", "#58a6ff")
+            badge  = _badge(row["source"])
+            date   = f"📅 {row['posted_date']}" if row.get("posted_date") else ""
+            url    = row.get("url", "#")
+            logo   = _logo_img(row["club_name"], 36)
+            col_card, col_btn = st.columns([11, 1])
+            with col_card:
+                st.markdown(f"""
+                <div class="vc" style="border-left-color:#3fb950; opacity:0.7;">
+                  <div style="display:flex;align-items:flex-start;gap:10px;">
+                    {f'<div style="flex-shrink:0;padding-top:2px;">{logo}</div>' if logo else ''}
+                    <div style="flex:1;">
+                      <div class="vc-title">{row['job_title']}</div>
+                      <div class="vc-meta">
+                        <span class="vc-club" style="color:{color};">{row['club_name']}</span>
+                        <span>{row['league']}</span>
+                        {badge}
+                        {date}
+                        <span style="color:#3fb950;font-weight:600;">✅ Replied</span>
+                      </div>
+                      <a class="vc-link" href="{url}" target="_blank">Open posting ↗</a>
+                    </div>
+                  </div>
+                </div>
+                """, unsafe_allow_html=True)
+            with col_btn:
+                st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+                if st.button("↩️", key=f"undo_{row['id']}", help="Undo — move back to vacancies"):
+                    mark_as_replied(row["id"], replied=False)
+                    _load_vacancies.clear()
+                    _load_replied.clear()
+                    st.rerun()

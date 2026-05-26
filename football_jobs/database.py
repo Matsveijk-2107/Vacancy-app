@@ -45,6 +45,10 @@ def _conn():
 def init_db() -> None:
     with _conn() as con:
         con.executescript(_SCHEMA)
+        try:
+            con.execute("ALTER TABLE vacancies ADD COLUMN replied INTEGER DEFAULT 0")
+        except Exception:
+            pass  # column already exists
 
 
 def upsert_vacancy(v: dict) -> None:
@@ -78,8 +82,8 @@ def upsert_vacancies(vacancies: list[dict]) -> int:
     return inserted
 
 
-def get_vacancies(leagues: list[str] | None = None) -> list[dict]:
-    where = "WHERE is_analytics_match = 1"
+def get_vacancies(leagues: list[str] | None = None, replied: bool = False) -> list[dict]:
+    where = f"WHERE is_analytics_match = 1 AND replied = {1 if replied else 0}"
     params: list = []
     if leagues:
         placeholders = ",".join("?" * len(leagues))
@@ -89,6 +93,11 @@ def get_vacancies(leagues: list[str] | None = None) -> list[dict]:
     with _conn() as con:
         rows = con.execute(sql, params).fetchall()
     return [dict(r) for r in rows]
+
+
+def mark_as_replied(vacancy_id: int, replied: bool = True) -> None:
+    with _conn() as con:
+        con.execute("UPDATE vacancies SET replied = ? WHERE id = ?", (1 if replied else 0, vacancy_id))
 
 
 def get_last_scraped() -> str | None:
