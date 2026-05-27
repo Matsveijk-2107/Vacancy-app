@@ -623,7 +623,7 @@ with tab_vac:
             kw = st.text_input("Keyword", placeholder="e.g. python, SQL, analyst…")
         with fc5:
             recent = st.toggle("Last 30 days", value=False)
-            view   = st.radio("View", ["Table", "Cards"], horizontal=True,
+            view   = st.radio("View", ["Cards", "Table"], horizontal=True,
                               label_visibility="collapsed")
 
         st.markdown('</div>', unsafe_allow_html=True)
