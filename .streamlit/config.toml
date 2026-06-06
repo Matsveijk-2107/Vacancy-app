@@ -1,0 +1,5 @@
+[server]
+# Required for the club logos: served from football_jobs/static/logos/ at
+# /app/static/logos/. Streamlit Community Cloud reads config from the REPO ROOT
+# (not football_jobs/.streamlit/), so this file must live here too.
+enableStaticServing = true
