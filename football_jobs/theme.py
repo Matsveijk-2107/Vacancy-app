@@ -6,7 +6,45 @@ lookup tables / stylesheet live in one place.
 
 from __future__ import annotations
 
-from urllib.parse import quote
+import base64
+import io
+from functools import lru_cache
+from pathlib import Path
+
+try:
+    from PIL import Image
+    _HAS_PIL = True
+except Exception:                      # pragma: no cover
+    _HAS_PIL = False
+
+_LOGO_DIR = Path(__file__).parent / "static" / "logos"
+_LOGO_PX  = 64   # thumbnail size embedded (display is 14–38px, so this is crisp)
+
+
+@lru_cache(maxsize=512)
+def _logo_data_uri(fname: str) -> str:
+    """Return a small base64 data URI for a logo, or '' if unavailable.
+
+    Embedding the logo in the HTML removes any dependency on Streamlit static
+    serving (which needs repo-root config on Streamlit Cloud and is awkward
+    behind the app's auth gate). Logos are downscaled to a thumbnail so the
+    embedded payload stays light despite the source PNGs being up to ~200KB.
+    """
+    path = _LOGO_DIR / fname
+    if not path.exists():
+        return ""
+    try:
+        if _HAS_PIL:
+            img = Image.open(path).convert("RGBA")
+            img.thumbnail((_LOGO_PX, _LOGO_PX))
+            buf = io.BytesIO()
+            img.save(buf, format="PNG", optimize=True)
+            raw = buf.getvalue()
+        else:
+            raw = path.read_bytes()
+        return "data:image/png;base64," + base64.b64encode(raw).decode("ascii")
+    except Exception:
+        return ""
 
 # ── League colours & flags ───────────────────────────────────────────────────
 LEAGUE_META: dict[str, dict] = {
@@ -199,12 +237,13 @@ def _monogram(club: str) -> str:
 def logo_img(club: str, size: int = 28) -> str:
     fname = CLUB_LOGO.get(club)
     if fname:
-        encoded = quote(fname)
-        return (
-            f'<img src="/app/static/logos/{encoded}" loading="lazy" '
-            f'style="width:{size}px;height:{size}px;object-fit:contain;'
-            f'border-radius:4px;background:#fff;padding:1px;vertical-align:middle;">'
-        )
+        uri = _logo_data_uri(fname)
+        if uri:
+            return (
+                f'<img src="{uri}" loading="lazy" '
+                f'style="width:{size}px;height:{size}px;object-fit:contain;'
+                f'border-radius:4px;background:#fff;padding:1px;vertical-align:middle;">'
+            )
     # Fallback: colored monogram so every card has a consistent visual anchor.
     initials, color = _monogram(club)
     fs = max(9, int(size * 0.4))
