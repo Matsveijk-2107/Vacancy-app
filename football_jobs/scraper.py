@@ -22,23 +22,32 @@ import re
 import logging
 import requests
 from bs4 import BeautifulSoup
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
+from concurrent.futures import (
+    ThreadPoolExecutor,
+    as_completed,
+    TimeoutError as FuturesTimeout,
+)
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 
 from clubs import CLUBS, CLUBS_BY_LEAGUE
-from keywords import ANALYTICS_KEYWORDS
+from keywords import match_role
 from utils import (
     DEFAULT_HEADERS,
     can_fetch,
     dedup_by_url,
     make_absolute,
-    match_keywords,
     now_iso,
     parse_date_loose,
     polite_delay,
 )
-from database import init_db, log_scrape_session, upsert_vacancies, clear_all_vacancies
+from database import (
+    init_db,
+    log_scrape_session,
+    sync_vacancies,
+    prune_unseen,
+    get_last_scraped,
+)
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -46,6 +55,10 @@ logger = logging.getLogger(__name__)
 SERPAPI_KEY: str = os.getenv("SERPAPI_KEY", "")
 REQUEST_TIMEOUT = 10
 CLUB_TIMEOUT    = 60   # hard cap per club
+
+# How many clubs to scrape at once. Each club is independent network I/O, so
+# fanning out turns a ~10-minute serial run into a couple of minutes.
+SCRAPE_WORKERS = 8
 
 # Domains we trust to contain real job postings
 TRUSTED_DOMAINS = {
@@ -142,6 +155,31 @@ def _make_vacancy(club: dict, league: str, country: str, **kw) -> dict:
     }
 
 
+def _match(title: str, description: str = "") -> list[str]:
+    """Match on the title; if that misses, rescue via an explicit role phrase in
+    the description (strict mode avoids flagging every JD that says 'data')."""
+    matched = match_role(title)
+    if not matched and description:
+        matched = match_role(description, strict=True)
+    return matched
+
+
+def _clean(html_text: str) -> str:
+    """Strip HTML tags from an ATS description blob for keyword matching."""
+    if not html_text:
+        return ""
+    return BeautifulSoup(html_text, "lxml").get_text(" ", strip=True)
+
+
+def _epoch_ms_to_date(value) -> str:
+    """Convert a millisecond epoch (Lever createdAt) to YYYY-MM-DD."""
+    try:
+        from datetime import datetime, timezone
+        return datetime.fromtimestamp(int(value) / 1000, timezone.utc).strftime("%Y-%m-%d")
+    except Exception:
+        return ""
+
+
 def _is_trusted_url(url: str) -> bool:
     """Return True only if the URL comes from a domain we trust for job postings."""
     try:
@@ -223,7 +261,10 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
     if not resp:
         return []
 
-    soup    = BeautifulSoup(resp.text, "lxml")
+    # Use raw bytes so BeautifulSoup detects the page's real charset.
+    # Passing resp.text relies on requests' header guess and produced mojibake
+    # (e.g. "Women�s First Team") on pages served without a charset header.
+    soup    = BeautifulSoup(resp.content, "lxml")
     results: list[dict] = []
     seen:    set[str]   = set()
     base    = url
@@ -245,7 +286,7 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
             clean_title = title.removesuffix(" Job profile").strip()
             if clean_title in seen:
                 continue
-            matched = match_keywords(clean_title, ANALYTICS_KEYWORDS)
+            matched = match_role(clean_title)
             if matched:
                 seen.add(clean_title)
                 results.append(_make_vacancy(
@@ -279,12 +320,12 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
             continue
         seen.add(abs_href)
 
-        # Skip obvious non-job strings: descriptions (contain colon),
-        # sentences (end with punctuation), or section/page headings.
-        if ":" in title or title.endswith((".", "!", "?")):
+        # Skip obvious prose (full sentences / paragraphs) but keep real titles
+        # that happen to contain a colon, e.g. "Analyst: First Team".
+        if title.endswith((".", "!", "?")) or len(title.split()) > 14:
             continue
 
-        matched = match_keywords(title, ANALYTICS_KEYWORDS)
+        matched = match_role(title)
         if not matched:
             continue
 
@@ -303,7 +344,7 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
             text = tag.get_text(" ", strip=True)
             if not text or not (5 < len(text) < 120):
                 continue
-            matched = match_keywords(text, ANALYTICS_KEYWORDS)
+            matched = match_role(text, strict=True)
             if matched:
                 results.append(_make_vacancy(
                     club, league, country,
@@ -321,7 +362,7 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
             pat = r'(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+)?([A-Z][^.!?\n]{5,100}?)\s+Closing Date:'
             for candidate in _re.findall(pat, full_text):
                 candidate = candidate.strip()
-                matched = match_keywords(candidate, ANALYTICS_KEYWORDS)
+                matched = match_role(candidate, strict=True)
                 if matched:
                     results.append(_make_vacancy(
                         club, league, country,
@@ -368,37 +409,74 @@ def _slug_from_url(url: str, platform: str) -> str | None:
 
 
 def _teamtailor(club: dict, league: str, country: str) -> list[dict]:
-    """Teamtailor public JSON API — only runs when teamtailor_slug is set."""
-    explicit_slug = club.get("teamtailor_slug")
-    if not explicit_slug:
+    """Teamtailor public feed — reads {careers-domain}/jobs.json.
+
+    Teamtailor career sites (custom domains like careers.arsenal.com as well as
+    *.teamtailor.com subdomains) expose a JSONFeed at /jobs.json whose ``items``
+    array lists every published job. The old ``data``/``attributes`` REST shape
+    and the ``{slug}.teamtailor.com`` guess are kept only as fallbacks — the
+    stored slugs (e.g. "careers.arsenal") do NOT resolve as subdomains.
+    """
+    careers = club.get("careers_url") or ""
+    slug    = club.get("teamtailor_slug")
+    if not (slug or "teamtailor" in careers.lower()):
         return []
-    api_url = f"https://{explicit_slug}.teamtailor.com/jobs.json"
-    resp = _get(api_url, json=True)
-    if not resp:
-        return []
-    try:
-        data = resp.json()
-    except Exception:
-        return []
-    results = []
-    for job in data.get("data", []):
-        attrs  = job.get("attributes", {})
-        title  = attrs.get("title", "")
-        status = attrs.get("human-status", "") or attrs.get("status", "")
-        if "open" not in status.lower() and status:
+
+    # Candidate origins, most reliable first: the careers custom domain, then a
+    # bare-tenant subdomain guess.
+    bases: list[str] = []
+    if careers:
+        p = urlparse(careers)
+        if p.scheme and p.netloc:
+            bases.append(f"{p.scheme}://{p.netloc}")
+    if slug and "." not in slug:
+        bases.append(f"https://{slug}.teamtailor.com")
+
+    for base in bases:
+        resp = _get(f"{base}/jobs.json", json=True)
+        if not resp:
             continue
-        job_url = (
-            job.get("links", {}).get("careersite-job-url")
-            or f"https://{explicit_slug}.teamtailor.com/jobs/{job.get('id','')}"
-        )
-        matched = match_keywords(title, ANALYTICS_KEYWORDS)
-        if matched:
-            results.append(_make_vacancy(
-                club, league, country,
-                job_title=title, source="Teamtailor",
-                url=job_url, keywords_matched=", ".join(matched),
-            ))
-    return results
+        try:
+            data = resp.json()
+        except Exception:
+            continue
+
+        results: list[dict] = []
+        # Preferred: JSONFeed ``items``.
+        if isinstance(data, dict) and isinstance(data.get("items"), list):
+            for job in data["items"]:
+                title   = job.get("title", "")
+                job_url = job.get("url", "") or f"{base}/jobs"
+                desc    = job.get("content_text", "") or _clean(job.get("content_html", ""))
+                date    = parse_date_loose((job.get("date_published") or "")[:10])
+                matched = _match(title, desc)
+                if matched:
+                    results.append(_make_vacancy(
+                        club, league, country,
+                        job_title=title, source="Teamtailor", url=job_url,
+                        posted_date=date, description_snippet=desc[:600],
+                        keywords_matched=", ".join(matched),
+                    ))
+            return results
+
+        # Fallback: legacy ``data``/``attributes`` REST shape.
+        for job in (data.get("data", []) if isinstance(data, dict) else []):
+            attrs  = job.get("attributes", {})
+            title  = attrs.get("title", "")
+            status = attrs.get("human-status", "") or attrs.get("status", "")
+            if status and "open" not in status.lower():
+                continue
+            job_url = job.get("links", {}).get("careersite-job-url") or f"{base}/jobs"
+            matched = match_role(title)
+            if matched:
+                results.append(_make_vacancy(
+                    club, league, country,
+                    job_title=title, source="Teamtailor",
+                    url=job_url, keywords_matched=", ".join(matched),
+                ))
+        return results
+
+    return []
 
 
 def _workable(club: dict, league: str, country: str) -> list[dict]:
@@ -422,12 +500,15 @@ def _workable(club: dict, league: str, country: str) -> list[dict]:
         title   = job.get("title", "")
         code    = job.get("shortcode", "")
         job_url = f"https://apply.workable.com/{slug}/j/{code}"
-        matched = match_keywords(title, ANALYTICS_KEYWORDS)
+        desc    = _clean(job.get("description", ""))
+        date    = parse_date_loose((job.get("published_on") or job.get("created_at") or "")[:10])
+        matched = _match(title, desc)
         if matched:
             results.append(_make_vacancy(
                 club, league, country,
-                job_title=title, source="Workable",
-                url=job_url, keywords_matched=", ".join(matched),
+                job_title=title, source="Workable", url=job_url,
+                posted_date=date, description_snippet=desc[:600],
+                keywords_matched=", ".join(matched),
             ))
     return results
 
@@ -440,7 +521,8 @@ def _greenhouse(club: dict, league: str, country: str) -> list[dict]:
     slug = _slug_from_url(careers, "greenhouse")
     if not slug:
         return []
-    api_url = f"https://boards-api.greenhouse.io/v1/boards/{slug}/jobs"
+    # content=true returns each job's HTML description so we can match on it.
+    api_url = f"https://boards-api.greenhouse.io/v1/boards/{slug}/jobs?content=true"
     resp = _get(api_url, json=True)
     if not resp:
         return []
@@ -452,12 +534,15 @@ def _greenhouse(club: dict, league: str, country: str) -> list[dict]:
     for job in data.get("jobs", []):
         title   = job.get("title", "")
         job_url = job.get("absolute_url", "")
-        matched = match_keywords(title, ANALYTICS_KEYWORDS)
+        desc    = _clean(job.get("content", ""))
+        date    = parse_date_loose((job.get("updated_at") or "")[:10])
+        matched = _match(title, desc)
         if matched:
             results.append(_make_vacancy(
                 club, league, country,
-                job_title=title, source="Greenhouse",
-                url=job_url, keywords_matched=", ".join(matched),
+                job_title=title, source="Greenhouse", url=job_url,
+                posted_date=date, description_snippet=desc[:600],
+                keywords_matched=", ".join(matched),
             ))
     return results
 
@@ -484,12 +569,15 @@ def _lever(club: dict, league: str, country: str) -> list[dict]:
     for job in jobs:
         title   = job.get("text", "")
         job_url = job.get("hostedUrl", "")
-        matched = match_keywords(title, ANALYTICS_KEYWORDS)
+        desc    = job.get("descriptionPlain", "") or _clean(job.get("description", ""))
+        date    = _epoch_ms_to_date(job.get("createdAt"))
+        matched = _match(title, desc)
         if matched:
             results.append(_make_vacancy(
                 club, league, country,
-                job_title=title, source="Lever",
-                url=job_url, keywords_matched=", ".join(matched),
+                job_title=title, source="Lever", url=job_url,
+                posted_date=date, description_snippet=desc[:600],
+                keywords_matched=", ".join(matched),
             ))
     return results
 
@@ -502,9 +590,15 @@ def _personio(club: dict, league: str, country: str) -> list[dict]:
     slug = _slug_from_url(careers, "personio")
     if not slug:
         return []
-    for tld in ("de", "com"):
-        api_url = f"https://{slug}.jobs.personio.{tld}/api/v1/jobs"
-        resp = _get(api_url, json=True)
+    # Use the host straight from the careers URL (correct TLD already), and only
+    # fall back to guessing .de/.com if the careers URL was just a bare slug.
+    host = urlparse(careers).netloc.lower()
+    hosts = [host] if "personio." in host else [
+        f"{slug}.jobs.personio.de", f"{slug}.jobs.personio.com"
+    ]
+    for h in hosts:
+        # /search.json is the current public endpoint (/api/v1/jobs now 404s).
+        resp = _get(f"https://{h}/search.json", json=True)
         if not resp:
             continue
         try:
@@ -517,15 +611,15 @@ def _personio(club: dict, league: str, country: str) -> list[dict]:
         for job in jobs:
             title   = job.get("name", "") or job.get("title", "")
             job_id  = job.get("id", "")
-            job_url = f"https://{slug}.jobs.personio.{tld}/job/{job_id}"
-            matched = match_keywords(title, ANALYTICS_KEYWORDS)
+            job_url = f"https://{h}/job/{job_id}"
+            matched = match_role(title)
             if matched:
                 results.append(_make_vacancy(
                     club, league, country,
                     job_title=title, source="Personio",
                     url=job_url, keywords_matched=", ".join(matched),
                 ))
-        return results   # got a valid response; stop trying TLDs
+        return results   # got a valid response; stop trying hosts
     return []
 
 
@@ -539,26 +633,52 @@ def _workday(club: dict, league: str, country: str) -> list[dict]:
         host     = parsed.netloc.lower()        # e.g. avfc.wd502.myworkdayjobs.com
         org_full = host.split(".myworkdayjobs.com")[0]  # e.g. avfc.wd502
         org_slug = org_full.split(".")[0]       # e.g. avfc
-        board    = parsed.path.strip("/").split("/")[0]  # e.g. avfc_careers
+        # Path may carry an optional locale prefix (/fr-FR/rejoigneznous) before
+        # the board name — skip any xx-XX / xx_XX segment so we pick the board.
+        segments = [s for s in parsed.path.strip("/").split("/") if s]
+        segments = [s for s in segments if not re.fullmatch(r"[a-z]{2}[-_][A-Za-z]{2}", s)]
+        board    = segments[0] if segments else ""
         if not board:
             return []
+        # The public job URL keeps the FULL careers path (locale + board), e.g.
+        # /fr-FR/rejoigneznous — without it Workday returns 404. The CXS API,
+        # however, only takes the board name.
+        career_path = parsed.path.strip("/")
         api_url = f"https://{host}/wday/cxs/{org_slug}/{board}/jobs"
-        resp = _get(api_url, json=True)
-        if not resp:
+        # Workday's CXS jobs endpoint requires POST with a JSON body; a GET
+        # returns HTTP 400. Page through all results in batches of 20.
+        if not can_fetch(api_url):
             return []
-        data = resp.json()
-        results = []
-        for job in data.get("jobPostings", []):
-            title   = job.get("title", "")
-            ext_id  = job.get("externalPath", "")
-            job_url = f"https://{host}{ext_id}" if ext_id else careers
-            matched = match_keywords(title, ANALYTICS_KEYWORDS)
-            if matched:
-                results.append(_make_vacancy(
-                    club, league, country,
-                    job_title=title, source="Workday",
-                    url=job_url, keywords_matched=", ".join(matched),
-                ))
+        results: list[dict] = []
+        offset, limit, total = 0, 20, None
+        while total is None or offset < total:
+            resp = requests.post(
+                api_url,
+                headers={**DEFAULT_HEADERS, "Accept": "application/json",
+                         "Content-Type": "application/json"},
+                json={"appliedFacets": {}, "limit": limit,
+                      "offset": offset, "searchText": ""},
+                timeout=REQUEST_TIMEOUT,
+            )
+            if not resp.ok:
+                break
+            data    = resp.json()
+            total   = data.get("total", 0) if total is None else total
+            posts   = data.get("jobPostings", [])
+            if not posts:
+                break
+            for job in posts:
+                title   = job.get("title", "")
+                ext_id  = job.get("externalPath", "")
+                job_url = f"https://{host}/{career_path}{ext_id}" if ext_id else careers
+                matched = match_role(title)
+                if matched:
+                    results.append(_make_vacancy(
+                        club, league, country,
+                        job_title=title, source="Workday",
+                        url=job_url, keywords_matched=", ".join(matched),
+                    ))
+            offset += limit
         return results
     except Exception as exc:
         logger.debug("Workday %s: %s", club["name"], exc)
@@ -587,7 +707,7 @@ def _pinpoint(club: dict, league: str, country: str) -> list[dict]:
     for job in data.get("data", []):
         title   = job.get("title", "")
         job_url = job.get("url", "") or f"{base_url}/en/postings/{job.get('id','')}"
-        matched = match_keywords(title, ANALYTICS_KEYWORDS)
+        matched = match_role(title)
         if matched:
             results.append(_make_vacancy(
                 club, league, country,
@@ -630,7 +750,7 @@ def _postingpanda(club: dict, league: str, country: str) -> list[dict]:
         if job_url in seen:
             continue
         seen.add(job_url)
-        matched = match_keywords(title, ANALYTICS_KEYWORDS)
+        matched = match_role(title)
         if matched:
             results.append(_make_vacancy(
                 club, league, country,
@@ -694,7 +814,7 @@ def _webitrent(club: dict, league: str, country: str) -> list[dict]:
             if job_url in seen:
                 continue
             seen.add(job_url)
-            matched = match_keywords(title, ANALYTICS_KEYWORDS)
+            matched = match_role(title)
             if matched:
                 results.append(_make_vacancy(
                     club, league, country,
@@ -707,10 +827,120 @@ def _webitrent(club: dict, league: str, country: str) -> list[dict]:
     return results
 
 
+_TALOS_API = "https://api-careers-sites.talos360.com"
+
+
+def _talos(club: dict, league: str, country: str) -> list[dict]:
+    """Talos360 ATS — JS-rendered careers sites (Everton, Sunderland, …).
+
+    The page itself is an Angular shell with no job links in static HTML, so
+    Layer 1 sees nothing. The public API exposes the listing in two calls:
+    fetch the site config (for the obfuscated site id), then POST a vacancy
+    search. Fires for clubs flagged ats_platform="talos" or hosted on a
+    talosats-careers.com domain.
+    """
+    careers = club.get("careers_url") or ""
+    host    = urlparse(careers).netloc.lower()
+    if club.get("ats_platform") != "talos" and "talosats-careers.com" not in host:
+        return []
+    if not host:
+        return []
+
+    hdrs = {**DEFAULT_HEADERS, "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Origin": f"https://{host}", "Referer": f"https://{host}/"}
+    try:
+        cfg = requests.get(
+            f"{_TALOS_API}/api/careerssites/site/config/get?host={host}",
+            headers=hdrs, timeout=REQUEST_TIMEOUT,
+        )
+        if not cfg.ok:
+            return []
+        site = cfg.json().get("siteConfig", {})
+        oid  = site.get("obfuscatedId")
+        if not oid:
+            return []
+        body = {"careersSiteObfuscatedId": oid, "whatCriteria": None,
+                "whereCriteria": None, "metadataFilters": [],
+                "preFilters": [], "siteType": site.get("siteType", "External")}
+        r = requests.post(
+            f"{_TALOS_API}/api/careerssite/vacancies/search",
+            headers=hdrs, json=body, timeout=REQUEST_TIMEOUT,
+        )
+        if not r.ok:
+            return []
+        vacs = r.json().get("careersSiteVacancies", []) or []
+    except Exception as exc:
+        logger.debug("_talos %s: %s", club["name"], exc)
+        return []
+
+    results: list[dict] = []
+    for job in vacs:
+        title   = job.get("title") or job.get("jobTitle") or job.get("name") or ""
+        slug    = job.get("vacancySlug") or job.get("slug") or ""
+        vid     = job.get("id") or job.get("vacancyId") or ""
+        job_url = (job.get("vacancyUrl") or job.get("url")
+                   or (f"https://{host}/vacancies/{vid}/{slug}" if vid else careers))
+        matched = match_role(title)
+        if matched:
+            results.append(_make_vacancy(
+                club, league, country,
+                job_title=title, source="Talos",
+                url=job_url, keywords_matched=", ".join(matched),
+            ))
+    return results
+
+
+def _successfactors(club: dict, league: str, country: str) -> list[dict]:
+    """SAP SuccessFactors Career Site Builder.
+
+    CSB sites (often on a club's own custom domain, e.g. Man City's
+    careers.cityfootballgroup.com) render a server-side job list at /search/ —
+    `<a href="/job/<slug>/<id>/">Title</a>` tiles, paged 25 at a time via
+    ?startrow=N. The SPA home page exposes nothing, so /search/ is the way in.
+    """
+    careers = club.get("careers_url") or ""
+    if not careers:
+        return []
+    if not (club.get("ats_platform") == "successfactors"
+            or "successfactors" in careers.lower()):
+        return []
+
+    parsed = urlparse(careers)
+    base   = f"{parsed.scheme}://{parsed.netloc}"
+    results: list[dict] = []
+    seen:    set[str]   = set()
+    for startrow in range(0, 250, 25):        # cap at 10 pages
+        resp = _get(f"{base}/search/?startrow={startrow}")
+        if not resp:
+            break
+        tiles = re.findall(
+            r'<a[^>]+href="(/job/[^"]+/\d+/)"[^>]*>\s*([^<]{3,120})', resp.text
+        )
+        new = 0
+        for href, raw_title in tiles:
+            if href in seen:
+                continue
+            seen.add(href)
+            new += 1
+            title = re.sub(r"\s+", " ", raw_title).strip()
+            matched = match_role(title)
+            if matched:
+                results.append(_make_vacancy(
+                    club, league, country,
+                    job_title=title, source="SuccessFactors",
+                    url=make_absolute(href, base),
+                    keywords_matched=", ".join(matched),
+                ))
+        if new == 0:                          # no further pages
+            break
+    return results
+
+
 def _layer2_ats(club: dict, league: str, country: str) -> list[dict]:
     results = []
     for fn in [_teamtailor, _personio, _workday, _workable, _greenhouse, _lever,
-               _pinpoint, _postingpanda, _webitrent]:
+               _pinpoint, _postingpanda, _webitrent, _talos, _successfactors]:
         try:
             r = fn(club, league, country)
             results.extend(r)
@@ -720,40 +950,110 @@ def _layer2_ats(club: dict, league: str, country: str) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Layer 3 – LinkedIn via SerpAPI (trusted URLs only)
+# Layer 3 – Web/LinkedIn search
+#   • SerpAPI when SERPAPI_KEY is set (most reliable)
+#   • free DuckDuckGo fallback otherwise — this is the ONLY layer that reaches
+#     the ~56 clubs with no careers page (most of Italy, parts of Spain/France)
+# Both paths are gated hard: the club's own name must appear in the result, or
+# generic "analyst" hits from unrelated companies would pollute the results.
 # ---------------------------------------------------------------------------
 
-def _layer3_linkedin(club: dict, league: str, country: str) -> list[dict]:
-    if not SERPAPI_KEY:
-        return []
+# Suffix/legal tokens that don't identify a club (used to pick the distinctive word).
+_CLUB_STOPWORDS = {
+    "fc", "afc", "cf", "sc", "sad", "sd", "ud", "rc", "ac", "as", "ss", "ssc",
+    "us", "club", "calcio", "balompie", "real", "royal", "royale", "de", "the",
+    "1907", "1909", "1911", "1913", "1846", "1899", "1848", "1893",
+}
+
+
+def _club_identifiers(club: dict) -> list[str]:
+    """Distinctive lowercased name tokens (>=4 chars, accent-stripped)."""
+    from keywords import _norm
+    toks = re.split(r"[^a-z0-9]+", _norm(club["name"]))
+    ids  = [t for t in toks if len(t) >= 4 and t not in _CLUB_STOPWORDS]
+    return ids or [t for t in toks if t]          # never return empty
+
+
+def _result_is_about_club(club: dict, text: str) -> bool:
+    from keywords import _norm
+    t = _norm(text)
+    return any(ident in t for ident in _club_identifiers(club))
+
+
+def _layer3_serpapi(club: dict, league: str, country: str) -> list[dict]:
+    from serpapi import GoogleSearch  # type: ignore
+    name  = club.get("linkedin_search", club["name"])
+    query = f'site:linkedin.com/jobs/view "{name}" (analyst OR "data scientist" OR analytics)'
+    data  = GoogleSearch({"q": query, "api_key": SERPAPI_KEY, "num": 10}).get_dict()
+    results = []
+    for r in data.get("organic_results", []):
+        title, url, snippet = r.get("title", ""), r.get("link", ""), r.get("snippet", "")
+        if not title or "linkedin.com" not in url:
+            continue
+        if not _result_is_about_club(club, f"{title} {snippet}"):
+            continue
+        matched = match_role(title, snippet)
+        if matched:
+            results.append(_make_vacancy(
+                club, league, country,
+                job_title=title, source="LinkedIn", url=url,
+                description_snippet=snippet,
+                posted_date=parse_date_loose(r.get("date", "")),
+                keywords_matched=", ".join(matched),
+            ))
+    return results
+
+
+def _layer3_ddg(club: dict, league: str, country: str) -> list[dict]:
+    """Keyless fallback via DuckDuckGo. Accepts only trusted-domain results that
+    mention the club by name (DDG ignores site:/quote operators, so we filter)."""
     try:
-        from serpapi import GoogleSearch  # type: ignore
-        name  = club.get("linkedin_search", club["name"])
-        query = f'site:linkedin.com/jobs/view "{name}" (analyst OR "data scientist" OR analytics)'
-        data  = GoogleSearch({
-            "q": query, "api_key": SERPAPI_KEY, "num": 10,
-        }).get_dict()
-        results = []
-        for r in data.get("organic_results", []):
-            title   = r.get("title", "")
-            url     = r.get("link", "")
-            snippet = r.get("snippet", "")
-            date    = parse_date_loose(r.get("date", ""))
-            if not title or not url:
-                continue
-            if "linkedin.com" not in url:          # safety check
-                continue
-            matched = match_keywords(f"{title} {snippet}", ANALYTICS_KEYWORDS)
-            if matched:
-                results.append(_make_vacancy(
-                    club, league, country,
-                    job_title=title, source="LinkedIn",
-                    url=url, description_snippet=snippet,
-                    posted_date=date, keywords_matched=", ".join(matched),
-                ))
-        return results
+        from ddgs import DDGS              # type: ignore
+    except Exception:
+        try:
+            from duckduckgo_search import DDGS  # type: ignore
+        except Exception:
+            return []
+    name  = club.get("linkedin_search", club["name"])
+    query = f'"{name}" football (analyst OR "data scientist" OR analytics OR analista OR analyste)'
+    try:
+        with DDGS() as ddg:
+            hits = list(ddg.text(query, max_results=15))
     except Exception as exc:
-        logger.warning("LinkedIn/SerpAPI %s: %s", club["name"], exc)
+        logger.debug("DDG %s: %s", club["name"], exc)
+        return []
+
+    results, seen = [], set()
+    for h in hits:
+        url     = h.get("href") or h.get("link") or ""
+        title   = h.get("title", "")
+        snippet = h.get("body") or h.get("snippet") or ""
+        if not url or not title or url in seen:
+            continue
+        if not (_is_trusted_url(url) and "/job" in url.lower()):
+            continue
+        if not _result_is_about_club(club, f"{title} {snippet}"):
+            continue
+        matched = match_role(title, snippet)
+        if not matched:
+            continue
+        seen.add(url)
+        source = "LinkedIn" if "linkedin.com" in url.lower() else "Web Search"
+        results.append(_make_vacancy(
+            club, league, country,
+            job_title=title, source=source, url=url,
+            description_snippet=snippet, keywords_matched=", ".join(matched),
+        ))
+    return results
+
+
+def _layer3_linkedin(club: dict, league: str, country: str) -> list[dict]:
+    try:
+        if SERPAPI_KEY:
+            return _layer3_serpapi(club, league, country)
+        return _layer3_ddg(club, league, country)
+    except Exception as exc:
+        logger.warning("Layer3 search %s: %s", club["name"], exc)
         return []
 
 
@@ -768,14 +1068,14 @@ def _layer4_livefootballjobs(club: dict, league: str, country: str) -> list[dict
     resp = _get(search_url)
     if not resp:
         return []
-    soup    = BeautifulSoup(resp.text, "lxml")
+    soup    = BeautifulSoup(resp.content, "lxml")
     results = []
     for a in soup.select("a[href*='/job/']"):
         title   = a.get_text(strip=True)
         href    = make_absolute(a.get("href", ""), search_url)
         if not title:
             continue
-        matched = match_keywords(f"{title} {club['name']}", ANALYTICS_KEYWORDS)
+        matched = match_role(title)
         if matched:
             results.append(_make_vacancy(
                 club, league, country,
@@ -792,12 +1092,13 @@ def _layer4_livefootballjobs(club: dict, league: str, country: str) -> list[dict
 def _scrape_club_inner(club: dict, league: str, country: str) -> list[dict]:
     all_results: list[dict] = []
 
-    for label, fn in [
+    # Deterministic, club-owned sources always run.
+    primary = [
         ("careers page", _layer1_careers_page),
         ("ATS",          _layer2_ats),
-        ("LinkedIn",     _layer3_linkedin),
         ("job boards",   _layer4_livefootballjobs),
-    ]:
+    ]
+    for label, fn in primary:
         try:
             r = fn(club, league, country)
             all_results.extend(r)
@@ -805,6 +1106,16 @@ def _scrape_club_inner(club: dict, league: str, country: str) -> list[dict]:
                 polite_delay(0.5, 1.0)
         except Exception as exc:
             logger.warning("%s %s (%s): %s", label, club["name"], league, exc)
+
+    # Search layer (SerpAPI / DuckDuckGo). With a paid SerpAPI key it always runs
+    # for extra coverage; the keyless DDG fallback runs only when nothing else was
+    # found — that confines it to clubs without a working careers/ATS source
+    # (mostly the search-only list) and avoids rate-banning DDG across a full run.
+    if SERPAPI_KEY or not all_results:
+        try:
+            all_results.extend(_layer3_linkedin(club, league, country))
+        except Exception as exc:
+            logger.warning("search %s (%s): %s", club["name"], league, exc)
 
     return dedup_by_url(all_results)
 
@@ -828,31 +1139,51 @@ def scrape_club(club: dict, league: str, country: str) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def scrape_all_clubs(progress_callback=None) -> dict:
+    """Scrape every club concurrently, then sync (non-destructively) to the DB.
+
+    Replied/starred marks and first_seen history survive the run; vacancies that
+    vanished from a club's site are pruned afterwards. New roles (since the last
+    completed scan) are flagged is_new=1.
+    """
     init_db()
-    clear_all_vacancies()
     started_at  = now_iso()
-    total_clubs = sum(len(v) for v in CLUBS_BY_LEAGUE.values())
+    run_ts      = started_at
+    mark_new    = get_last_scraped() is not None   # first ever run → no "new" noise
+
+    jobs = [
+        (club, league, league.split(" - ")[0] if " - " in league else league)
+        for league, clubs in CLUBS_BY_LEAGUE.items()
+        for club in clubs
+    ]
+    total_clubs = len(jobs)
     processed   = 0
     total_found = 0
     errors: dict[str, str] = {}
 
-    for league, clubs in CLUBS_BY_LEAGUE.items():
-        country = league.split(" - ")[0] if " - " in league else league
-        for club in clubs:
-            if progress_callback:
-                progress_callback(
-                    processed / total_clubs,
-                    f"Scraping {club['name']}  ({processed + 1}/{total_clubs})",
-                )
+    with ThreadPoolExecutor(max_workers=SCRAPE_WORKERS) as ex:
+        futures = {
+            ex.submit(scrape_club, club, league, country): club
+            for club, league, country in jobs
+        }
+        for future in as_completed(futures):
+            club = futures[future]
             try:
-                vacancies   = scrape_club(club, league, country)
-                inserted    = upsert_vacancies(vacancies)
-                total_found += inserted
+                vacancies = future.result()
+                if vacancies:
+                    # DB writes happen here in the main thread only (no lock needed).
+                    total_found += sync_vacancies(vacancies, run_ts, mark_new=mark_new)
             except Exception as exc:
                 errors[club["name"]] = str(exc)
                 logger.error("Failed %s: %s", club["name"], exc)
             processed += 1
+            if progress_callback:
+                progress_callback(
+                    processed / total_clubs,
+                    f"Scanned {processed}/{total_clubs} clubs · {total_found} roles",
+                )
 
+    pruned = prune_unseen(run_ts)
+    logger.info("Pruned %d vacancies no longer listed", pruned)
     log_scrape_session(started_at, now_iso(), processed, total_found)
     if progress_callback:
         progress_callback(1.0, f"Done — {total_found} vacancies across {processed} clubs.")

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vacancy-app",
+      "runtimeExecutable": "streamlit",
+      "runtimeArgs": ["run", "football_jobs/app.py", "--server.headless", "true", "--server.enableStaticServing", "true", "--browser.gatherUsageStats", "false", "--server.port", "8533"],
+      "port": 8533
+    }
+  ]
+}

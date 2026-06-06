@@ -61,11 +61,6 @@ def can_fetch(url: str, user_agent: str = "*") -> bool:
         return True
 
 
-def match_keywords(text: str, keywords: list[str]) -> list[str]:
-    text_lower = text.lower()
-    return [kw for kw in keywords if kw.lower() in text_lower]
-
-
 def dedup_by_url(vacancies: list[dict]) -> list[dict]:
     seen: set[str] = set()
     result = []

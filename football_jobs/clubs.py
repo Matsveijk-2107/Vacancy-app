@@ -371,6 +371,7 @@ CLUBS = [
         "country": "France",
         "league": "Ligue 1",
         "careers_url": "https://careers.eaglefootballgroup.com/search",  # [live]
+        "ats_platform": "successfactors",
         "teamtailor_slug": None,
         "linkedin_company": "Olympique Lyonnais",
         "linkedin_jobs_url": "https://www.linkedin.com/company/olympique-lyonnais-groupe/jobs/",
@@ -968,6 +969,7 @@ CLUBS = [
         "country": "England",
         "league": "Premier League",
         "careers_url": "https://careers.cityfootballgroup.com/",  # [live]
+        "ats_platform": "successfactors",
         "teamtailor_slug": None,
         "linkedin_company": "Manchester City FC",
         "linkedin_jobs_url": "https://www.linkedin.com/company/manchester-city-football-club/jobs/",
@@ -1049,6 +1051,7 @@ CLUBS = [
         "country": "England",
         "league": "Premier League",
         "careers_url": "https://careers.evertonfc.com/vacancies",  # [live]
+        "ats_platform": "talos",
         "teamtailor_slug": None,
         "linkedin_company": "Everton FC",
         "linkedin_jobs_url": "https://www.linkedin.com/company/everton-football-club/jobs/",
@@ -1069,6 +1072,7 @@ CLUBS = [
         "country": "England",
         "league": "Premier League",
         "careers_url": "https://sunderlandafc.talosats-careers.com/vacancies",  # [live]
+        "ats_platform": "talos",
         "teamtailor_slug": None,
         "linkedin_company": "Sunderland AFC",
         "linkedin_jobs_url": "https://www.linkedin.com/company/sunderlandafc/jobs/",
@@ -1841,6 +1845,7 @@ CLUBS = [
         "country": "Portugal",
         "league": "Primeira Liga",
         "careers_url": "https://recrutamento.slbenfica.pt/go/Job-Opportunities/9183055/?locale=en_US",  # [live]
+        "ats_platform": "successfactors",
         "teamtailor_slug": None,
         "linkedin_company": "Sport Lisboa e Benfica",
         "linkedin_jobs_url": "https://www.linkedin.com/company/sport-lisboa-e-benfica/jobs/",
