@@ -119,10 +119,17 @@ def sync_vacancies(vacancies: list[dict], run_ts: str, *, mark_new: bool) -> int
 
 
 def prune_unseen(run_ts: str) -> int:
-    """Delete vacancies not seen in the latest run — but keep ones you actioned."""
+    """Delete vacancies not seen in the latest run — but keep ones you actioned.
+
+    Rows with a NULL last_seen (inserted before the column existed, or by an older
+    code path) must also be pruned: in SQL ``NULL < run_ts`` is NULL, not TRUE, so
+    a bare ``last_seen < ?`` would leave those stale rows in the table forever.
+    """
     with _conn() as con:
         cur = con.execute(
-            "DELETE FROM vacancies WHERE last_seen < ? AND replied = 0 AND starred = 0",
+            "DELETE FROM vacancies "
+            "WHERE (last_seen IS NULL OR last_seen < ?) "
+            "AND replied = 0 AND starred = 0",
             (run_ts,),
         )
         return cur.rowcount

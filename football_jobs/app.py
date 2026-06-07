@@ -37,7 +37,7 @@ st.set_page_config(
 init_db()
 st.markdown(CSS, unsafe_allow_html=True)
 
-CACHE_TTL = 21_600  # 6 hours
+CACHE_TTL = 900  # 15 min — short so the UI reflects fresh scrapes quickly
 ALL_LEAGUES = list(CLUBS.keys())
 
 

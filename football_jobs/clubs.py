@@ -26,6 +26,7 @@ CLUBS = [
     # ================================================================= #
     {
         "name": "PSV",
+        "ats_platform": "recruitee",
         "country": "Netherlands",
         "league": "Eredivisie",
         "careers_url": "https://werkenbij.psv.nl/",  # [live]
@@ -144,6 +145,7 @@ CLUBS = [
     },
     {
         "name": "Borussia Dortmund",
+        "ats_platform": "softgarden",
         "country": "Germany",
         "league": "Bundesliga",
         "careers_url": "https://karriere.bvb.de/",  # [live]
@@ -194,6 +196,7 @@ CLUBS = [
     },
     {
         "name": "SC Freiburg",
+        "ats_platform": "hrworks",
         "country": "Germany",
         "league": "Bundesliga",
         "careers_url": "https://jobs.scfreiburg.com/en",  # [live]
@@ -204,6 +207,7 @@ CLUBS = [
     },
     {
         "name": "1. FSV Mainz 05",
+        "ats_platform": "hrworks",
         "country": "Germany",
         "league": "Bundesliga",
         "careers_url": "https://jobapplication.hrworks.de/de?companyId=ba8e529b",  # [live]
@@ -214,6 +218,7 @@ CLUBS = [
     },
     {
         "name": "Borussia MÃ¶nchengladbach",
+        "ats_platform": "hrworks",
         "country": "Germany",
         "league": "Bundesliga",
         "careers_url": "https://job.borussia.de/de",  # [live]
@@ -234,6 +239,7 @@ CLUBS = [
     },
     {
         "name": "FC Augsburg",
+        "ats_platform": "hrworks",
         "country": "Germany",
         "league": "Bundesliga",
         "careers_url": "https://jobs.fcaugsburg.de/de",  # [live]
@@ -244,6 +250,7 @@ CLUBS = [
     },
     {
         "name": "Werder Bremen",
+        "ats_platform": "softgarden",
         "country": "Germany",
         "league": "Bundesliga",
         "careers_url": "https://karriere.werder.de/",  # [live]
@@ -274,6 +281,7 @@ CLUBS = [
     },
     {
         "name": "FC St. Pauli",
+        "ats_platform": "hrworks",
         "country": "Germany",
         "league": "Bundesliga",
         "careers_url": "https://jobs.fcstpauli.com/de",  # [live]
@@ -1038,6 +1046,7 @@ CLUBS = [
     },
     {
         "name": "Chelsea FC",
+        "ats_platform": "corehr_workforceready",
         "country": "England",
         "league": "Premier League",
         "careers_url": "https://secure.workforceready.eu/ta/6189861.careers?CareersSearch=&lang=en-GB",  # [live]
@@ -1059,6 +1068,7 @@ CLUBS = [
     },
     {
         "name": "Fulham FC",
+        "ats_platform": "hibob",
         "country": "England",
         "league": "Premier League",
         "careers_url": "https://fulhamfc.careers.hibob.com/jobs",  # [live]
@@ -1532,7 +1542,7 @@ CLUBS = [
         "name": "Parma Calcio 1913",
         "country": "Italy",
         "league": "Serie A",
-        "careers_url": None,
+        "careers_url": "https://www.parmacalcio1913.com/lavora-con-noi/",
         "teamtailor_slug": None,
         "linkedin_company": "Parma Calcio 1913",
         "linkedin_jobs_url": "https://www.linkedin.com/company/parma-calcio-1913/jobs/",
@@ -1582,7 +1592,7 @@ CLUBS = [
         "name": "US Cremonese",
         "country": "Italy",
         "league": "Serie A",
-        "careers_url": None,
+        "careers_url": "https://uscremonese.it/lavoraconoi/",
         "teamtailor_slug": None,
         "linkedin_company": "US Cremonese",
         "linkedin_jobs_url": "https://www.linkedin.com/company/uscremonese/jobs/",
@@ -1726,7 +1736,7 @@ CLUBS = [
         "name": "Calcio Padova",
         "country": "Italy",
         "league": "Serie B",
-        "careers_url": None,
+        "careers_url": "https://www.padovacalcio.it/lavora-con-noi/",
         "teamtailor_slug": None,
         "linkedin_company": "Calcio Padova",
         "linkedin_jobs_url": "https://www.linkedin.com/company/calcio-padova/jobs/",
@@ -1734,6 +1744,7 @@ CLUBS = [
     },
     {
         "name": "Palermo FC",
+        "ats_platform": "successfactors",
         "country": "Italy",
         "league": "Serie B",
         "careers_url": None,
@@ -1855,7 +1866,7 @@ CLUBS = [
         "name": "Sporting CP",
         "country": "Portugal",
         "league": "Primeira Liga",
-        "careers_url": "https://www.indeed.com/cmp/Sporting-Clube-De-Portugal/jobs",  # [live]
+        "careers_url": "https://www.sporting.pt/pt/venha-trabalhar-connosco",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Sporting CP",
         "linkedin_jobs_url": "https://www.linkedin.com/company/sporting-clube-de-portugal/jobs/",

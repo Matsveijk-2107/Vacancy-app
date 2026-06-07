@@ -87,6 +87,7 @@ SOURCE_BADGE = {
     "Talos":            "b-ts",
     "Web Search":       "b-ws",
     "SuccessFactors":   "b-sf",
+    "Adzuna":           "b-az",
 }
 
 
@@ -474,6 +475,7 @@ html, body, [data-testid="stAppViewContainer"] {
 .b-ts { background:rgba(236,72,153,0.16); border-color:rgba(244,114,182,0.4); color:#f9a8d4; }
 .b-ws { background:rgba(56,189,248,0.16); border-color:rgba(56,189,248,0.4);  color:#7dd3fc; }
 .b-sf { background:rgba(16,185,129,0.16); border-color:rgba(16,185,129,0.4);  color:#6ee7b7; }
+.b-az { background:rgba(124,58,237,0.16); border-color:rgba(139,92,246,0.45); color:#c4b5fd; }
 .b-df { background:rgba(75,85,99,0.2);    border-color:#374151; color:#9ca3af; }
 
 /* ── Misc ──────────────────────────────────────────────────────────────── */

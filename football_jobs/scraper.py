@@ -53,6 +53,17 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 SERPAPI_KEY: str = os.getenv("SERPAPI_KEY", "")
+# Adzuna job-aggregator API (free key). Legitimate, structured replacement for
+# LinkedIn (which blocks scraping) — covers job boards across GB/IT/ES/FR/DE/NL/BE.
+ADZUNA_APP_ID:  str = os.getenv("ADZUNA_APP_ID", "")
+ADZUNA_APP_KEY: str = os.getenv("ADZUNA_APP_KEY", "")
+# Country → Adzuna market code (only the markets Adzuna supports).
+_ADZUNA_COUNTRY = {
+    "England": "gb", "Scotland": "gb", "Wales": "gb",
+    "Italy": "it", "Spain": "es", "France": "fr", "Germany": "de",
+    "Netherlands": "nl", "Belgium": "be",
+    # Adzuna has no Portugal / Denmark market → those clubs skip this layer.
+}
 REQUEST_TIMEOUT = 10
 CLUB_TIMEOUT    = 60   # hard cap per club
 
@@ -73,6 +84,9 @@ TRUSTED_DOMAINS = {
     "personio.com",
     "jobvite.com",
     "recruitee.com",
+    "workforceready.eu",
+    "workforceready.com",
+    "hibob.com",
     "join.com",
     "breezy.hr",
     "ashby.com",
@@ -155,13 +169,37 @@ def _make_vacancy(club: dict, league: str, country: str, **kw) -> dict:
     }
 
 
+# If the TITLE names one of these roles, it is NOT a data job no matter what its
+# JD mentions — so don't let the description rescue it. A real "Data Scout" or
+# "Performance Analyst" matches on the title directly and never reaches here.
+_TITLE_BLOCK = (
+    "coach", "scout", "physio", "physiother", "therap", "rehab", "nutrition",
+    "medical", "medicine", "doctor", "physician", "masseur", "psycholog",
+    "kinesi", "fitness", "conditioning", "goalkeep", "groundsman", "grounds ",
+    "steward", "chef", "kitchen", "hospitality", "catering", "retail", "ticket",
+    "sales", "matchday", "kit man", "kitman", "academy coach", "set-piece coach",
+    "wellbeing", "welfare", "safeguard", "chaplain", "intern coach",
+)
+
+
 def _match(title: str, description: str = "") -> list[str]:
     """Match on the title; if that misses, rescue via an explicit role phrase in
-    the description (strict mode avoids flagging every JD that says 'data')."""
+    the description — but only for titles that aren't clearly a non-data role.
+
+    The strict-description rescue used to flag coaching/scouting/medical roles
+    whose JDs happen to mention "performance analysis" or "video analyst"
+    (e.g. "U21 Assistant Coach", "National Academy Scout"). Blocking those
+    titles keeps the rescue for genuinely vague-but-data roles only.
+    """
     matched = match_role(title)
-    if not matched and description:
-        matched = match_role(description, strict=True)
-    return matched
+    if matched:
+        return matched
+    if description:
+        from keywords import _norm
+        if any(b in _norm(title) for b in _TITLE_BLOCK):
+            return []
+        return match_role(description, strict=True)
+    return []
 
 
 def _clean(html_text: str) -> str:
@@ -247,9 +285,57 @@ _JOB_PATH_HINTS = (
     "/empleo", "/stelle", "/lavoro", "/werken", "/jobs", "/posting",
     "/apply", "/application", "/bewerbung", "/aanmelding", "/sollicit",
     "/emploi", "/anuncio", "/annonce", "/stilling",
+    # Italian / Spanish / Portuguese careers paths
+    "/lavora", "/posizion", "/candidat", "/trabaja", "/oferta", "/empleo",
+    "/vaga", "/connosco", "/recrutement", "/nous-rejoindre",
     "jobdetail", "jobdetails", "jobid=", "jid=", "vacancy_id=", "vacancyid=",
     "requisition", "req_id", "reqid=", "referenceid=",
 )
+
+
+def _jobtoolz_embedded(html_text: str, club: dict, league: str, country: str) -> list[dict]:
+    """Extract vacancies from a Jobtoolz careers page.
+
+    Jobtoolz (used by many Belgian/Dutch clubs, e.g. Club Brugge) renders its job
+    list client-side via an Alpine.js attribute:
+        x-data="window.jobComponent([{"id":..,"title":"Game Preparation Analyst",
+                                       "url":"https://.../game-preparation-analyst"}, ...])"
+    so the links never appear as <a> tags. The JSON is sitting right there in the
+    HTML (entity-encoded), so we unescape and parse it directly.
+    """
+    if "jobComponent(" not in html_text:
+        return []
+    import json as _json
+    import html as _htmllib
+    text = _htmllib.unescape(html_text)
+    out: list[dict] = []
+    seen: set[str] = set()
+    decoder = _json.JSONDecoder()
+    for m in re.finditer(r"jobComponent\(\s*(\[)", text):
+        start = m.start(1)
+        try:
+            jobs, _ = decoder.raw_decode(text[start:])
+        except Exception:
+            continue
+        if not isinstance(jobs, list):
+            continue
+        for job in jobs:
+            if not isinstance(job, dict):
+                continue
+            title = (job.get("title") or "").strip()
+            jurl  = (job.get("url") or "").strip()
+            if not title or jurl in seen:
+                continue
+            matched = match_role(title)
+            if matched:
+                seen.add(jurl)
+                out.append(_make_vacancy(
+                    club, league, country,
+                    job_title=title, source="Careers Page",
+                    url=jurl or club.get("careers_url", ""),
+                    keywords_matched=", ".join(matched),
+                ))
+    return out
 
 
 def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
@@ -268,6 +354,11 @@ def _layer1_careers_page(club: dict, league: str, country: str) -> list[dict]:
     results: list[dict] = []
     seen:    set[str]   = set()
     base    = url
+
+    # Jobtoolz and similar embed their vacancy list as JSON in the page — pull
+    # those out first (they have no crawlable <a> links).
+    results.extend(_jobtoolz_embedded(resp.text, club, league, country))
+    seen.update(r["url"] for r in results)
 
     # If the careers URL is already hosted on a trusted ATS domain, all same-domain
     # links are job links — no path-hint filtering needed.
@@ -937,10 +1028,217 @@ def _successfactors(club: dict, league: str, country: str) -> list[dict]:
     return results
 
 
+def _recruitee(club: dict, league: str, country: str) -> list[dict]:
+    """Recruitee — public JSON API at {careers-origin}/api/offers/ (PSV, etc.).
+    Served on both the tenant subdomain and the club's custom careers domain."""
+    careers = club.get("careers_url") or ""
+    host    = urlparse(careers).netloc.lower()
+    if club.get("ats_platform") != "recruitee" and "recruitee" not in careers.lower() \
+       and not host.startswith("werkenbij."):
+        return []
+    p = urlparse(careers)
+    if not (p.scheme and p.netloc):
+        return []
+    resp = _get(f"{p.scheme}://{p.netloc}/api/offers/", json=True)
+    if not resp:
+        return []
+    try:
+        offers = resp.json().get("offers", [])
+    except Exception:
+        return []
+    results = []
+    for o in offers:
+        if o.get("status") and o.get("status") != "published":
+            continue
+        title = o.get("title", "")
+        url   = o.get("careers_url", "") or careers
+        desc  = _clean(o.get("description", ""))
+        matched = _match(title, desc)
+        if matched:
+            results.append(_make_vacancy(
+                club, league, country,
+                job_title=title, source="Recruitee", url=url,
+                posted_date=parse_date_loose((o.get("published_at") or "")[:10]),
+                description_snippet=desc[:600], keywords_matched=", ".join(matched),
+            ))
+    return results
+
+
+def _hrworks(club: dict, league: str, country: str) -> list[dict]:
+    """HRworks 'MeDe' — vacancies are server-rendered as a.job-offer-content anchors."""
+    careers = club.get("careers_url") or ""
+    host    = urlparse(careers).netloc.lower()
+    if club.get("ats_platform") != "hrworks" and "hrworks" not in careers.lower() \
+       and not host.startswith("jobs."):
+        return []
+    resp = _get(careers)
+    if not resp or ("job-offer-content" not in resp.text and "HrwMeDe" not in resp.text):
+        return []
+    soup = BeautifulSoup(resp.content, "lxml")
+    base = f"{urlparse(resp.url).scheme}://{urlparse(resp.url).netloc}"
+    results, seen = [], set()
+    for a in soup.select("a.job-offer-content[href]"):
+        href = a["href"]
+        if "id=" not in href:
+            continue
+        url = make_absolute(href, base)
+        if url in seen:
+            continue
+        seen.add(url)
+        title = (a.get("title") or a.get_text(" ", strip=True) or "").strip()
+        matched = match_role(title)
+        if matched:
+            results.append(_make_vacancy(
+                club, league, country,
+                job_title=title, source="HRworks", url=url,
+                keywords_matched=", ".join(matched),
+            ))
+    return results
+
+
+def _softgarden(club: dict, league: str, country: str) -> list[dict]:
+    """softgarden — JSON-LD DataFeed of all active jobs at {careers-origin}/jobs.feed.json."""
+    careers = club.get("careers_url") or ""
+    host    = urlparse(careers).netloc.lower()
+    if club.get("ats_platform") != "softgarden" and "softgarden" not in careers.lower() \
+       and not host.startswith("karriere."):
+        return []
+    p = urlparse(careers)
+    if not (p.scheme and p.netloc):
+        return []
+    resp = _get(f"{p.scheme}://{p.netloc}/jobs.feed.json", json=True)
+    if not resp:
+        return []
+    try:
+        elements = resp.json().get("dataFeedElement", [])
+    except Exception:
+        return []
+    results = []
+    for el in elements:
+        job   = el.get("item", {}) if isinstance(el, dict) else {}
+        title = job.get("title", "")
+        url   = job.get("url", "") or careers
+        desc  = _clean(job.get("description", ""))
+        matched = _match(title, desc)
+        if matched:
+            results.append(_make_vacancy(
+                club, league, country,
+                job_title=title, source="softgarden", url=url,
+                posted_date=parse_date_loose((job.get("datePosted") or "")[:10]),
+                description_snippet=desc[:600], keywords_matched=", ".join(matched),
+            ))
+    return results
+
+
+def _corehr_workforceready(club: dict, league: str, country: str) -> list[dict]:
+    """UKG/Kronos WorkforceReady — public job-requisitions REST API (Chelsea)."""
+    careers = club.get("careers_url") or ""
+    host    = urlparse(careers).netloc.lower()
+    if club.get("ats_platform") != "corehr_workforceready" and "workforceready." not in host:
+        return []
+    m = re.match(r".*/(.+)\.careers|.*/(.+)\.jobs", careers)
+    cid = (m.group(1) or m.group(2)) if m else None
+    if not cid:
+        return []
+    origin = f"{urlparse(careers).scheme}://{host}"
+    api = f"{origin}/ta/rest/ui/recruitment/companies/%7C{cid}/job-requisitions?offset=0&size=200&sort=desc"
+    # Direct fetch (like _hibob/_postingpanda): this is the club's public candidate
+    # API; the UKG vendor's blanket robots.txt would otherwise hide it.
+    try:
+        resp = requests.get(api, headers={**DEFAULT_HEADERS, "Accept": "application/json"},
+                            timeout=REQUEST_TIMEOUT)
+        if not resp.ok:
+            return []
+        jobs = resp.json().get("job_requisitions", [])
+    except Exception as exc:
+        logger.debug("workforceready %s: %s", club["name"], exc)
+        return []
+    results = []
+    for j in jobs:
+        title = j.get("job_title", "")
+        desc  = j.get("job_description", "") or ""
+        matched = _match(title, desc)
+        if matched:
+            url = f"{origin}/ta/{cid}.careers?ShowJob={j.get('id')}&lang=en-GB"
+            results.append(_make_vacancy(
+                club, league, country,
+                job_title=title, source="WorkforceReady", url=url,
+                description_snippet=desc[:600], keywords_matched=", ".join(matched),
+            ))
+    return results
+
+
+def _hellowork(club: dict, league: str, country: str) -> list[dict]:
+    """Hellowork — French job board; club company page server-renders its offers."""
+    careers = club.get("careers_url") or ""
+    if "hellowork.com" not in careers.lower():
+        return []
+    resp = _get(careers)
+    if not resp:
+        return []
+    import html as _htmllib
+    base = f"{urlparse(careers).scheme}://{urlparse(careers).netloc}"
+    pat  = re.compile(r'href="(/fr-fr/emplois/(\d+)\.html)"[^>]*?title="([^"]+)"', re.DOTALL)
+    results, seen = [], set()
+    for href, jid, raw_title in pat.findall(resp.text):
+        if jid in seen:
+            continue
+        seen.add(jid)
+        title = _htmllib.unescape(raw_title)
+        if " - " in title:                       # strip trailing " - <Club Name>"
+            title = re.sub(r"\s*-\s*[^-]+$", "", title).strip()
+        matched = match_role(title)
+        if matched:
+            results.append(_make_vacancy(
+                club, league, country,
+                job_title=title, source="Hellowork",
+                url=base + href, keywords_matched=", ".join(matched),
+            ))
+    return results
+
+
+def _hibob(club: dict, league: str, country: str) -> list[dict]:
+    """HiBob (Bob) careers — public JSON API at {host}/api/job-ad (Fulham)."""
+    careers = club.get("careers_url") or ""
+    host    = urlparse(careers).netloc.lower()
+    if club.get("ats_platform") != "hibob" and not host.endswith("careers.hibob.com"):
+        return []
+    ident = host.split(".")[0]
+    try:
+        resp = requests.get(
+            f"https://{host}/api/job-ad",
+            headers={**DEFAULT_HEADERS, "Accept": "application/json",
+                     "companyIdentifier": ident},
+            timeout=REQUEST_TIMEOUT,
+        )
+        if not resp.ok:
+            return []
+        jobs = resp.json().get("jobAdDetails", [])
+    except Exception as exc:
+        logger.debug("hibob %s: %s", club["name"], exc)
+        return []
+    results = []
+    for job in jobs:
+        title = job.get("title", "")
+        desc  = _clean(job.get("description", ""))
+        url   = f"https://{host}/jobs/{job.get('id')}/overview"
+        matched = _match(title, desc)
+        if matched:
+            results.append(_make_vacancy(
+                club, league, country,
+                job_title=title, source="hibob", url=url,
+                posted_date=parse_date_loose((job.get("publishedAt") or "")[:10]),
+                description_snippet=desc[:600], keywords_matched=", ".join(matched),
+            ))
+    return results
+
+
 def _layer2_ats(club: dict, league: str, country: str) -> list[dict]:
     results = []
     for fn in [_teamtailor, _personio, _workday, _workable, _greenhouse, _lever,
-               _pinpoint, _postingpanda, _webitrent, _talos, _successfactors]:
+               _pinpoint, _postingpanda, _webitrent, _talos, _successfactors,
+               _recruitee, _hrworks, _softgarden, _corehr_workforceready,
+               _hellowork, _hibob]:
         try:
             r = fn(club, league, country)
             results.extend(r)
@@ -1047,10 +1345,70 @@ def _layer3_ddg(club: dict, league: str, country: str) -> list[dict]:
     return results
 
 
-def _layer3_linkedin(club: dict, league: str, country: str) -> list[dict]:
+def _adzuna(club: dict, league: str, country: str) -> list[dict]:
+    """Adzuna aggregator API — the LinkedIn replacement.
+
+    Adzuna indexes job boards across many markets. ``what_phrase`` forces the
+    club's own name to appear in the posting, which keeps precision high, and we
+    still gate on match_role + a club-name check. Needs a free API key
+    (ADZUNA_APP_ID / ADZUNA_APP_KEY); silently skips when unset.
+    """
+    if not (ADZUNA_APP_ID and ADZUNA_APP_KEY):
+        return []
+    cc = _ADZUNA_COUNTRY.get(country)
+    if not cc:
+        return []
+    name = club.get("linkedin_search") or club["name"]
+    url  = f"https://api.adzuna.com/v1/api/jobs/{cc}/search/1"
+    params = {
+        "app_id": ADZUNA_APP_ID, "app_key": ADZUNA_APP_KEY,
+        "what_phrase": name,                 # club name must appear in the ad
+        "results_per_page": 50, "content-type": "application/json",
+    }
     try:
-        if SERPAPI_KEY:
-            return _layer3_serpapi(club, league, country)
+        resp = requests.get(url, params=params,
+                            headers={**DEFAULT_HEADERS, "Accept": "application/json"},
+                            timeout=REQUEST_TIMEOUT)
+        if not resp.ok:
+            return []
+        data = resp.json()
+    except Exception as exc:
+        logger.debug("Adzuna %s: %s", club["name"], exc)
+        return []
+
+    out, seen = [], set()
+    for job in data.get("results", []):
+        title = job.get("title", "") or ""
+        comp  = (job.get("company") or {}).get("display_name", "")
+        jurl  = job.get("redirect_url", "")
+        if not title or jurl in seen:
+            continue
+        if not _result_is_about_club(club, f"{title} {comp}"):
+            continue
+        matched = _match(title, job.get("description", ""))
+        if not matched:
+            continue
+        seen.add(jurl)
+        out.append(_make_vacancy(
+            club, league, country,
+            job_title=title, source="Adzuna", url=jurl,
+            description_snippet=(job.get("description", "") or "")[:300],
+            posted_date=parse_date_loose((job.get("created", "") or "")[:10]),
+            keywords_matched=", ".join(matched),
+        ))
+    return out
+
+
+def _layer3_search(club: dict, league: str, country: str) -> list[dict]:
+    """Search layer: Adzuna aggregator (keyed) → keyless DuckDuckGo last resort.
+
+    LinkedIn is intentionally NOT used — it blocks scraping. SerpAPI/LinkedIn
+    helpers remain in the file but are no longer wired in.
+    """
+    try:
+        hits = _adzuna(club, league, country)
+        if hits:
+            return hits
         return _layer3_ddg(club, league, country)
     except Exception as exc:
         logger.warning("Layer3 search %s: %s", club["name"], exc)
@@ -1107,13 +1465,14 @@ def _scrape_club_inner(club: dict, league: str, country: str) -> list[dict]:
         except Exception as exc:
             logger.warning("%s %s (%s): %s", label, club["name"], league, exc)
 
-    # Search layer (SerpAPI / DuckDuckGo). With a paid SerpAPI key it always runs
-    # for extra coverage; the keyless DDG fallback runs only when nothing else was
-    # found — that confines it to clubs without a working careers/ATS source
-    # (mostly the search-only list) and avoids rate-banning DDG across a full run.
-    if SERPAPI_KEY or not all_results:
+    # Search layer (Adzuna aggregator → DuckDuckGo). Adzuna runs for every club
+    # when keys are set (precise: requires the club name in the ad). The keyless
+    # DDG fallback only runs when nothing else was found, confining it to clubs
+    # with no working careers/ATS source and avoiding DDG rate-bans.
+    run_search = bool(ADZUNA_APP_ID and ADZUNA_APP_KEY) or not all_results
+    if run_search:
         try:
-            all_results.extend(_layer3_linkedin(club, league, country))
+            all_results.extend(_layer3_search(club, league, country))
         except Exception as exc:
             logger.warning("search %s (%s): %s", club["name"], league, exc)
 

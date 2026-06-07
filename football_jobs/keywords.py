@@ -32,8 +32,7 @@ ANALYTICS_KEYWORDS = [
     # ── English ──────────────────────────────────────────────────────────
     "data analyst", "data scientist", "data science", "data engineer",
     "data analytics", "analytics", "analyst", "machine learning",
-    "performance analyst", "performance analysis", "sports scientist",
-    "sports science", "video analyst", "technical analyst",
+    "performance analyst", "performance analysis", "video analyst", "technical analyst",
     "match analyst", "tactical analyst", "opposition analyst",
     "set piece analyst", "first team analyst", "recruitment analyst",
     "scouting analyst", "insight analyst", "insights analyst",
@@ -86,8 +85,10 @@ _ANALYST_TOKENS = (
     "analitico", "analitica", "analiz",
 )
 # Science / signal: substring-matched, low collision risk.
+# NB: bare "scientist" is deliberately excluded — it matched sports/recovery
+# scientists (physiology, not data). Data-science is caught by the explicit
+# "data scientist" phrase and the data-specific words below.
 _LOOSE_TOKENS = (
-    "scientist", "cientifico", "cientista", "scienziato",
     "datawetenschap", "datenwissenschaft",
     "insight", "intelligence", "statistic", "statistik", "estadistic",
     "machine learning", "tracking data", "event data", "modelling", "modeling",
@@ -102,13 +103,21 @@ _DATA_RE = re.compile(
 
 # "Strong" = unmistakably a data role. These survive the exclude filter even
 # when paired with an otherwise-excluded word (e.g. "Data Security Analyst").
-_STRONG_LOOSE = ("scientist", "analytic", "analytik")
+_STRONG_LOOSE = ("analytic", "analytik")
 
-# Obvious non-football-data functions. A bare "analyst" in one of these areas
-# is noise for a football data scientist, so drop it — unless it also names data.
+# Obvious non-football-data functions. A role in one of these areas is noise for
+# a data scientist, so drop it — unless the title/JD also explicitly names data.
+# Includes medical / sports-science / physio roles: the user is a *data*
+# scientist, so "Sports Scientist", "Recovery Scientist", "Physiotherapist",
+# "Rehabilitation", "Nutritionist", "Sports Science & Medicine" etc. are noise.
 EXCLUDE_TOKENS = (
     "financ", "security", "compliance", "payroll", "procurement",
     "accountant", "accounting", "auditor", "human resources",
+    "physio", "physiother", "rehab", "therap", "nutrition", "dietit",
+    "masseur", "massage", "medical", "medicine", "physician", "doctor",
+    "wellbeing", "well-being", "kinesi", "osteopath", "chiro", "podiat",
+    "psycholog", "sports scien", "sport scien", "exercise scien",
+    "sports scientist", "recovery scientist", "strength and conditioning",
 )
 
 # Footer / legal links that mention "data" but are never jobs
@@ -120,7 +129,7 @@ _NOISE_TOKENS = (
 
 
 def _has_role_word(text_norm: str) -> bool:
-    return any(t in text_norm for t in _ANALYST_TOKENS) or "scientist" in text_norm
+    return any(t in text_norm for t in _ANALYST_TOKENS) or "data scientist" in text_norm
 
 
 def _strong_data(text_norm: str) -> bool:
@@ -181,7 +190,7 @@ _TIER_HIGH = (
 )
 _TIER_MED = (
     "recruitment analyst", "scouting analyst", "technical scout", "data scout",
-    "insight analyst", "insights analyst", "sports scientist", "statistician",
+    "insight analyst", "insights analyst", "statistician",
 )
 
 
@@ -203,6 +212,6 @@ def relevance_score(title: str, description: str = "") -> int:
     # Small bonuses for explicit data tooling / science signals.
     if _DATA_RE.search(text):
         base += 8
-    if "scientist" in text or "machine learning" in text:
+    if "data scientist" in text or "machine learning" in text:
         base += 8
     return base
