@@ -26,38 +26,40 @@ def _norm(text: str) -> str:
     return "".join(c for c in decomposed if not unicodedata.combining(c)).lower()
 
 
-# ── Explicit phrases (used for nice, readable chips in the UI) ────────────────
-# Substring-matched, so compound words (NL/DE "wedstrijdanalist") still hit.
+# ── Explicit ROLE phrases (used for nice, readable chips in the UI) ───────────
+# Distinctive, unambiguous analytics ROLES — multi-word titles or compounds that
+# name a data/analytics job outright. Substring-matched so NL/DE compounds hit.
+# NB: single topic words ("analytics", "data") and tools ("python", "sql") are
+# deliberately NOT here — they are not roles and caused false positives
+# (nav links like "CLUB DATA", JDs that merely list "SQL" as a skill).
 ANALYTICS_KEYWORDS = [
     # ── English ──────────────────────────────────────────────────────────
     "data analyst", "data scientist", "data science", "data engineer",
-    "data analytics", "analytics", "analyst", "machine learning",
-    "performance analyst", "performance analysis", "video analyst", "technical analyst",
+    "data analytics", "machine learning", "performance analyst",
+    "performance analysis", "video analyst", "technical analyst",
     "match analyst", "tactical analyst", "opposition analyst",
     "set piece analyst", "first team analyst", "recruitment analyst",
     "scouting analyst", "insight analyst", "insights analyst",
     "insights manager", "head of analysis", "head of data",
     "head of insight", "head of analytics", "head of research",
     "data manager", "data infrastructure", "business intelligence",
-    "research scientist", "researcher", "quantitative analyst",
-    "modelling", "statistician", "data scout", "technical scout",
-    "python", "sql", "tableau", "power bi", "r programming",
-    "tracking data", "event data", "statsbomb", "opta", "wyscout",
-    "instat", "hudl", "skillcorner", "sports analytics", "football intelligence",
+    "research scientist", "quantitative analyst", "statistician",
+    "data scout", "technical scout", "sports analytics", "football intelligence",
+    "statsbomb", "wyscout", "instat", "skillcorner",
     # ── Dutch (NL / BE) ──────────────────────────────────────────────────
     "data-analist", "gegevensanalist", "wedstrijdanalist", "spelersanalist",
-    "prestatieanalist", "prestatieanalyse", "videoanalist", "tactisch analist",
-    "analist", "datawetenschapper", "hoofd analyse", "hoofd data",
+    "prestatieanalist", "videoanalist", "tactisch analist",
+    "datawetenschapper", "hoofd analyse", "hoofd data",
     # ── German (DE) ──────────────────────────────────────────────────────
     "datenanalyst", "leistungsanalyst", "spielanalyst", "taktikanalyst",
-    "videoanalyst", "datenwissenschaftler", "analytiker", "gegneranalyse",
-    "leistungsdiagnostik", "dateningenieur", "datenmanager", "spielbeobachter",
+    "videoanalyst", "datenwissenschaftler", "gegneranalyse",
+    "dateningenieur", "datenmanager",
     # ── French (FR) ──────────────────────────────────────────────────────
-    "analyste", "analyste video", "analyste tactique", "analyste de donnees",
+    "analyste video", "analyste tactique", "analyste de donnees",
     "analyste performance", "data analyste", "science des donnees",
     "ingenieur donnees", "responsable donnees", "responsable data",
     # ── Spanish (ES) ─────────────────────────────────────────────────────
-    "analista", "analista de datos", "analista de rendimiento",
+    "analista de datos", "analista de rendimiento",
     "analista tactico", "analista de video", "cientifico de datos",
     "ingeniero de datos", "jefe de datos", "jefe de analisis",
     # ── Italian (IT) ─────────────────────────────────────────────────────
@@ -69,41 +71,63 @@ ANALYTICS_KEYWORDS = [
     "cientista de dados", "engenheiro de dados", "chefe de analise",
     # ── Danish (DK) ──────────────────────────────────────────────────────
     "dataanalytiker", "praestationsanalytiker", "videoanalytiker",
-    "taktisk analytiker", "dataingenior", "chefanalytiker", "analytiker",
+    "taktisk analytiker", "dataingenior", "chefanalytiker",
 ]
 
 # Normalised once at import for fast matching.
 _KEYWORDS_NORM = [(_norm(kw), kw) for kw in ANALYTICS_KEYWORDS]
 
 
-# ── Core tokens — the broad "analyst OR data" net (already accent-stripped) ───
-# Analyst-family: substring-matched so compounds hit ("wedstrijdanalist",
-# "datenanalyst"). "analy"/"analis" rarely collide with non-analyst words.
-_ANALYST_TOKENS = (
-    "analyst", "analytic", "analytik", "analyse", "analysis",
-    "analist", "analiste", "analista", "analise", "analitic",
-    "analitico", "analitica", "analiz",
+# ── Analyst-family ROLE tokens — a title saying "analyst" IS a role on its own.
+# Compound-friendly substrings ("wedstrijdanalist", "datenanalyst", "analytiker").
+_ANALYST_ROLE = (
+    "analyst", "analist", "analiste", "analista", "analytiker",
+    "analitico", "analitica", "analitic", "analiz",
 )
-# Science / signal: substring-matched, low collision risk.
-# NB: bare "scientist" is deliberately excluded — it matched sports/recovery
-# scientists (physiology, not data). Data-science is caught by the explicit
-# "data scientist" phrase and the data-specific words below.
-_LOOSE_TOKENS = (
-    "datawetenschap", "datenwissenschaft",
-    "insight", "intelligence", "statistic", "statistik", "estadistic",
+
+# ── Topic words — the SUBJECT of analytics. Qualify ONLY when a role noun is
+# also present, so "CLUB DATA" / "Analyse VR" / a JD that lists "SQL" don't pass.
+_TOPIC_TOKENS = (
+    "analytics", "analytic", "analytik", "analyse", "analysis", "analisi",
+    "intelligence", "insight", "statistic", "statistik", "estadistic",
     "machine learning", "tracking data", "event data", "modelling", "modeling",
     "quantitative", "wyscout", "statsbomb", "skillcorner", "instat",
+    "datawetenschap", "datenwissenschaft",
 )
 # Short data words must match as WHOLE WORDS — otherwise "dati" hits "foundation"
 # and "gegevens" hits "contactgegevens". \b treats hyphens as boundaries, so
 # "data-analist" still matches.
-_DATA_RE = re.compile(
-    r"\b(data|datos|dati|daten|dado|dados|donnees?|gegevens?)\b"
+_DATA_RE = re.compile(r"\b(data|datos|dati|daten|dado|dados|donnees?|gegevens?)\b")
+
+# Generic job-role nouns. A data/analytics TOPIC + one of these = a data role
+# ("Data Scientist", "Senior Analytics Engineer", "Scouting Insights Officer").
+_ROLE_NOUNS = (
+    "analyst", "analist", "analista", "analiste", "analytiker",
+    "scientist", "cientifico", "cientista", "scienziato",
+    "wetenschapper", "wissenschaftler",
+    "engineer", "ingenieur", "ingegnere", "ingeniero", "engenheiro",
+    "manager", "lead", "head", "chief", "officer", "coordinator", "coordinador",
+    "coordenador", "coordinatore", "specialist", "specialiste", "developer",
+    "architect", "director", "scout", "consultant", "executive",
+    "intern", "internship", "trainee", "stagiaire", "stagiair", "stagista",
+    "praktikant", "praktikum", "werkstudent", "responsable", "responsabile",
+    "responsavel", "verantwortlich", "referent", "jefe", "capo", "chefe", "hoofd",
 )
+
+# Kept for relevance_score (broad analyst-family, topics included).
+_ANALYST_TOKENS = _ANALYST_ROLE + ("analytic", "analytik", "analyse", "analysis")
 
 # "Strong" = unmistakably a data role. These survive the exclude filter even
 # when paired with an otherwise-excluded word (e.g. "Data Security Analyst").
 _STRONG_LOOSE = ("analytic", "analytik")
+
+
+def _has_role_noun(text_norm: str) -> bool:
+    return any(n in text_norm for n in _ROLE_NOUNS)
+
+
+def _has_topic(text_norm: str) -> bool:
+    return bool(_DATA_RE.search(text_norm)) or any(t in text_norm for t in _TOPIC_TOKENS)
 
 # Obvious non-football-data functions. A role in one of these areas is noise for
 # a data scientist, so drop it — unless the title/JD also explicitly names data.
@@ -129,7 +153,7 @@ _NOISE_TOKENS = (
 
 
 def _has_role_word(text_norm: str) -> bool:
-    return any(t in text_norm for t in _ANALYST_TOKENS) or "data scientist" in text_norm
+    return any(t in text_norm for t in _ANALYST_ROLE) or "scientist" in text_norm
 
 
 def _strong_data(text_norm: str) -> bool:
@@ -139,9 +163,17 @@ def _strong_data(text_norm: str) -> bool:
 def match_role(title: str, description: str = "", *, strict: bool = False) -> list[str]:
     """Return matched display terms for a vacancy (empty list = no match).
 
-    strict=True only counts the explicit ANALYTICS_KEYWORDS phrases (no broad
-    analyst/data net). Use it when scanning loose page text (headings, nav)
-    where the broad net would surface false positives.
+    Match rules, in order:
+      1. an explicit analytics ROLE phrase ("data analyst", "business intelligence", …)
+      2. an analyst-family role token ("analyst", "analist", "analytiker", …)
+      3. a data/analytics TOPIC word + a job-role noun ("Data Scientist",
+         "Analytics Engineer", "Insights Officer")
+
+    A bare topic word ("data", "analyse", "analytics") or a tool ("SQL") never
+    matches on its own — that was the source of "CLUB DATA"-style noise.
+
+    strict=True keeps only rule 1 (explicit phrases). Use it when scanning loose
+    page text (headings, nav) or rescuing from a description.
     """
     text = _norm(f"{title} {description}")
     if not text.strip():
@@ -155,7 +187,7 @@ def match_role(title: str, description: str = "", *, strict: bool = False) -> li
     if any(n in text for n in _NOISE_TOKENS) and not _has_role_word(text):
         return []
 
-    # Prefer the readable explicit phrases for chips.
+    # Rule 1 — explicit role phrases (best, readable chips).
     matched: list[str] = []
     seen: set[str] = set()
     for kw_norm, kw_label in _KEYWORDS_NORM:
@@ -167,11 +199,19 @@ def match_role(title: str, description: str = "", *, strict: bool = False) -> li
     if strict:
         return []
 
-    # Broad fallback: any analyst-family / science / signal token, or a data word.
-    core_hits = [t for t in (_ANALYST_TOKENS + _LOOSE_TOKENS) if t in text]
-    if core_hits:
-        return core_hits[:1]
-    return ["data"] if _DATA_RE.search(text) else []
+    # Rule 2 — an analyst-family token is a role by itself.
+    analyst_hit = [t for t in _ANALYST_ROLE if t in text]
+    if analyst_hit:
+        return [analyst_hit[0]]
+
+    # Rule 3 — a topic word only counts alongside a job-role noun.
+    if _has_topic(text) and _has_role_noun(text):
+        topic = next((t for t in _TOPIC_TOKENS if t in text), None)
+        if topic is None and _DATA_RE.search(text):
+            topic = "data"
+        return [topic] if topic else []
+
+    return []
 
 
 # ── Relevance scoring (for "most relevant first" sorting) ─────────────────────

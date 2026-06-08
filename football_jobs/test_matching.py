@@ -31,12 +31,15 @@ import database as db
     "Præstationsanalytiker",             # DK
     "Technical Scout",
     "Head of Football Intelligence",
+    "Senior Analytics Engineer",         # topic (analytics) + role noun (engineer)
+    "Scouting Insights Officer",         # topic (insight) + role noun (officer)
 ])
 def test_real_roles_match(title):
     assert match_role(title), f"should match: {title!r}"
 
 
-# ── Precision: obvious non-football / footer / legal noise must NOT match ────
+# ── Precision: a bare topic word ("data"/"analyse") is NOT a role ────────────
+# These are the exact false positives the user reported on the live app.
 @pytest.mark.parametrize("title", [
     "Information Security Risk Analyst",
     "Financial Analyst",
@@ -48,9 +51,22 @@ def test_real_roles_match(title):
     "FOUNDATION",                        # contains 'dati' substring
     "Contactgegevens",                   # NL footer link
     "Validation Officer",
+    "CLUB DATA",                         # club info page, bare "data"
+    "datos del club",                    # ES club info page
+    "Digital Marketing & Data Undergraduate Placement Student",  # marketing, not data
+    "Schwerpunkt Analyse Virtual Reality",                       # bare "analyse"
+    "Projektmanagement im Bereich Digitalisierung",              # JD-tools false positive
+    "CRM Manager",
+    "Fan Engagement Executive",
 ])
 def test_noise_does_not_match(title):
     assert not match_role(title), f"should NOT match: {title!r}"
+
+
+# ── A JD that merely lists a tool (SQL/Python) must NOT rescue a non-data role.
+def test_tool_in_description_does_not_match():
+    jd = "Project management internship. Skills: Excel, SQL, Python, Tableau."
+    assert match_role("Projektmanagement Digitalisierung", jd, strict=True) == []
 
 
 # ── Strict mode (used on loose page text) only keeps explicit role phrases ────

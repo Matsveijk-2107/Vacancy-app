@@ -64,6 +64,13 @@ _ADZUNA_COUNTRY = {
     "Netherlands": "nl", "Belgium": "be",
     # Adzuna has no Portugal / Denmark market → those clubs skip this layer.
 }
+# Tokens that mark an employer as an actual football club (used to reject
+# city-named firms that share a club's name). Strong markers only — no generic
+# "sport"/"spa"/"club" which appear in countless unrelated companies.
+_FOOTBALL_MARKERS = (
+    "fc", "afc", "calcio", "football", "futbol", "futebol", "fussball",
+    "voetbal", "ogc", "ssc", "balompie", "1909", "1913", "1907", "1899", "1911",
+)
 REQUEST_TIMEOUT = 10
 CLUB_TIMEOUT    = 60   # hard cap per club
 
@@ -209,6 +216,21 @@ def _clean(html_text: str) -> str:
     return BeautifulSoup(html_text, "lxml").get_text(" ", strip=True)
 
 
+def _clean_search_title(title: str) -> str:
+    """Trim site-name suffixes from a search-result title.
+
+    DuckDuckGo titles look like 'First Team Data Analyst (Leeds, UK) | Jobs In
+    Football' — cut the ' | site' / ' · site' / ' - site' tail so the card shows
+    a clean job title. Keeps a leading '(City, Country)' if present.
+    """
+    if not title:
+        return ""
+    for sep in (" | ", " · ", " — ", " – "):
+        if sep in title:
+            title = title.split(sep, 1)[0]
+    return title.strip()
+
+
 def _epoch_ms_to_date(value) -> str:
     """Convert a millisecond epoch (Lever createdAt) to YYYY-MM-DD."""
     try:
@@ -216,6 +238,19 @@ def _epoch_ms_to_date(value) -> str:
         return datetime.fromtimestamp(int(value) / 1000, timezone.utc).strftime("%Y-%m-%d")
     except Exception:
         return ""
+
+
+def _bad_job_url(url: str) -> bool:
+    """Reject URLs that look like a link but aren't a real job posting.
+
+    LinkedIn /posts/ and /pulse/ are social reposts/articles (e.g. a
+    "jobs-in-football" account sharing a role) — they are unreliable and not the
+    official listing, so only accept LinkedIn /jobs/view pages.
+    """
+    u = url.lower()
+    if "linkedin.com" in u and "/jobs/view" not in u:
+        return True
+    return False
 
 
 def _is_trusted_url(url: str) -> bool:
@@ -1286,7 +1321,7 @@ def _layer3_serpapi(club: dict, league: str, country: str) -> list[dict]:
     results = []
     for r in data.get("organic_results", []):
         title, url, snippet = r.get("title", ""), r.get("link", ""), r.get("snippet", "")
-        if not title or "linkedin.com" not in url:
+        if not title or "linkedin.com" not in url or _bad_job_url(url):
             continue
         if not _result_is_about_club(club, f"{title} {snippet}"):
             continue
@@ -1324,11 +1359,16 @@ def _layer3_ddg(club: dict, league: str, country: str) -> list[dict]:
     results, seen = [], set()
     for h in hits:
         url     = h.get("href") or h.get("link") or ""
-        title   = h.get("title", "")
+        title   = _clean_search_title(h.get("title", ""))
         snippet = h.get("body") or h.get("snippet") or ""
         if not url or not title or url in seen:
             continue
         if not (_is_trusted_url(url) and "/job" in url.lower()):
+            continue
+        # LinkedIn only via real job postings — reject social /posts/ reshares.
+        if "linkedin.com" in url.lower() and "/jobs/view" not in url.lower():
+            continue
+        if _bad_job_url(url):
             continue
         if not _result_is_about_club(club, f"{title} {snippet}"):
             continue
@@ -1358,11 +1398,20 @@ def _adzuna(club: dict, league: str, country: str) -> list[dict]:
     cc = _ADZUNA_COUNTRY.get(country)
     if not cc:
         return []
-    name = club.get("linkedin_search") or club["name"]
-    url  = f"https://api.adzuna.com/v1/api/jobs/{cc}/search/1"
+    # Many IT/ES club names are also CITY names (Bologna, Barcelona, Atalanta…), so a
+    # plain name search returns thousands of unrelated city jobs. We search by the
+    # club's most distinctive token, then require that token in the EMPLOYER name —
+    # an unrelated "Data Analyst - Bologna" has a different company and is rejected.
+    from keywords import _norm
+    idents = _club_identifiers(club)
+    token  = max(idents, key=len) if idents else _norm(club["name"])
+    url    = f"https://api.adzuna.com/v1/api/jobs/{cc}/search/1"
     params = {
         "app_id": ADZUNA_APP_ID, "app_key": ADZUNA_APP_KEY,
-        "what_phrase": name,                 # club name must appear in the ad
+        "what": token,
+        # Narrow to analytics-ish ads so a real club role surfaces on page 1 instead
+        # of being buried under thousands of unrelated city jobs (token == city name).
+        "what_or": "analyst analytics data scientist performance scout intelligence",
         "results_per_page": 50, "content-type": "application/json",
     }
     try:
@@ -1383,7 +1432,13 @@ def _adzuna(club: dict, league: str, country: str) -> list[dict]:
         jurl  = job.get("redirect_url", "")
         if not title or jurl in seen:
             continue
-        if not _result_is_about_club(club, f"{title} {comp}"):
+        # Precision gate: the hiring company must BE the club — the distinctive token
+        # as a whole word AND a football marker. Rejects city-named firms like
+        # "CNA Associazione di Bologna", "Aivancity Nice", "Intermedia Selection".
+        comp_n = _norm(comp)
+        if not re.search(r"\b" + re.escape(token) + r"\b", comp_n):
+            continue
+        if not any(m in comp_n for m in _FOOTBALL_MARKERS):
             continue
         matched = _match(title, job.get("description", ""))
         if not matched:
@@ -1465,18 +1520,32 @@ def _scrape_club_inner(club: dict, league: str, country: str) -> list[dict]:
         except Exception as exc:
             logger.warning("%s %s (%s): %s", label, club["name"], league, exc)
 
-    # Search layer (Adzuna aggregator → DuckDuckGo). Adzuna runs for every club
-    # when keys are set (precise: requires the club name in the ad). The keyless
-    # DDG fallback only runs when nothing else was found, confining it to clubs
-    # with no working careers/ATS source and avoiding DDG rate-bans.
-    run_search = bool(ADZUNA_APP_ID and ADZUNA_APP_KEY) or not all_results
-    if run_search:
+    # Search layer (Adzuna aggregator → keyless DuckDuckGo), run ONLY as a fallback
+    # when the club's own careers/ATS sources found nothing. This confines it to the
+    # clubs that actually need it (no careers page) — conserving the Adzuna trial
+    # quota and avoiding DDG rate-bans on clubs already covered.
+    if not all_results:
         try:
             all_results.extend(_layer3_search(club, league, country))
         except Exception as exc:
             logger.warning("search %s (%s): %s", club["name"], league, exc)
 
-    return dedup_by_url(all_results)
+    return _dedup_by_title(dedup_by_url(all_results))
+
+
+def _dedup_by_title(rows: list[dict]) -> list[dict]:
+    """Collapse the same role listed under different URLs (e.g. one Adzuna ad
+    indexed from two boards) by normalised title within a club."""
+    from keywords import _norm
+    seen: set[str] = set()
+    out: list[dict] = []
+    for r in rows:
+        key = _norm(r.get("job_title", ""))
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(r)
+    return out
 
 
 def scrape_club(club: dict, league: str, country: str) -> list[dict]:
