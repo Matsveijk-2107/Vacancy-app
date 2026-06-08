@@ -434,14 +434,25 @@ html, body, [data-testid="stAppViewContainer"] {
 [data-testid="stDataFrame"] { border: 1px solid #30363d !important; border-radius: 10px !important; }
 
 /* ── Vacancy cards ─────────────────────────────────────────────────────── */
+/* Responsive grid: cards flow into as many columns as fit (min 380px each),
+   so wide screens show 2–3 per row instead of one full-width strip. */
+.vc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+           gap: 12px; margin-bottom: 8px; align-items: stretch; }
 .vc { background: #161b22; border: 1px solid #30363d; border-left: 4px solid;
-      border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; transition: border-color .15s, transform .15s; }
-.vc:hover { border-color: #484f58; transform: translateY(-1px); }
-.vc-title { font-size: 0.98rem; font-weight: 700; margin-bottom: 6px; color: #e6edf3; }
-.vc-meta  { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.77rem; color: #6e7681; margin-bottom: 5px; }
+      border-radius: 10px; padding: 14px 16px; transition: border-color .15s, transform .15s, box-shadow .15s; }
+.vc:hover { border-color: #484f58; transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
+.vc-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 7px; color: #e6edf3;
+            line-height: 1.3; }
+.vc-meta  { display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+            font-size: 0.75rem; color: #6e7681; margin-bottom: 8px; }
 .vc-club  { font-weight: 700; }
-.vc-kw    { font-size: 0.68rem; color: #58a6ff; margin-bottom: 5px; }
-.vc-link  { font-size: 0.77rem; color: #58a6ff; text-decoration: none; font-weight: 600; }
+.vc-dot   { color: #30363d; }
+.vc-kw    { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 9px; }
+.vc-chip  { font-size: 0.64rem; font-weight: 600; padding: 1px 7px; border-radius: 20px;
+            background: rgba(88,166,255,0.12); border: 1px solid rgba(88,166,255,0.3);
+            color: #79c0ff; white-space: nowrap; }
+.vc-link  { font-size: 0.76rem; color: #58a6ff; text-decoration: none; font-weight: 600; }
 .vc-link:hover { text-decoration: underline; }
 
 /* Card action buttons (query-param links → no Streamlit re-render per row) */

@@ -157,9 +157,11 @@ def _card(row: dict, *, mode: str) -> str:
     logo    = logo_img(row["club_name"], 38)
     kw      = row.get("keywords_matched", "")
     url     = row.get("url", "#")
-    date    = f'<span>📅 {row["posted_date"]}</span>' if row.get("posted_date") else ""
-    new_tag = '<span class="vc-new">new</span>' if is_new and mode == "open" else ""
-    kw_tag  = f'<div class="vc-kw">🏷 {kw}</div>' if kw else ""
+    date    = f'<span class="vc-dot">·</span><span>📅 {row["posted_date"]}</span>' if row.get("posted_date") else ""
+    new_tag = '<span class="vc-new">new</span> ' if is_new and mode == "open" else ""
+    chips   = "".join(f'<span class="vc-chip">{k.strip()}</span>'
+                      for k in kw.split(",") if k.strip())[:600]
+    kw_tag  = f'<div class="vc-kw">{chips}</div>' if chips else ""
     faded   = " opacity:0.7;" if mode == "done" else ""
 
     if mode == "done":
@@ -180,7 +182,7 @@ def _card(row: dict, *, mode: str) -> str:
         f'<div class="vc-title">{new_tag} {row["job_title"]}</div>'
         f'<div class="vc-meta">'
         f'<span class="vc-club" style="color:{color};">{row["club_name"]}</span>'
-        f'<span>{row["league"]}</span>{src}{date}</div>'
+        f'<span class="vc-dot">·</span><span>{row["league"]}</span>{src}{date}</div>'
         f'{kw_tag}'
         f'<a class="vc-link" href="{url}" target="_blank">Open posting ↗</a>'
         f'</div>'
@@ -190,7 +192,8 @@ def _card(row: dict, *, mode: str) -> str:
 
 
 def _render_cards(rows: list[dict], *, mode: str) -> None:
-    st.markdown("".join(_card(r, mode=mode) for r in rows), unsafe_allow_html=True)
+    cards = "".join(_card(r, mode=mode) for r in rows)
+    st.markdown(f'<div class="vc-grid">{cards}</div>', unsafe_allow_html=True)
 
 
 # ── Header ───────────────────────────────────────────────────────────────────
