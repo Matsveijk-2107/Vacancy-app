@@ -1,12 +1,15 @@
-streamlit>=1.32.0
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-pandas>=2.0.0
-google-search-results>=2.4.2
-duckduckgo-search>=5.0.0
-python-dotenv>=1.0.0
-sqlalchemy>=2.0.0
-apscheduler>=3.10.0
-lxml>=5.0.0
-fake-useragent>=1.4.0
-Pillow>=10.0.0
+# ── Core runtime ──────────────────────────────────────────────────────────────
+streamlit>=1.32.0          # dashboard UI
+requests>=2.31.0           # HTTP client for scraping / ATS APIs
+beautifulsoup4>=4.12.0     # HTML parsing
+lxml>=5.0.0                # fast parser backend for BeautifulSoup
+pandas>=2.0.0              # table view + filtering
+python-dotenv>=1.0.0       # load API keys from .env
+Pillow>=10.0.0             # downscale club logos to embedded data URIs
+ddgs>=5.0.0                # keyless DuckDuckGo fallback for the search layer
+
+# ── Optional ──────────────────────────────────────────────────────────────────
+# google-search-results>=2.4.2   # legacy SerpAPI layer (disabled by default)
+
+# ── Dev / test ────────────────────────────────────────────────────────────────
+pytest>=8.0.0

@@ -1,4 +1,4 @@
-﻿# clubs.py
+# clubs.py
 # ============================================================
 # Master list of football clubs for the vacancy tracker app.
 #
