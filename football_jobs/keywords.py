@@ -106,13 +106,22 @@ _ROLE_NOUNS = (
     "scientist", "cientifico", "cientista", "scienziato",
     "wetenschapper", "wissenschaftler",
     "engineer", "ingenieur", "ingegnere", "ingeniero", "engenheiro",
-    "manager", "lead", "head", "chief", "officer", "coordinator", "coordinador",
+    "manager", "officer", "coordinator", "coordinador",
     "coordenador", "coordinatore", "specialist", "specialiste", "developer",
     "architect", "director", "scout", "consultant", "executive",
-    "intern", "internship", "trainee", "stagiaire", "stagiair", "stagista",
+    "researcher", "onderzoeker", "chercheur", "investigador", "ricercatore",
+    "internship", "trainee", "stagiaire", "stagiair", "stagista",
     "praktikant", "praktikum", "werkstudent", "responsable", "responsabile",
     "responsavel", "verantwortlich", "referent", "jefe", "capo", "chefe", "hoofd",
 )
+# Short, ambiguous role nouns matched as WHOLE WORDS only — "lead" must not hit
+# "leadership", "head" not "headquarters", "intern" not "international".
+_ROLE_NOUNS_RE = re.compile(r"\b(lead|head|chief|intern)\b")
+
+# Corporate "data" functions that are never a football-analytics role, even
+# though they contain "data" + a role noun (Master Data Management / governance).
+_CORP_DATA_NOISE = ("master data", "data governance", "data entry",
+                    "reference data", "data protection", "data steward")
 
 # Kept for relevance_score (broad analyst-family, topics included).
 _ANALYST_TOKENS = _ANALYST_ROLE + ("analytic", "analytik", "analyse", "analysis")
@@ -123,26 +132,35 @@ _STRONG_LOOSE = ("analytic", "analytik")
 
 
 def _has_role_noun(text_norm: str) -> bool:
-    return any(n in text_norm for n in _ROLE_NOUNS)
+    return (any(n in text_norm for n in _ROLE_NOUNS)
+            or bool(_ROLE_NOUNS_RE.search(text_norm)))
 
 
 def _has_topic(text_norm: str) -> bool:
     return bool(_DATA_RE.search(text_norm)) or any(t in text_norm for t in _TOPIC_TOKENS)
 
-# Obvious non-football-data functions. A role in one of these areas is noise for
-# a data scientist, so drop it — unless the title/JD also explicitly names data.
-# Includes medical / sports-science / physio roles: the user is a *data*
-# scientist, so "Sports Scientist", "Recovery Scientist", "Physiotherapist",
-# "Rehabilitation", "Nutritionist", "Sports Science & Medicine" etc. are noise.
-EXCLUDE_TOKENS = (
+# HARD excludes — never a football-data role, even if the title says "analyst"
+# (e.g. "Financial Analyst", "Physiotherapist", "Recovery Scientist").
+_HARD_EXCLUDE = (
     "financ", "security", "compliance", "payroll", "procurement",
     "accountant", "accounting", "auditor", "human resources",
     "physio", "physiother", "rehab", "therap", "nutrition", "dietit",
     "masseur", "massage", "medical", "medicine", "physician", "doctor",
     "wellbeing", "well-being", "kinesi", "osteopath", "chiro", "podiat",
-    "psycholog", "sports scien", "sport scien", "exercise scien",
-    "sports scientist", "recovery scientist", "strength and conditioning",
+    "psycholog", "recovery scientist", "first aid", "soigneur",
 )
+# Sports-science / performance-physiology area — included ONLY when it leans
+# DATA (a data/analytics/analyst signal is also present). So "Sports Science
+# Analyst" / "Performance Data Scientist" pass, but a plain "Sports Scientist"
+# or "Strength & Conditioning Coach" does not. (The user wants the data-leaning
+# sports-science roles, not the physical-performance/medical ones.)
+_SPORTSCI_TOKENS = (
+    "sports scien", "sport scien", "exercise scien", "sports scientist",
+    "sport scientist", "strength and conditioning", "s&c coach",
+    "physical performance", "athletic performance",
+)
+# Back-compat alias (some call sites import EXCLUDE_TOKENS).
+EXCLUDE_TOKENS = _HARD_EXCLUDE + _SPORTSCI_TOKENS
 
 # Footer / legal links that mention "data" but are never jobs
 # ("Data & Privacy", "Data Protection Policy", cookie notices, …).
@@ -179,8 +197,17 @@ def match_role(title: str, description: str = "", *, strict: bool = False) -> li
     if not text.strip():
         return []
 
-    # Exclusion gate: drop obvious non-football functions unless data is named.
-    if any(x in text for x in EXCLUDE_TOKENS) and not _strong_data(text):
+    # Hard exclusion: finance / HR / medical roles are never a data job.
+    if any(x in text for x in _HARD_EXCLUDE):
+        return []
+
+    # Corporate data-governance functions ("Master Data Manager") are not football analytics.
+    if any(x in text for x in _CORP_DATA_NOISE):
+        return []
+
+    # Sports-science roles count only when they lean data (analyst/data signal).
+    if any(x in text for x in _SPORTSCI_TOKENS) and not _has_role_word(text) \
+            and not _strong_data(text):
         return []
 
     # Footer / legal noise ("Data & Privacy"): keep only if a real role word is present.
@@ -255,3 +282,72 @@ def relevance_score(title: str, description: str = "") -> int:
     if "data scientist" in text or "machine learning" in text:
         base += 8
     return base
+
+
+# ── Role categories (so "all roles" stays organised & filterable) ─────────────
+# Order matters: the first bucket whose signals appear wins.
+CATEGORIES = (
+    "Data Science & ML",
+    "Analytics & Insights",
+    "Performance Analysis",
+    "Scouting & Recruitment",
+    "Sports Science",
+)
+
+_CAT_SCOUTING = ("scout", "recruitment analyst", "recruitment data", "talent id",
+                 "talent identification", "spielbeobachter", "ojeador")
+_CAT_PERF = ("performance analy", "match analy", "video analy", "opposition analy",
+             "tactical analy", "set piece analy", "first team analy",
+             "wedstrijdanalist", "spelersanalist", "prestatieanalist",
+             "spielanalyst", "taktikanalyst", "leistungsanalyst",
+             "analyste video", "analyste tactique", "analista video",
+             "analista tattico", "analisi tattica", "videoanaly")
+_CAT_SPORTSCI = ("sports scien", "sport scien", "exercise scien", "sports scientist",
+                 "sport scientist", "physical performance", "athletic performance",
+                 "strength and conditioning")
+_CAT_DSML = ("data scientist", "data engineer", "machine learning", "research scientist",
+             "datawetenschap", "datenwissenschaft", "cientifico de datos",
+             "scienziato dei dati", "cientista de dados", "data infrastructure",
+             "dateningenieur", "ingenieur donnees", "ingegnere dei dati",
+             "ingeniero de datos", "engenheiro de dados", "deep learning",
+             "modelling", "modeling")
+
+
+# Signals that make a match unambiguously about DATA/analytics (→ high confidence).
+_HIGH_CONF = (
+    "analytic", "analytik", "scientist", "cientifico", "cientista", "scienziato",
+    "machine learning", "datawetenschap", "datenwissenschaft", "statsbomb",
+    "wyscout", "skillcorner", "instat", "statistic", "statistik",
+)
+
+
+def match_confidence(title: str, description: str = "") -> str | None:
+    """'high', 'low', or None — how confident we are the role is football-data.
+
+    HIGH = an explicit data-role phrase, or a 'data' word, or a strong data
+    signal (analytics/scientist/ML/tracking-tool) appears in the TITLE.
+    LOW  = matched only via a bare analyst-family token (e.g. "Business
+    Analyst") or rescued from the description — show it, but badge it.
+    """
+    if not match_role(title, description):
+        return None
+    t = _norm(title)
+    if any(kw_norm in t for kw_norm, _ in _KEYWORDS_NORM):
+        return "high"
+    if _DATA_RE.search(t) or any(s in t for s in _HIGH_CONF):
+        return "high"
+    return "low"
+
+
+def classify_role(title: str, description: str = "") -> str:
+    """Bucket a matched vacancy into a high-level category for filtering."""
+    t = _norm(f"{title} {description}")
+    if any(s in t for s in _CAT_SCOUTING):
+        return "Scouting & Recruitment"
+    if any(s in t for s in _CAT_SPORTSCI):
+        return "Sports Science"
+    if any(s in t for s in _CAT_PERF):
+        return "Performance Analysis"
+    if any(s in t for s in _CAT_DSML):
+        return "Data Science & ML"
+    return "Analytics & Insights"

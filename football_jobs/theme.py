@@ -259,23 +259,28 @@ def logo_img(club: str, size: int = 28) -> str:
 # ── Stylesheet ────────────────────────────────────────────────────────────────
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap');
 
 /* ══════════════════════════════════════════════════════════════════════════
-   ALMANAC '26 — "The Scouting Annual"
-   Warm newsprint-dark data almanac. Depth from hairline rules + three paper
-   surfaces (no resting shadows). League + 16 source hues demoted to 2px ticks.
-   One accent (burnt sienna) spent only on a fixed, countable set.
+   ALMANAC '26 — "The Scouting Annual" (LIGHT)
+   A premium light warm-newsprint data almanac (Financial Times / StatsBomb
+   feel). Depth comes from three paper tones + hairline rules + one coloured
+   "spine" per card — no drop-shadows (except floating menus). League + source
+   hues are demoted to thin ticks. One terracotta accent, spent only on a
+   small, countable set of live/actionable things.
+   Typography triad: Fraunces (serif headlines) · Inter (body/widgets) ·
+   Roboto Mono (every figure + uppercase caption).
    ══════════════════════════════════════════════════════════════════════════ */
 :root {
-  --bg:#100D08; --paper:#14110C; --paper-raised:#1B1710;
-  --hairline:#2A2419; --hairline-strong:#3A3325; --hairline-bright:#4A4030;
-  --ink-hi:#F4EFE6; --ink-lo:#8A8175;
-  --accent:#C8612F; --accent-hi:#E0763F; --accent-deep:#9E4A22;
-  --positive:#6FA86B; --warning:#C99A3A; --danger:#C25A4E; --sage:#6E8C7A;
-  --display:'Spline Sans',-apple-system,sans-serif;
-  --body:'Spline Sans',-apple-system,sans-serif;
-  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --bg:#F4EFE6; --paper:#FBF8F2; --paper-raised:#FFFFFF; --paper-wash:#FFFDF8;
+  --hairline:#E4DCCD; --hairline-strong:#CFC6B4; --hairline-bright:#B8AD97;
+  --ink-hi:#1A1814; --ink-mid:#403A30; --ink-lo:#6B6358;
+  --accent:#B5481F; --accent-hi:#CC5A2C; --accent-deep:#8F3818;
+  --accent-wash:rgba(181,72,31,0.08);
+  --positive:#2F6E4F; --warning:#9A6A1E; --danger:#A8392B; --sage:#5E7468;
+  --display:'Fraunces',Georgia,serif;
+  --body:'Inter',-apple-system,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,monospace;
   --ease:cubic-bezier(0.2,0.6,0.2,1); --dur-fast:120ms; --dur:160ms;
 }
 
@@ -289,6 +294,7 @@ html, body, [data-testid="stAppViewContainer"] {
     background: var(--bg);
     color: var(--ink-hi);
     font-family: var(--body);
+    font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
 }
 [data-testid="stMain"]  { padding-top: 0 !important; }
@@ -489,11 +495,17 @@ html, body, [data-testid="stAppViewContainer"] {
           border: 1px solid var(--hairline-strong); background: transparent; font-size: 0.85rem;
           transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease); }
 .vc-act:hover { border-color: var(--accent); background: var(--paper-raised); }
-.vc-act-star.on { border-color: var(--accent); background: rgba(200,97,47,0.10); }
+.vc-act-star.on { border-color: var(--accent); background: var(--accent-wash); }
 
 .vc-new { display:inline-block; padding:0 5px; border-radius:2px; font-family: var(--mono);
           font-size:0.58rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
           background:transparent; color: var(--accent-hi); border:1px solid var(--accent); }
+
+/* Low-confidence "~ maybe" tag — outlined ochre square (matches the system) */
+.vc-maybe { display:inline-block; padding:1px 6px; border-radius:2px; font-family: var(--mono);
+            font-size:0.58rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+            background:transparent; color: var(--warning); border:1px solid var(--warning);
+            white-space:nowrap; }
 
 /* ── Source badges — hue collapsed to a 2px left tick ──────────────────── */
 .badge { display: inline-block; padding: 1px 7px; border-radius: 2px; font-family: var(--mono);

@@ -69,6 +69,32 @@ def test_tool_in_description_does_not_match():
     assert match_role("Projektmanagement Digitalisierung", jd, strict=True) == []
 
 
+# ── Substring role-noun bugs: short nouns must match as whole words only ─────
+@pytest.mark.parametrize("title", [
+    "Data Leadership Academy",            # 'lead' must not hit 'leadership'
+    "International Partnerships Manager",  # 'intern' must not hit 'international'
+    "Master Data Manager",                # corporate data governance, not football
+    "Data Governance Lead",
+])
+def test_substring_and_corporate_noise_dropped(title):
+    assert not match_role(title), f"should NOT match: {title!r}"
+
+
+@pytest.mark.parametrize("title", ["Head of Data", "Data Team Lead", "Lead Data Scientist"])
+def test_legit_head_lead_roles_still_match(title):
+    assert match_role(title), f"should still match: {title!r}"
+
+
+# ── Confidence tiering for the 'low-confidence' badge ────────────────────────
+def test_confidence_high_vs_low():
+    from keywords import match_confidence
+    for t in ["Data Scientist", "Performance Analyst", "Senior Analytics Engineer"]:
+        assert match_confidence(t) == "high", t
+    for t in ["Business Analyst", "Risk Analyst", "Operations Analyst"]:
+        assert match_confidence(t) == "low", t
+    assert match_confidence("Groundsman") is None
+
+
 # ── Strict mode (used on loose page text) only keeps explicit role phrases ────
 def test_strict_mode_drops_bare_data():
     assert match_role("Data & privacy", strict=True) == []

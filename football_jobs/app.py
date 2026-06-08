@@ -161,10 +161,7 @@ def _card(row: dict, *, mode: str) -> str:
     cat_tag = f'<span class="vc-cat">{cat}</span>'
     conf    = row.get("confidence") or match_confidence(row["job_title"], row.get("description_snippet", ""))
     conf_tag = (
-        '<span title="Borderline match — double-check relevance" '
-        'style="font-size:0.6rem;font-weight:700;padding:1px 7px;border-radius:20px;'
-        'background:rgba(210,153,34,0.16);border:1px solid rgba(210,153,34,0.45);'
-        'color:#e3b341;white-space:nowrap;">~ maybe</span>'
+        '<span class="vc-maybe" title="Borderline match — double-check relevance">~ maybe</span>'
     ) if conf == "low" else ""
     date    = f'<span class="vc-dot">·</span><span>📅 {row["posted_date"]}</span>' if row.get("posted_date") else ""
     new_tag = '<span class="vc-new">new</span> ' if is_new and mode == "open" else ""
