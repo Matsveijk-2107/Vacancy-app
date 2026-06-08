@@ -22,7 +22,7 @@ from database import (
     get_last_scraped, get_saved, get_vacancies, init_db,
     mark_as_replied, toggle_star,
 )
-from keywords import relevance_score
+from keywords import relevance_score, classify_role, CATEGORIES, match_confidence
 from scraper import scrape_all_clubs
 from theme import CSS, LEAGUE_META, badge, league_color, logo_img
 
@@ -157,6 +157,15 @@ def _card(row: dict, *, mode: str) -> str:
     logo    = logo_img(row["club_name"], 38)
     kw      = row.get("keywords_matched", "")
     url     = row.get("url", "#")
+    cat     = row.get("category") or classify_role(row["job_title"], row.get("description_snippet", ""))
+    cat_tag = f'<span class="vc-cat">{cat}</span>'
+    conf    = row.get("confidence") or match_confidence(row["job_title"], row.get("description_snippet", ""))
+    conf_tag = (
+        '<span title="Borderline match — double-check relevance" '
+        'style="font-size:0.6rem;font-weight:700;padding:1px 7px;border-radius:20px;'
+        'background:rgba(210,153,34,0.16);border:1px solid rgba(210,153,34,0.45);'
+        'color:#e3b341;white-space:nowrap;">~ maybe</span>'
+    ) if conf == "low" else ""
     date    = f'<span class="vc-dot">·</span><span>📅 {row["posted_date"]}</span>' if row.get("posted_date") else ""
     new_tag = '<span class="vc-new">new</span> ' if is_new and mode == "open" else ""
     chips   = "".join(f'<span class="vc-chip">{k.strip()}</span>'
@@ -181,6 +190,7 @@ def _card(row: dict, *, mode: str) -> str:
         f'<div style="flex:1;min-width:0;">'
         f'<div class="vc-title">{new_tag} {row["job_title"]}</div>'
         f'<div class="vc-meta">'
+        f'{cat_tag}{conf_tag}'
         f'<span class="vc-club" style="color:{color};">{row["club_name"]}</span>'
         f'<span class="vc-dot">·</span><span>{row["league"]}</span>{src}{date}</div>'
         f'{kw_tag}'
@@ -232,7 +242,7 @@ new_count         = sum(1 for v in raw_vacancies if v.get("is_new"))
 
 # ── KPI row ───────────────────────────────────────────────────────────────────
 new_kpi = (
-    f'<div class="kpi kpi-green"><div class="num">{new_count}</div>'
+    f'<div class="kpi kpi-green"><div class="num num-act">{new_count}</div>'
     f'<div class="lbl">New since last scan</div></div>'
     if new_count else
     f'<div class="kpi kpi-green"><div class="num">{len(clubs_with_jobs)}</div>'
@@ -286,8 +296,15 @@ with tab_vac:
         # Real container (keyed → .st-key-filterbar) so the panel styling in
         # theme.py actually wraps the widgets. The old open/close <div> markdown
         # trick rendered an empty box with the filters floating outside it.
+        # Category per vacancy (computed once for the filter options + the cards).
+        cat_of = {
+            id(v): classify_role(v["job_title"], v.get("description_snippet", ""))
+            for v in raw_vacancies
+        }
+        cat_options = [c for c in CATEGORIES if c in set(cat_of.values())]
+
         with st.container(key="filterbar"):
-            fc1, fc2, fc3, fc4 = st.columns([1.6, 1.6, 1.3, 1.5])
+            fc1, fc2, fc3, fc4, fc5 = st.columns([1.5, 1.5, 1.5, 1.1, 1.5])
             with fc1:
                 sel_leagues = st.multiselect("League", options=ALL_LEAGUES, default=[],
                                              placeholder="All leagues")
@@ -297,12 +314,15 @@ with tab_vac:
                 sel_clubs = st.multiselect("Club", options=avail_clubs, default=[],
                                            placeholder="All clubs")
             with fc3:
+                sel_cats = st.multiselect("Category", options=cat_options, default=[],
+                                          placeholder="All categories")
+            with fc4:
                 all_sources = sorted({v["source"] for v in raw_vacancies})
                 sel_source = st.selectbox("Source", ["All"] + all_sources)
-            with fc4:
+            with fc5:
                 kw = st.text_input("Search", placeholder="title, keyword or club…")
 
-            fc5, fc6, fc7, fc8 = st.columns([1.4, 1.2, 1, 1])
+            fc5, fc6, fc7, fc8, fc9 = st.columns([1.3, 1.1, 1, 1, 1.1])
             with fc5:
                 sort_by = st.selectbox("Sort by", ["Most relevant", "Newest", "Club"])
             with fc6:
@@ -311,17 +331,27 @@ with tab_vac:
                 new_only = st.toggle("New only", value=False)
             with fc8:
                 recent = st.toggle("Last 30 days", value=False)
+            with fc9:
+                high_only = st.toggle("Hide low-confidence", value=False,
+                                      help="Hide borderline (~ maybe) matches")
 
         # ── Filter ────────────────────────────────────────────────────────
         df = pd.DataFrame(raw_vacancies)
+        _desc = df.get("description_snippet", pd.Series([""] * len(df)))
+        df["category"] = [classify_role(t, d) for t, d in zip(df["job_title"], _desc)]
+        df["confidence"] = [match_confidence(t, d) for t, d in zip(df["job_title"], _desc)]
         if sel_leagues:
             df = df[df["league"].isin(sel_leagues)]
         if sel_clubs:
             df = df[df["club_name"].isin(sel_clubs)]
+        if sel_cats:
+            df = df[df["category"].isin(sel_cats)]
         if sel_source != "All":
             df = df[df["source"] == sel_source]
         if new_only:
             df = df[df["is_new"] == 1]
+        if high_only:
+            df = df[df["confidence"] != "low"]
         if kw.strip():
             mask = (
                 df["job_title"].str.contains(kw, case=False, na=False)
@@ -351,8 +381,8 @@ with tab_vac:
             )
         elif view == "Table":
             cols_map = {
-                "job_title": "Job Title", "club_name": "Club", "league": "League",
-                "source": "Source", "posted_date": "Posted",
+                "job_title": "Job Title", "category": "Category", "club_name": "Club",
+                "league": "League", "source": "Source", "posted_date": "Posted",
                 "keywords_matched": "Keywords", "url": "Link",
             }
             disp = df[list(cols_map)].rename(columns=cols_map).copy()
@@ -407,10 +437,10 @@ def _league_card(league: str, clubs: list[dict]) -> str:
         f'{logo_img(c["name"], 14)}{c["name"]}</span>' for c in clubs
     )
     return (
-        f'<div class="lg-card" style="border-top:3px solid {color};">'
+        f'<div class="lg-card" style="border-top:2px solid {color};">'
         f'<div class="lg-hdr"><span class="lg-flag">{flag}</span>'
         f'<span class="lg-name" style="color:{color};">{short}</span>'
-        f'<span style="margin-left:auto;font-size:0.72rem;color:#6e7681;">{found}/{total}</span></div>'
+        f'<span class="lg-frac" style="margin-left:auto;">{found}/{total}</span></div>'
         f'<div class="pg-wrap"><div class="pg-fill" style="width:{pct}%;background:{color};"></div></div>'
         f'<div class="pg-lbl">{pct}% of clubs have open roles</div>'
         f'<div class="pills">{pills}</div></div>'
