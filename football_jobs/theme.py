@@ -469,7 +469,7 @@ html, body, [data-testid="stAppViewContainer"] {
 .vc-title { font-family: var(--display); font-size: 1.02rem; font-weight: 600; letter-spacing: -0.01em;
             line-height: 1.25; color: var(--ink-hi); margin-bottom: 8px;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.vc:hover .vc-title { color: #FFFDF8; }
+.vc:hover .vc-title { color: var(--ink-hi); }
 .vc-meta  { display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
             font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.02em;
             color: var(--ink-lo); margin-bottom: 9px; }
