@@ -21,6 +21,7 @@ import os
 import re
 import logging
 import requests
+from datetime import datetime, timedelta, timezone
 from bs4 import BeautifulSoup
 from concurrent.futures import (
     ThreadPoolExecutor,
@@ -73,6 +74,17 @@ _FOOTBALL_MARKERS = (
 )
 REQUEST_TIMEOUT = 10
 CLUB_TIMEOUT    = 60   # hard cap per club
+
+# Maximum age (in days) for a vacancy surfaced via the SEARCH layer (Adzuna /
+# DuckDuckGo). Those layers query a third-party *index* that keeps long-expired
+# postings around, so a stale 2-year-old role can otherwise look "live". Club-
+# owned careers pages and ATS feeds list only currently-open roles, so they are
+# NOT age-filtered (a role can legitimately stay open for months). Override with
+# the MAX_VACANCY_AGE_DAYS env var.
+try:
+    MAX_VACANCY_AGE_DAYS = int(os.getenv("MAX_VACANCY_AGE_DAYS", "60") or "60")
+except ValueError:
+    MAX_VACANCY_AGE_DAYS = 60
 
 # How many clubs to scrape at once. Each club is independent network I/O, so
 # fanning out turns a ~10-minute serial run into a couple of minutes.
@@ -174,6 +186,59 @@ def _make_vacancy(club: dict, league: str, country: str, **kw) -> dict:
         "is_analytics_match":  1,
         "keywords_matched":    kw.get("keywords_matched", ""),
     }
+
+
+def _parse_posted_date(raw: str):
+    """Best-effort parse of a stored posted_date into a date, else None.
+
+    Accepts the YYYY-MM-DD that parse_date_loose normalises to, plus the common
+    day/month orderings, and tolerates a trailing time component.
+    """
+    if not raw:
+        return None
+    raw = raw.strip()[:10]
+    for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y", "%Y/%m/%d", "%d.%m.%Y"):
+        try:
+            return datetime.strptime(raw, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _is_stale(posted_date: str) -> bool:
+    """True only when posted_date is parseable AND older than the cutoff.
+
+    An unparseable/empty date returns False ("not provably stale") — callers that
+    require recency must check the date is present separately.
+    """
+    d = _parse_posted_date(posted_date)
+    if d is None:
+        return False
+    cutoff = datetime.now(timezone.utc).date() - timedelta(days=MAX_VACANCY_AGE_DAYS)
+    return d < cutoff
+
+
+def _filter_recent(rows: list[dict], *, require_date: bool) -> list[dict]:
+    """Drop stale rows. With require_date=True, also drop rows we can't date.
+
+    Used to gate the search layer (Adzuna/DDG), whose results come from a
+    third-party index that may still list expired postings. Trusted live sources
+    (careers page / ATS) pass require_date=False so genuinely-open older roles,
+    or roles a club lists without a date, are kept.
+    """
+    out: list[dict] = []
+    for r in rows:
+        posted = r.get("posted_date", "")
+        d = _parse_posted_date(posted)
+        if d is None:
+            if require_date:
+                continue
+            out.append(r)
+            continue
+        if _is_stale(posted):
+            continue
+        out.append(r)
+    return out
 
 
 # If the TITLE names one of these roles, it is NOT a data job no matter what its
@@ -1337,6 +1402,16 @@ def _layer3_serpapi(club: dict, league: str, country: str) -> list[dict]:
     return results
 
 
+def _ddg_timelimit() -> str:
+    """Map the age window to DuckDuckGo's coarse d/w/m/y time filter."""
+    days = MAX_VACANCY_AGE_DAYS
+    if days <= 7:
+        return "w"
+    if days <= 93:
+        return "m"
+    return "y"
+
+
 def _layer3_ddg(club: dict, league: str, country: str) -> list[dict]:
     """Keyless fallback via DuckDuckGo. Accepts only trusted-domain results that
     mention the club by name (DDG ignores site:/quote operators, so we filter)."""
@@ -1351,7 +1426,10 @@ def _layer3_ddg(club: dict, league: str, country: str) -> list[dict]:
     query = f'"{name}" football (analyst OR "data scientist" OR analytics OR analista OR analyste)'
     try:
         with DDGS() as ddg:
-            hits = list(ddg.text(query, max_results=15))
+            # timelimit restricts to recently-indexed pages (d/w/m/y) — DDG gives
+            # no per-result date, so this server-side recency gate is what keeps
+            # stale postings (the 2-year-old kind) out of the keyless fallback.
+            hits = list(ddg.text(query, max_results=15, timelimit=_ddg_timelimit()))
     except Exception as exc:
         logger.debug("DDG %s: %s", club["name"], exc)
         return []
@@ -1412,6 +1490,9 @@ def _adzuna(club: dict, league: str, country: str) -> list[dict]:
         # Narrow to analytics-ish ads so a real club role surfaces on page 1 instead
         # of being buried under thousands of unrelated city jobs (token == city name).
         "what_or": "analyst analytics data scientist performance scout intelligence",
+        # Only ads posted within the recency window — Adzuna filters server-side,
+        # so expired/old postings never reach us.
+        "max_days_old": MAX_VACANCY_AGE_DAYS,
         "results_per_page": 50, "content-type": "application/json",
     }
     try:
@@ -1526,7 +1607,14 @@ def _scrape_club_inner(club: dict, league: str, country: str) -> list[dict]:
     # quota and avoiding DDG rate-bans on clubs already covered.
     if not all_results:
         try:
-            all_results.extend(_layer3_search(club, league, country))
+            # Search results come from a third-party index that retains expired
+            # postings. Each search helper is already constrained to recent results
+            # server-side (Adzuna max_days_old, DuckDuckGo timelimit); here we drop
+            # any dated hit that is still older than the cutoff, as a safety net
+            # against a stale role (e.g. a 2-year-old aggregator hit) slipping
+            # through. Undated DDG hits survive on the strength of the timelimit.
+            search_hits = _layer3_search(club, league, country)
+            all_results.extend(_filter_recent(search_hits, require_date=False))
         except Exception as exc:
             logger.warning("search %s (%s): %s", club["name"], league, exc)
 

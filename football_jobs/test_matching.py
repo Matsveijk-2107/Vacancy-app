@@ -141,3 +141,35 @@ def test_sync_preserves_replied_and_tracks_new(tmp_path):
     assert open_urls == {"u/2", "u/3"}        # u/1 pruned from open
     assert replied_urls == {"u/1"}            # but replied history preserved
     assert new_urls == {"u/3"}                # only the genuinely new one flagged
+
+
+# ── Recency: stale search-layer hits must be dropped ─────────────────────────
+from datetime import datetime, timedelta, timezone
+import scraper
+
+
+def _days_ago(n: int) -> str:
+    return (datetime.now(timezone.utc).date() - timedelta(days=n)).strftime("%Y-%m-%d")
+
+
+def test_is_stale_only_flags_old_dated_rows():
+    fresh = _days_ago(5)
+    old   = _days_ago(scraper.MAX_VACANCY_AGE_DAYS + 30)
+    assert scraper._is_stale(old) is True
+    assert scraper._is_stale(fresh) is False
+    assert scraper._is_stale("") is False          # undated → not provably stale
+    assert scraper._is_stale("garbage") is False    # unparseable → not provably stale
+
+
+def test_filter_recent_drops_stale_keeps_fresh():
+    rows = [
+        {"job_title": "Fresh Analyst",  "posted_date": _days_ago(3)},
+        {"job_title": "Stale Analyst",  "posted_date": _days_ago(900)},  # ~2.5 yrs old
+        {"job_title": "Undated Analyst", "posted_date": ""},
+    ]
+    # Trusted live sources keep undated rows; stale dated rows always go.
+    titles = {r["job_title"] for r in scraper._filter_recent(rows, require_date=False)}
+    assert titles == {"Fresh Analyst", "Undated Analyst"}
+    # Strict mode (require_date) also drops anything we can't date.
+    strict = {r["job_title"] for r in scraper._filter_recent(rows, require_date=True)}
+    assert strict == {"Fresh Analyst"}
