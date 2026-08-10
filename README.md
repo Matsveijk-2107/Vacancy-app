@@ -38,6 +38,19 @@ Each club is scraped through up to four layers; the first that yields results wi
 LinkedIn is intentionally **not** scraped — it blocks automated access. Adzuna is the
 legitimate, structured replacement for the clubs that post nowhere else.
 
+## Agent-driven scan (Ruflo + Agent-Reach)
+
+There's a second way to run the same scan — as a Claude agent run instead of
+`scraper.py`. It uses **[Agent-Reach](https://github.com/Panniantong/Agent-Reach)** for
+web reach and **[Ruflo](https://github.com/ruvnet/ruflo)** to fan the 176 clubs out
+across a parallel agent swarm, then writes a dated markdown report and diffs it against
+the previous run. It reuses this app's curated club list, so the two stay in sync.
+
+Everything lives in [`football_jobs/agent_scan/`](football_jobs/agent_scan/) — run
+`/scan-jobs` in Claude Code, or paste `scan_prompt.md`. See that folder's `README.md`
+for setup. This is an addition, not a replacement: the Streamlit dashboard and scraper
+are unchanged.
+
 ## Quick start
 
 ```bash
