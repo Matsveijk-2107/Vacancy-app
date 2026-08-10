@@ -5,8 +5,8 @@ This is the agent-driven counterpart to the Streamlit app. It does what the
 report — but as a Claude agent run instead of `scraper.py`. It leans on two tools:
 
 - **[Agent-Reach](https://github.com/Panniantong/Agent-Reach)** — the agent's web
-  reach. Use its channels (web / search / GitHub / social) for every lookup instead
-  of scraping raw HTML yourself.
+  reach. Use its channels (web / search / GitHub / **LinkedIn** / social) for every
+  lookup instead of scraping raw HTML yourself.
 - **[Ruflo](https://github.com/ruvnet/ruflo)** — the swarm harness. Spawn agents
   (`swarm_init` / `agent_spawn`) so batches of clubs are scanned in parallel rather
   than one slow serial pass.
@@ -34,219 +34,239 @@ worker per league group, each handed its slice of the club list below.
 
 ## 1. Which clubs
 
-Each line is `Club name | careers URL`. The careers URL is the app's curated entry
-point — **start there**. When it says "search layers only", the club has no
-scrapable careers page, so go straight to L3/L4 for it.
+**Scan every club in this list — all of them.** Do not sample, batch-and-stop, or
+skip a club because it looks quiet. If a club genuinely can't be reached, it goes in
+the "couldn't check" list (section 5D) — never dropped silently. Account for every
+club by name.
+
+Each line gives two anchors per club:
+`Club name | careers: <careers URL> | linkedin: <LinkedIn jobs URL>`.
+**Check both for every club** — a club may post a role on its own site, on its
+LinkedIn, or on only one of the two. `(search layers only)` means no curated careers
+page was found, so lean on LinkedIn + L3/L4 for that club (and find its live careers
+page first — see L0).
 
 <CLUBS>
-Club | Careers URL (the app's curated entry point — start here)
+Format:  Club name | careers: <careers/ATS URL> | linkedin: <LinkedIn jobs URL>
+Check BOTH anchors for every club. `(search layers only)` = no curated careers
+page found — lean on LinkedIn + L3/L4 (and find the club's live careers page first).
 
 ### Netherlands
-PSV | https://werkenbij.psv.nl/
-Ajax | https://werkenbij.ajax.nl/vacatures
-AZ Alkmaar | https://www.werkenbijaz.nl/vacatures
-Feyenoord | https://www.feyenoord.com/nl/vacatures
-FC Utrecht | https://www.fcutrecht.nl/vacatures/
+PSV | careers: https://werkenbij.psv.nl/ | linkedin: https://www.linkedin.com/company/psv/jobs/
+Ajax | careers: https://werkenbij.ajax.nl/vacatures | linkedin: https://www.linkedin.com/company/afc-ajax/jobs/
+AZ Alkmaar | careers: https://www.werkenbijaz.nl/vacatures | linkedin: https://www.linkedin.com/company/az/jobs/
+Feyenoord | careers: https://www.feyenoord.com/nl/vacatures | linkedin: https://www.linkedin.com/company/feyenoord-rotterdam-nv/jobs/
+FC Utrecht | careers: https://www.fcutrecht.nl/vacatures/ | linkedin: https://www.linkedin.com/company/fc-utrecht/jobs/
 
 ### Belgium
-Royal Antwerp FC | https://www.royalantwerpfc.be/club/vacatures
-Royale Union Saint-Gilloise | https://rusg.brussels/en/jobs
-RSC Anderlecht | https://www.rsca.be/en/club/jobs
-KRC Genk | https://www.krcgenk.be/nl/vacatures
-Club Brugge | https://jobs.clubbrugge.be/nl
+Royal Antwerp FC | careers: https://www.royalantwerpfc.be/club/vacatures | linkedin: https://www.linkedin.com/company/royal-antwerp-fc/jobs/
+Royale Union Saint-Gilloise | careers: https://rusg.brussels/en/jobs | linkedin: https://www.linkedin.com/company/royale-union-saint-gilloise/jobs/
+RSC Anderlecht | careers: https://www.rsca.be/en/club/jobs | linkedin: https://www.linkedin.com/company/rsc-anderlecht/jobs/
+KRC Genk | careers: https://www.krcgenk.be/nl/vacatures | linkedin: https://www.linkedin.com/company/krc-genk/jobs/
+Club Brugge | careers: https://jobs.clubbrugge.be/nl | linkedin: https://www.linkedin.com/company/club-brugge-kv/jobs/
 
 ### Germany
-FC Bayern Munich | https://careers.fcbayern.com/go/Alle-Jobangebote-anzeigen/8774701/
-Borussia Dortmund | https://karriere.bvb.de/
-Bayer 04 Leverkusen | https://www.bayer04.de/en-US/page/stellenangebote
-RB Leipzig | https://rbleipzig.com/de/klub/rbl/karriere
-VfB Stuttgart | https://www.vfb.de/de/1893/aktuell/jobs/jobs/
-Eintracht Frankfurt | https://klub.eintracht.de/jobs/ag/
-SC Freiburg | https://jobs.scfreiburg.com/en
-1. FSV Mainz 05 | https://jobapplication.hrworks.de/de?companyId=ba8e529b
-Borussia Mönchengladbach | https://job.borussia.de/de
-VfL Wolfsburg | https://www.vfl-wolfsburg.de/der-vfl/jobs/direkteinstieg
-FC Augsburg | https://jobs.fcaugsburg.de/de
-Werder Bremen | https://karriere.werder.de/
-TSG Hoffenheim | https://www.tsg-hoffenheim.de/tsg/karriere/stellenangebote
-1. FC Union Berlin | https://www.altefoersterei.berlin/en/career-OIiJ
-FC St. Pauli | https://jobs.fcstpauli.com/de
-1. FC Heidenheim | https://www.fc-heidenheim.de/jobs
-Holstein Kiel | https://www.holstein-kiel.de/verein/karriere/
-VfL Bochum | https://jobs.vfl-bochum.de/jobs
-Hamburger SV | https://www.hsv.de/unser-hsv/karriere-beim-hsv/jobs/festanstellungen
-1. FC Köln | https://effzeh.jobs.personio.de
+FC Bayern Munich | careers: https://careers.fcbayern.com/go/Alle-Jobangebote-anzeigen/8774701/ | linkedin: https://www.linkedin.com/company/fcbayern/jobs/
+Borussia Dortmund | careers: https://karriere.bvb.de/ | linkedin: https://www.linkedin.com/company/borussia-dortmund/jobs/
+Bayer 04 Leverkusen | careers: https://www.bayer04.de/en-US/page/stellenangebote | linkedin: https://www.linkedin.com/company/bayer-04-leverkusen/jobs/
+RB Leipzig | careers: https://rbleipzig.com/de/klub/rbl/karriere | linkedin: https://www.linkedin.com/company/rb-leipzig/jobs/
+VfB Stuttgart | careers: https://www.vfb.de/de/1893/aktuell/jobs/jobs/ | linkedin: https://www.linkedin.com/company/vfb-stuttgart-1893-ag/jobs/
+Eintracht Frankfurt | careers: https://klub.eintracht.de/jobs/ag/ | linkedin: https://www.linkedin.com/company/eintrachtfrankfurt/jobs/
+SC Freiburg | careers: https://jobs.scfreiburg.com/en | linkedin: https://www.linkedin.com/company/sport-club-freiburg-e.v./jobs/
+1. FSV Mainz 05 | careers: https://jobapplication.hrworks.de/de?companyId=ba8e529b | linkedin: https://www.linkedin.com/company/mainz05/jobs/
+Borussia Mönchengladbach | careers: https://job.borussia.de/de | linkedin: https://www.linkedin.com/company/borussia/jobs/
+VfL Wolfsburg | careers: https://www.vfl-wolfsburg.de/der-vfl/jobs/direkteinstieg | linkedin: https://www.linkedin.com/company/vfl-wolfsburg/jobs/
+FC Augsburg | careers: https://jobs.fcaugsburg.de/de | linkedin: https://www.linkedin.com/company/fcaugsburg/jobs/
+Werder Bremen | careers: https://karriere.werder.de/ | linkedin: https://www.linkedin.com/company/svwerderbremen/jobs/
+TSG Hoffenheim | careers: https://www.tsg-hoffenheim.de/tsg/karriere/stellenangebote | linkedin: https://www.linkedin.com/company/tsg-1899-hoffenheim-fu%C3%9Fball-spielbetriebs-gmbh/jobs/
+1. FC Union Berlin | careers: https://www.altefoersterei.berlin/en/career-OIiJ | linkedin: https://www.linkedin.com/company/fc-union-berlin/jobs/
+FC St. Pauli | careers: https://jobs.fcstpauli.com/de | linkedin: https://www.linkedin.com/company/football-cooperative-st-pauli-von-2024-eg/jobs/
+1. FC Heidenheim | careers: https://www.fc-heidenheim.de/jobs | linkedin: https://www.linkedin.com/company/fch1846/jobs/
+Holstein Kiel | careers: https://www.holstein-kiel.de/verein/karriere/ | linkedin: https://www.linkedin.com/company/holstein-kiel/jobs/
+VfL Bochum | careers: https://jobs.vfl-bochum.de/jobs | linkedin: https://www.linkedin.com/company/vflbochum1848/jobs/
+Hamburger SV | careers: https://www.hsv.de/unser-hsv/karriere-beim-hsv/jobs/festanstellungen | linkedin: https://www.linkedin.com/company/hamburger-sport-verein/jobs/
+1. FC Köln | careers: https://effzeh.jobs.personio.de | linkedin: https://www.linkedin.com/company/fckoeln/jobs/
 
 ### France
-Paris Saint-Germain | https://parissaintgermain.wd3.myworkdayjobs.com/fr-FR/rejoigneznous
-Olympique de Marseille | https://olympique-de-marseille.taleez.com/
-AS Monaco | (no careers page — search layers only)
-Olympique Lyonnais | https://careers.eaglefootballgroup.com/search
-Lille OSC | https://www.losc.fr/losc-espace-carriere
-OGC Nice | (no careers page — search layers only)
-RC Lens | (no careers page — search layers only)
-Stade Rennais FC | https://www.hellowork.com/fr-fr/entreprises/stade-rennais-football-club-170554.html#offres-emploi
-Stade Brestois 29 | https://www.indeed.com/cmp/Stade-Brestois-29/jobs
-Toulouse FC | https://fr.indeed.com/q-toulouse-football-club-emplois.html?vjk=234ef2c7bfeb4f7e
-RC Strasbourg Alsace | https://sportsjobs.fr/companyprofile?company=racing-club-de-strasbourg-alsace-6930244b42a23784be612196
-FC Nantes | https://www.fcnantes.com/articles/article2809.php?num=48817
-Montpellier HSC | (no careers page — search layers only)
-AJ Auxerre | (no careers page — search layers only)
-Le Havre AC | (no careers page — search layers only)
-Angers SCO | (no careers page — search layers only)
-FC Metz | https://www.fcmetz.com/fr/contact
-FC Lorient | https://www.fclorient.bzh/nous-rejoindre/
+Paris Saint-Germain | careers: https://parissaintgermain.wd3.myworkdayjobs.com/fr-FR/rejoigneznous | linkedin: https://www.linkedin.com/company/paris-saint-germain/jobs/
+Olympique de Marseille | careers: https://olympique-de-marseille.taleez.com/ | linkedin: https://www.linkedin.com/company/sasp-olympique-de-marseille/jobs/
+AS Monaco | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/as-monaco/jobs/
+Olympique Lyonnais | careers: https://careers.eaglefootballgroup.com/search | linkedin: https://www.linkedin.com/company/olympique-lyonnais-groupe/jobs/
+Lille OSC | careers: https://www.losc.fr/losc-espace-carriere | linkedin: https://www.linkedin.com/company/loscofficiel/jobs/
+OGC Nice | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/ogcnice/jobs/
+RC Lens | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/racingclubdelens/jobs/
+Stade Rennais FC | careers: https://www.hellowork.com/fr-fr/entreprises/stade-rennais-football-club-170554.html#offres-emploi | linkedin: https://www.linkedin.com/company/staderennaisfc/jobs/
+Stade Brestois 29 | careers: https://www.indeed.com/cmp/Stade-Brestois-29/jobs | linkedin: https://www.linkedin.com/company/stade-brestois-29/jobs/
+Toulouse FC | careers: https://fr.indeed.com/q-toulouse-football-club-emplois.html?vjk=234ef2c7bfeb4f7e | linkedin: https://www.linkedin.com/company/toulousefc/jobs/
+RC Strasbourg Alsace | careers: https://sportsjobs.fr/companyprofile?company=racing-club-de-strasbourg-alsace-6930244b42a23784be612196 | linkedin: https://www.linkedin.com/company/racing-club-strasbourg-alsace/jobs/
+FC Nantes | careers: https://www.fcnantes.com/articles/article2809.php?num=48817 | linkedin: https://www.linkedin.com/company/fc-nantes/jobs/
+Montpellier HSC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/montpellier-herault-sc/jobs/
+AJ Auxerre | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/aj-auxerre/jobs/
+Le Havre AC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/havre-ac-foot/jobs/
+Angers SCO | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/angerssco/jobs/
+FC Metz | careers: https://www.fcmetz.com/fr/contact | linkedin: https://www.linkedin.com/company/fcmetz/jobs/
+FC Lorient | careers: https://www.fclorient.bzh/nous-rejoindre/ | linkedin: https://www.linkedin.com/company/fc-lorient/jobs/
 
 ### Spain - La Liga
-Real Madrid CF | https://eujobs.legendsglobal.com/jobs?location_id=1198105
-FC Barcelona | (no careers page — search layers only)
-Valencia CF | https://www.valenciacf.com/rrhh
-Club Atletico de Madrid | https://www.atleticodemadrid.com/ofertas-de-trabajo
-Real Betis Balompie | (no careers page — search layers only)
-Sevilla FC | https://sevillafc.es/es/el-club/trabaja-con-nosotros
-Real Sociedad | (no careers page — search layers only)
-Athletic Club Bilbao | (no careers page — search layers only)
-RCD Mallorca | (no careers page — search layers only)
-Villarreal CF | https://villarrealcf.es/trabaja-con-nosotros/
-RC Celta de Vigo | https://rccelta.es/en/grupo-rccelta/trabaja-con-nosotros/
-CA Osasuna | (no careers page — search layers only)
-Rayo Vallecano | (no careers page — search layers only)
-Elche CF | https://academy.elchecf.es/en/work-with-us/
-Getafe CF | (no careers page — search layers only)
-Girona FC | https://www.gironafc.cat/en/work-with-us
-Deportivo Alaves | https://deportivoalaves.com/trabaja-con-nosotros
-Levante UD | (no careers page — search layers only)
-Real Oviedo | https://www.realoviedo.es/empleo
-RCD Espanyol | https://www.rcdespanyol.com/en/work-with-us
+Real Madrid CF | careers: https://eujobs.legendsglobal.com/jobs?location_id=1198105 | linkedin: https://www.linkedin.com/company/realmadrid/jobs/
+FC Barcelona | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/fc-barcelona/jobs/
+Valencia CF | careers: https://www.valenciacf.com/rrhh | linkedin: https://www.linkedin.com/company/valencia-cf/jobs/
+Club Atletico de Madrid | careers: https://www.atleticodemadrid.com/ofertas-de-trabajo | linkedin: https://www.linkedin.com/company/atleticodemadrid/jobs/
+Real Betis Balompie | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/real-betis-balompie/jobs/
+Sevilla FC | careers: https://sevillafc.es/es/el-club/trabaja-con-nosotros | linkedin: https://www.linkedin.com/company/sevillafc/jobs/
+Real Sociedad | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/real-sociedad/jobs/
+Athletic Club Bilbao | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/athleticclub/jobs/
+RCD Mallorca | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/real-mallorca/jobs/
+Villarreal CF | careers: https://villarrealcf.es/trabaja-con-nosotros/ | linkedin: https://www.linkedin.com/company/villarreal-cf-sad/jobs/
+RC Celta de Vigo | careers: https://rccelta.es/en/grupo-rccelta/trabaja-con-nosotros/ | linkedin: https://www.linkedin.com/company/rccelta/jobs/
+CA Osasuna | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/ca-osasuna/jobs/
+Rayo Vallecano | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/rayo-vallecano-de-madrid-s-a-d/jobs/
+Elche CF | careers: https://academy.elchecf.es/en/work-with-us/ | linkedin: https://www.linkedin.com/company/elche-cf-sad/jobs/
+Getafe CF | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/getafe-c-f-s-a-d/jobs/
+Girona FC | careers: https://www.gironafc.cat/en/work-with-us | linkedin: https://www.linkedin.com/company/gironafc/jobs/
+Deportivo Alaves | careers: https://deportivoalaves.com/trabaja-con-nosotros | linkedin: https://www.linkedin.com/showcase/deportivo-alav%C3%A9s-sad/jobs/
+Levante UD | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/levanteud/jobs/
+Real Oviedo | careers: https://www.realoviedo.es/empleo | linkedin: https://www.linkedin.com/company/realoviedo/jobs/
+RCD Espanyol | careers: https://www.rcdespanyol.com/en/work-with-us | linkedin: https://www.linkedin.com/company/rcd-espanyol-de-barcelona/jobs/
 
 ### Spain - La Liga 2
-Real Racing Santander | (no careers page — search layers only)
-UD Las Palmas | (no careers page — search layers only)
-UD Almeria | (no careers page — search layers only)
-Malaga CF | https://www.impulsyn.com/organizacion/malaga-club-de-futbol/empleo
-CD Castellon | (no careers page — search layers only)
-RC Deportivo de La Coruna | (no careers page — search layers only)
-Burgos CF | https://www.burgoscf.es/forma-parte-del-equipo-del-burgos-club-de-futbol
-SD Eibar | https://www.sdeibar.com/empleo
-Cordoba CF | https://www.infojobs.net/cordoba-club-de-futbol-sad/em-i97495253534949677982680012053389517751
-FC Andorra | (no careers page — search layers only)
-Real Sporting de Gijon | (no careers page — search layers only)
-Albacete Balompie | (no careers page — search layers only)
-Granada CF | https://www.granadacf.es/trabaja-con-nosotros
-Real Valladolid CF | https://www.realvalladolid.es/trabaja-con-nosotros
-CD Leganes | https://www.infojobs.net/club-deportivo-leganes-sa-d/em-i97505653505948677685668023214499200069
-Cadiz CF | https://www.cadizcf.com/oferta-de-empleo
-Real Zaragoza | https://www.realzaragoza.com/trabaja-con-nosotros
+Real Racing Santander | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/realracingclub/jobs/
+UD Las Palmas | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/ud-las-palmas-sad/jobs/
+UD Almeria | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/ud-almer%C3%ADa/jobs/
+Malaga CF | careers: https://www.impulsyn.com/organizacion/malaga-club-de-futbol/empleo | linkedin: https://www.linkedin.com/company/m%C3%A1laga-cf/jobs/
+CD Castellon | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/club-deportivo-castell%C3%B3n-sad/jobs/
+RC Deportivo de La Coruna | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/rcdeportivo/jobs/
+Burgos CF | careers: https://www.burgoscf.es/forma-parte-del-equipo-del-burgos-club-de-futbol | linkedin: https://www.linkedin.com/company/burgos-cf/jobs/
+SD Eibar | careers: https://www.sdeibar.com/empleo | linkedin: https://www.linkedin.com/company/sd-eibar/jobs/
+Cordoba CF | careers: https://www.infojobs.net/cordoba-club-de-futbol-sad/em-i97495253534949677982680012053389517751 | linkedin: https://www.linkedin.com/company/cordobacf/jobs/
+FC Andorra | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/fc-andorra/jobs/
+Real Sporting de Gijon | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/realsporting/jobs/
+Albacete Balompie | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/albacete-balompi%C3%A9/jobs/
+Granada CF | careers: https://www.granadacf.es/trabaja-con-nosotros | linkedin: https://www.linkedin.com/company/granada-cf/jobs/
+Real Valladolid CF | careers: https://www.realvalladolid.es/trabaja-con-nosotros | linkedin: https://www.linkedin.com/company/real-valladolid-club-de-f-tbol-s.a.d./jobs/
+CD Leganes | careers: https://www.infojobs.net/club-deportivo-leganes-sa-d/em-i97505653505948677685668023214499200069 | linkedin: https://www.linkedin.com/company/club-deportivo-legan%C3%A9s/jobs/
+Cadiz CF | careers: https://www.cadizcf.com/oferta-de-empleo | linkedin: https://www.linkedin.com/company/c-diz-cf/jobs/
+Real Zaragoza | careers: https://www.realzaragoza.com/trabaja-con-nosotros | linkedin: https://www.linkedin.com/company/real-zaragoza/jobs/
 
 ### England - Premier League
-Arsenal FC | https://careers.arsenal.com/jobs
-Manchester City FC | https://careers.cityfootballgroup.com/
-Manchester United FC | https://www.candidatemanager.net/cm/p/pJobs.aspx?mid=YFDU&sid=BBUU
-Liverpool FC | https://jobsearch.liverpoolfc.com/
-Aston Villa FC | https://avfc.wd502.myworkdayjobs.com/avfc_careers
-AFC Bournemouth | https://careers.afcb.co.uk/
-Brentford FC | https://hiring.brentfordfc.com/jobs
-Brighton & Hove Albion FC | https://www.brightonandhovealbion.com/career-opportunities
-Chelsea FC | https://secure.workforceready.eu/ta/6189861.careers?CareersSearch=&lang=en-GB
-Everton FC | https://careers.evertonfc.com/vacancies
-Fulham FC | https://fulhamfc.careers.hibob.com/jobs
-Sunderland AFC | https://sunderlandafc.talosats-careers.com/vacancies
-Newcastle United FC | https://careers.newcastleunited.com/jobs
-Leeds United FC | https://www.leedsunited.com/en/club/careers
-Crystal Palace FC | https://careers.cpfc.co.uk/jobs
-Nottingham Forest FC | https://careers.nottinghamforest.co.uk/jobs
-Tottenham Hotspur FC | https://ce0812li.webitrent.com/ce0812li_webrecruitment/wrd/run/etrec179gf.open?wvid=9447152BOp
-West Ham United FC | https://www.whufc.com/en/the-club/careers
-Burnley FC | https://careers.burnleyfootballclub.com/
-Wolverhampton Wanderers FC | https://www.wolves.co.uk/club/vacancies/
+Arsenal FC | careers: https://careers.arsenal.com/jobs | linkedin: https://www.linkedin.com/company/arsenal-f-c/jobs/
+Manchester City FC | careers: https://careers.cityfootballgroup.com/ | linkedin: https://www.linkedin.com/company/manchester-city-football-club/jobs/
+Manchester United FC | careers: https://www.candidatemanager.net/cm/p/pJobs.aspx?mid=YFDU&sid=BBUU | linkedin: https://www.linkedin.com/company/manchester-united/jobs/
+Liverpool FC | careers: https://jobsearch.liverpoolfc.com/ | linkedin: https://www.linkedin.com/company/liverpool-football-club/jobs/
+Aston Villa FC | careers: https://avfc.wd502.myworkdayjobs.com/avfc_careers | linkedin: https://www.linkedin.com/company/aston-villa-football-club/jobs/
+AFC Bournemouth | careers: https://careers.afcb.co.uk/ | linkedin: https://www.linkedin.com/company/afc-bournemouth/jobs/
+Brentford FC | careers: https://hiring.brentfordfc.com/jobs | linkedin: https://www.linkedin.com/company/brentford-football-club/jobs/
+Brighton & Hove Albion FC | careers: https://www.brightonandhovealbion.com/career-opportunities | linkedin: https://www.linkedin.com/company/brighton-&-hove-albion-fc/jobs/
+Chelsea FC | careers: https://secure.workforceready.eu/ta/6189861.careers?CareersSearch=&lang=en-GB | linkedin: https://www.linkedin.com/company/chelsea-football-club/jobs/
+Everton FC | careers: https://careers.evertonfc.com/vacancies | linkedin: https://www.linkedin.com/company/everton-football-club/jobs/
+Fulham FC | careers: https://fulhamfc.careers.hibob.com/jobs | linkedin: https://www.linkedin.com/company/fulham-fc/jobs/
+Sunderland AFC | careers: https://sunderlandafc.talosats-careers.com/vacancies | linkedin: https://www.linkedin.com/company/sunderlandafc/jobs/
+Newcastle United FC | careers: https://careers.newcastleunited.com/jobs | linkedin: https://www.linkedin.com/company/newcastle-united-football-club/jobs/
+Leeds United FC | careers: https://www.leedsunited.com/en/club/careers | linkedin: https://www.linkedin.com/company/leedsunited/jobs/
+Crystal Palace FC | careers: https://careers.cpfc.co.uk/jobs | linkedin: https://www.linkedin.com/company/crystal-palace-football-club/jobs/
+Nottingham Forest FC | careers: https://careers.nottinghamforest.co.uk/jobs | linkedin: https://www.linkedin.com/company/nottingham-forest-fc/jobs/
+Tottenham Hotspur FC | careers: https://ce0812li.webitrent.com/ce0812li_webrecruitment/wrd/run/etrec179gf.open?wvid=9447152BOp | linkedin: https://www.linkedin.com/company/tottenham-hotspur-ltd/jobs/
+West Ham United FC | careers: https://www.whufc.com/en/the-club/careers | linkedin: https://www.linkedin.com/company/west-ham-united/jobs/
+Burnley FC | careers: https://careers.burnleyfootballclub.com/ | linkedin: https://www.linkedin.com/company/burnleyofficial/jobs/
+Wolverhampton Wanderers FC | careers: https://www.wolves.co.uk/club/vacancies/ | linkedin: https://www.linkedin.com/company/wolverhampton-wanderers-fc/jobs/
 
 ### England - Championship
-Birmingham City FC | https://www.bcfc.com/club/careers/
-Blackburn Rovers FC | https://www.rovers.co.uk/club/job-vacancies
-Bristol City FC | https://www.bristol-sport.co.uk/careers/bristol-city/
-Charlton Athletic FC | https://www.charltonafc.com/vacancies
-Coventry City FC | https://coventrycityfootballclub.teamtailor.com/jobs
-Derby County FC | https://www.dcfc.co.uk/page/permanent-roles
-Hull City AFC | https://www.wearehullcity.co.uk/club/careers
-Ipswich Town FC | https://www.itfc.co.uk/club/careers/vacancies
-Leicester City FC | https://www.lcfc.com/vacancies
-Middlesbrough FC | https://www.mfc.co.uk/careers/
-Millwall FC | https://www.millwallfc.co.uk/club-information/work-for-the-lions
-Norwich City FC | https://careers.canaries.co.uk/
-Oxford United FC | https://www.oufc.co.uk/vacancies-oxford-united
-Portsmouth FC | https://www.portsmouthfc.co.uk/club/work-for-us
-Preston North End FC | https://www.pnefc.net/pnecet/
-Queens Park Rangers FC | https://www.qpr.co.uk/club/careers
-Sheffield United FC | https://www.sufc.co.uk/club/vacancies/
-Sheffield Wednesday FC | https://www.swfc.co.uk/club/careers/
-Southampton FC | https://saintsfc.wd3.myworkdayjobs.com/SFC001
-Stoke City FC | https://www.stokecityfc.com/
-Swansea City AFC | https://www.swanseacity.com/news/permanent-roles-full-timepart-time
-Watford FC | https://www.watfordfc.com/club/careers
-West Bromwich Albion FC | https://www.wba.co.uk/club/vacancies
-Wrexham AFC | https://careers.wrexhamafc.co.uk/vacancies
+Birmingham City FC | careers: https://www.bcfc.com/club/careers/ | linkedin: https://www.linkedin.com/company/birmingham-city-fc/jobs/
+Blackburn Rovers FC | careers: https://www.rovers.co.uk/club/job-vacancies | linkedin: https://www.linkedin.com/company/blackburn-rovers-football-club/jobs/
+Bristol City FC | careers: https://www.bristol-sport.co.uk/careers/bristol-city/ | linkedin: https://www.linkedin.com/company/bristol-city-football-club/jobs/
+Charlton Athletic FC | careers: https://www.charltonafc.com/vacancies | linkedin: https://www.linkedin.com/company/charlton-athletic-football-club/jobs/
+Coventry City FC | careers: https://coventrycityfootballclub.teamtailor.com/jobs | linkedin: https://www.linkedin.com/company/coventry-city-football-club/jobs/
+Derby County FC | careers: https://www.dcfc.co.uk/page/permanent-roles | linkedin: https://www.linkedin.com/company/derby-county-football-club/jobs/
+Hull City AFC | careers: https://www.wearehullcity.co.uk/club/careers | linkedin: https://www.linkedin.com/company/hull-city/jobs/
+Ipswich Town FC | careers: https://www.itfc.co.uk/club/careers/vacancies | linkedin: https://www.linkedin.com/company/ipswich-town-fc/jobs/
+Leicester City FC | careers: https://www.lcfc.com/vacancies | linkedin: https://www.linkedin.com/company/leicester-city-football-club/jobs/
+Middlesbrough FC | careers: https://www.mfc.co.uk/careers/ | linkedin: https://www.linkedin.com/company/middlesbrough-fc/jobs/
+Millwall FC | careers: https://www.millwallfc.co.uk/club-information/work-for-the-lions | linkedin: https://www.linkedin.com/company/millwall-football-club/jobs/
+Norwich City FC | careers: https://careers.canaries.co.uk/ | linkedin: https://www.linkedin.com/company/norwich-city-football-club/jobs/
+Oxford United FC | careers: https://www.oufc.co.uk/vacancies-oxford-united | linkedin: https://www.linkedin.com/company/oufc1893/jobs/
+Portsmouth FC | careers: https://www.portsmouthfc.co.uk/club/work-for-us | linkedin: https://www.linkedin.com/company/portsmouth-football-club/jobs/
+Preston North End FC | careers: https://www.pnefc.net/pnecet/ | linkedin: https://www.linkedin.com/company/pnefcofficial/jobs/
+Queens Park Rangers FC | careers: https://www.qpr.co.uk/club/careers | linkedin: https://www.linkedin.com/company/qprfc/jobs/
+Sheffield United FC | careers: https://www.sufc.co.uk/club/vacancies/ | linkedin: https://www.linkedin.com/company/sheffieldunited/jobs/
+Sheffield Wednesday FC | careers: https://www.swfc.co.uk/club/careers/ | linkedin: https://www.linkedin.com/company/sheffield-wednesday-football-club/jobs/
+Southampton FC | careers: https://saintsfc.wd3.myworkdayjobs.com/SFC001 | linkedin: https://www.linkedin.com/company/southampton-football-club/jobs/
+Stoke City FC | careers: https://www.stokecityfc.com/ | linkedin: https://www.linkedin.com/company/stoke-city-football-club/jobs/
+Swansea City AFC | careers: https://www.swanseacity.com/news/permanent-roles-full-timepart-time | linkedin: https://www.linkedin.com/company/swansea-city-football-club/jobs/
+Watford FC | careers: https://www.watfordfc.com/club/careers | linkedin: https://www.linkedin.com/company/watford-football-club/jobs/
+West Bromwich Albion FC | careers: https://www.wba.co.uk/club/vacancies | linkedin: https://www.linkedin.com/company/west-bromwich-albion-football-club/jobs/
+Wrexham AFC | careers: https://careers.wrexhamafc.co.uk/vacancies | linkedin: https://www.linkedin.com/company/wrexhamafc/jobs/
 
 ### Italy - Serie A
-Inter Milan | https://www.inter.it/en/club/job-opportunities
-SSC Napoli | https://www.sscnapoli.it/static/page/lavora-con-noi.aspx
-AC Milan | https://www.acmilan.com/en/club/work-with-us
-Juventus FC | https://www.juventus.com/it/club/careers/
-AS Roma | https://asroma.altamiraweb.com/
-Como 1907 | https://www.como1907.com/en/careers
-Atalanta BC | https://www.atalanta.it/it/club/lavora-con-noi
-SS Lazio | https://www.sslazio.it/it/club/lavora-con-noi
-Bologna FC 1909 | (no careers page — search layers only)
-ACF Fiorentina | (no careers page — search layers only)
-Torino FC | (no careers page — search layers only)
-Udinese Calcio | (no careers page — search layers only)
-Parma Calcio 1913 | https://www.parmacalcio1913.com/lavora-con-noi/
-Genoa CFC | (no careers page — search layers only)
-Cagliari Calcio | (no careers page — search layers only)
-Hellas Verona FC | (no careers page — search layers only)
-US Lecce | (no careers page — search layers only)
-US Cremonese | https://uscremonese.it/lavoraconoi/
-Sassuolo Calcio | (no careers page — search layers only)
-Pisa SC | (no careers page — search layers only)
+Inter Milan | careers: https://www.inter.it/en/club/job-opportunities | linkedin: https://www.linkedin.com/company/fc-internazionale-milano/jobs/
+SSC Napoli | careers: https://www.sscnapoli.it/static/page/lavora-con-noi.aspx | linkedin: https://www.linkedin.com/company/sscnapoli/jobs/
+AC Milan | careers: https://www.acmilan.com/en/club/work-with-us | linkedin: https://www.linkedin.com/company/ac-milan/jobs/
+Juventus FC | careers: https://www.juventus.com/it/club/careers/ | linkedin: https://www.linkedin.com/company/juventus-football-club/jobs/
+AS Roma | careers: https://asroma.altamiraweb.com/ | linkedin: https://www.linkedin.com/company/as-roma/jobs/
+Como 1907 | careers: https://www.como1907.com/en/careers | linkedin: https://www.linkedin.com/company/como-1907/jobs/
+Atalanta BC | careers: https://www.atalanta.it/it/club/lavora-con-noi | linkedin: https://www.linkedin.com/company/atalantabc/jobs/
+SS Lazio | careers: https://www.sslazio.it/it/club/lavora-con-noi | linkedin: https://www.linkedin.com/company/sslaziospa/jobs/
+Bologna FC 1909 | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/bologna-f-c-1909-s-p-a-/jobs/
+ACF Fiorentina | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/acf-fiorentina-s-p-a-/jobs/
+Torino FC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/torino-football-club/jobs/
+Udinese Calcio | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/udinese-calcio-spa/jobs/
+Parma Calcio 1913 | careers: https://www.parmacalcio1913.com/lavora-con-noi/ | linkedin: https://www.linkedin.com/company/parma-calcio-1913/jobs/
+Genoa CFC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/genoa-cricket-and-football-club-s.p.a./jobs/
+Cagliari Calcio | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/cagliari-calcio/jobs/
+Hellas Verona FC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/hellas-verona-f-c-/jobs/
+US Lecce | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/uslecce/jobs/
+US Cremonese | careers: https://uscremonese.it/lavoraconoi/ | linkedin: https://www.linkedin.com/company/uscremonese/jobs/
+Sassuolo Calcio | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/sassuolocalcio/jobs/
+Pisa SC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/pisa-sporting-club-1909/jobs/
 
 ### Italy - Serie B
-US Avellino | (no careers page — search layers only)
-SSC Bari | (no careers page — search layers only)
-Carrarese Calcio | (no careers page — search layers only)
-US Catanzaro | (no careers page — search layers only)
-Cesena FC | (no careers page — search layers only)
-Empoli FC | (no careers page — search layers only)
-Frosinone Calcio | (no careers page — search layers only)
-SS Juve Stabia | (no careers page — search layers only)
-Mantova 1911 | (no careers page — search layers only)
-Modena FC | (no careers page — search layers only)
-AC Monza | (no careers page — search layers only)
-Calcio Padova | https://www.padovacalcio.it/lavora-con-noi/
-Palermo FC | (no careers page — search layers only)
-Delfino Pescara | (no careers page — search layers only)
-AC Reggiana | (no careers page — search layers only)
-UC Sampdoria | (no careers page — search layers only)
-Spezia Calcio | (no careers page — search layers only)
-FC Sudtirol | (no careers page — search layers only)
-Venezia FC | (no careers page — search layers only)
-Virtus Entella | (no careers page — search layers only)
+US Avellino | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/u-s-avellino-1912/jobs/
+SSC Bari | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/ssc-bari/jobs/
+Carrarese Calcio | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/carrarese-calcio-1908/jobs/
+US Catanzaro | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/uscatanzaro1929/jobs/
+Cesena FC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/cesenafc/jobs/
+Empoli FC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/empoli-fc/jobs/
+Frosinone Calcio | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/frosinone-calcio-s.r.l./jobs/
+SS Juve Stabia | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/s.s.-juve-stabia-s.r.l./jobs/
+Mantova 1911 | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/mantova-1911-s-r-l/jobs/
+Modena FC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/modena-football-club/jobs/
+AC Monza | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/acmonza/jobs/
+Calcio Padova | careers: https://www.padovacalcio.it/lavora-con-noi/ | linkedin: https://www.linkedin.com/company/calcio-padova/jobs/
+Palermo FC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/palermocalcio/jobs/
+Delfino Pescara | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/pescaracalcio/jobs/
+AC Reggiana | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/acreggiana1919/jobs/
+UC Sampdoria | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/u-c--sampdoria/jobs/
+Spezia Calcio | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/spezia-calcio-s.r.l.---societa-sportiva-professionistica/jobs/
+FC Sudtirol | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/fc-s%C3%BCdtirol/jobs/
+Venezia FC | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/veneziafc/jobs/
+Virtus Entella | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/virtus-entella/jobs/
 
 ### Scotland
-Rangers FC | https://uk.indeed.com/cmp/Rangers-Football-Club/jobs
-Celtic FC | https://www.celticfc.com/club/jobs-at-celtic/permanent-and-fixed-term-roles/
+Rangers FC | careers: https://uk.indeed.com/cmp/Rangers-Football-Club/jobs | linkedin: https://www.linkedin.com/company/rangersfc/jobs/
+Celtic FC | careers: https://www.celticfc.com/club/jobs-at-celtic/permanent-and-fixed-term-roles/ | linkedin: https://www.linkedin.com/company/celtic-football-club/jobs/
 
 ### Portugal
-SL Benfica | https://recrutamento.slbenfica.pt/go/Job-Opportunities/9183055/?locale=en_US
-Sporting CP | https://www.sporting.pt/pt/venha-trabalhar-connosco
-FC Porto | https://candidaturas.fcporto.pt/
+SL Benfica | careers: https://recrutamento.slbenfica.pt/go/Job-Opportunities/9183055/?locale=en_US | linkedin: https://www.linkedin.com/company/sport-lisboa-e-benfica/jobs/
+Sporting CP | careers: https://www.sporting.pt/pt/venha-trabalhar-connosco | linkedin: https://www.linkedin.com/company/sporting-clube-de-portugal/jobs/
+FC Porto | careers: https://candidaturas.fcporto.pt/ | linkedin: https://www.linkedin.com/company/fcporto/jobs/
 
 ### Denmark
-FC Copenhagen | https://www.fck.dk/en/jobs-and-careers
-FC Midtjylland | https://www.fcm.dk/klubben/karriere/
+FC Copenhagen | careers: https://www.fck.dk/en/jobs-and-careers | linkedin: https://www.linkedin.com/company/f-c--k%C3%B8benhavn/jobs/
+FC Midtjylland | careers: https://www.fcm.dk/klubben/karriere/ | linkedin: https://www.linkedin.com/company/fc-midtjylland/jobs/
 
 _Total: 176 clubs across 13 league groups._
 </CLUBS>
 
-## 2. How to search each club (stop at the first layer that yields results)
+## 2. How to search each club
+
+For **every** club, cover its OWN sources (L1/L2) **and** its LinkedIn (L-LI). Run
+L3/L4 as a fallback when those come up empty. Research each club deeply — don't give
+up on a stale URL; find the current one.
+
+L0 — Confirm the club's CURRENT careers URL. Careers pages move and slugs change. If
+     the stored `careers:` URL 404s, redirects to a generic landing page, or is
+     `(search layers only)`, find the club's live careers/ATS page first — search
+     `"<club>" (careers OR vacatures OR stellenangebote OR "lavora con noi" OR empleo)`
+     — and use that. Note in the report when you had to correct a URL.
 
 L1 — The club's own careers page. Fetch it and read the job list. Some pages render
      the list from embedded JSON rather than `<a>` links (Jobtoolz clubs put it in an
@@ -265,18 +285,33 @@ L2 — The club's ATS, when the careers URL points at one. Read the tenant slug 
      Also seen in this space: Recruitee, SuccessFactors, softgarden, HRworks, Pinpoint,
      Posting Panda, webitrent, CoreHR/WorkforceReady, Hellowork.
 
-L3 — Web search, ONLY for clubs where L1 and L2 found nothing (mostly Serie A/B and
+L-LI — The club's LinkedIn. Use the `agent-reach` LinkedIn/social channel (fall back
+     to web search when that channel isn't configured). Cover BOTH of these, for every
+     club — many clubs, especially the `(search layers only)` ones, post roles ONLY on
+     LinkedIn:
+       (a) the club's LinkedIn **jobs page** (the `linkedin:` URL on the club's line) —
+           read the roles currently listed there; and
+       (b) recent LinkedIn **posts / announcements** from the club that name a specific
+           open vacancy (a "we're hiring: Data Analyst — apply here" post). Accept a
+           post only when it names a specific role AND gives an apply link or a clear
+           route to apply; ignore generic reshares, articles, and vague "join us"
+           posts with no named role.
+     Treat LinkedIn as lower-trust than the club's own site: open and verify the
+     underlying posting (section 4), and set confidence accordingly. Don't scrape
+     LinkedIn *search-results* pages (they block automation) — go via the club's own
+     LinkedIn jobs page / feed through the agent-reach channel.
+
+L3 — Web search, for clubs where L1/L2/L-LI still found nothing (mostly Serie A/B and
      parts of La Liga / Ligue 1). Query e.g.
        "<club name>" football (analyst OR "data scientist" OR analytics OR analista OR analyste)
      Accept a result only if the club's own name appears in the title or snippet, and
-     the URL is on the club's domain or a known ATS / job-board host. Reject
-     LinkedIn /posts/ reshares — only /jobs/view/ pages count.
+     the URL is on the club's domain or a known ATS / job-board host. For LinkedIn hits
+     here, prefer `/jobs/view/` postings over reshared feed articles.
 
 L4 — Football job boards: livefootballjobs.com, eurofootjobs.com, workinsports.
 
-Do not try to scrape LinkedIn search pages — it blocks automation and the results are
-unreliable. Respect robots.txt. Space out requests. If a page won't load, say so in
-the report rather than guessing what was on it.
+Respect robots.txt. Space out requests. If a page won't load, say so in the report
+rather than guessing what was on it.
 
 ## 3. What counts as a match
 
@@ -327,10 +362,11 @@ A markdown report:
 
   A. Summary line — X roles at Y clubs across Z leagues, and the scan date.
   B. Table, most relevant first — Role | Club | League | Category | Confidence |
-     Posted/Closing | Link. Category is one of: Data Science & ML, Analytics &
-     Insights, Performance Analysis, Scouting & Recruitment, Sports Science.
-     Rank Data Scientist / Data Analyst / ML above performance-analysis roles,
-     and those above scouting and borderline hits.
+     Source | Posted/Closing | Link. Category is one of: Data Science & ML, Analytics
+     & Insights, Performance Analysis, Scouting & Recruitment, Sports Science. Source
+     is where the role was found: Own site, ATS, LinkedIn (jobs), LinkedIn (post), or
+     Job board. Rank Data Scientist / Data Analyst / ML above performance-analysis
+     roles, and those above scouting and borderline hits.
   C. A "worth applying to first" shortlist of 5, with one line each on why.
   D. A "couldn't check" list — clubs whose page failed to load or blocked me,
      so I know what the scan missed.

@@ -7,7 +7,7 @@ report — using two tools:
 
 | Tool | Role in the scan | Repo |
 |------|------------------|------|
-| **Agent-Reach** | The agent's *web reach*. Its channels (web reader, search, GitHub, social) replace hand-rolled HTTP scraping for every lookup. | <https://github.com/Panniantong/Agent-Reach> |
+| **Agent-Reach** | The agent's *web reach*. Its channels (web reader, search, GitHub, **LinkedIn**, social) replace hand-rolled HTTP scraping — and reach each club's LinkedIn, which the raw scraper can't. | <https://github.com/Panniantong/Agent-Reach> |
 | **Ruflo** | The *swarm harness*. `swarm_init` / `agent_spawn` fan the 176 clubs out across parallel workers instead of one slow serial pass. | <https://github.com/ruvnet/ruflo> |
 
 This does **not** replace the app — the Streamlit dashboard, `clubs.py`, `keywords.py`
@@ -37,16 +37,21 @@ Install per the project's own instructions — point your agent at its install d
 Install Agent Reach for me: https://raw.githubusercontent.com/Panniantong/Agent-Reach/main/docs/install.md
 ```
 
-Then verify and, if you want the social channels (Twitter/X, Reddit), configure them:
+Then verify and configure the channels the scan uses:
 
 ```bash
 agent-reach doctor                 # which channels work, which need setup
-agent-reach configure twitter-cookies   # optional: only if you want X search
+agent-reach configure linkedin     # recommended: the scan checks each club's LinkedIn
+agent-reach configure twitter-cookies   # optional: only if you also want X search
 ```
 
-The zero-config channels (general web via Jina reader, search, GitHub, RSS, YouTube)
-need no login and cover everything the scan strictly requires; the login channels are
-optional extras.
+**LinkedIn coverage.** The scan checks two sources for every club — the club's own
+careers site/ATS **and** its LinkedIn (jobs page + role-announcing posts). Reliable
+LinkedIn reading needs the LinkedIn channel configured above, because LinkedIn blocks
+anonymous automation. Without it, LinkedIn coverage degrades to best-effort web search
+for `linkedin.com/jobs/view/` pages — the own-site/ATS layers still work fully. The
+zero-config channels (general web via Jina reader, search, GitHub, RSS, YouTube) need
+no login.
 
 ---
 

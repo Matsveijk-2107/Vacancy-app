@@ -47,9 +47,15 @@ def _demojibake(name: str) -> str:
 
 
 def build_clubs_block() -> str:
-    """Return the markdown club list, grouped by the app's league display names."""
+    """Return the markdown club list, grouped by the app's league display names.
+
+    Each club carries two anchors — its careers/ATS page and its LinkedIn jobs page —
+    so the scan checks both for every club, not just the club's own site.
+    """
     lines: list[str] = [
-        "Club | Careers URL (the app's curated entry point — start here)",
+        "Format:  Club name | careers: <careers/ATS URL> | linkedin: <LinkedIn jobs URL>",
+        "Check BOTH anchors for every club. `(search layers only)` = no curated careers",
+        "page found — lean on LinkedIn + L3/L4 (and find the club's live careers page first).",
         "",
     ]
     total = 0
@@ -58,8 +64,11 @@ def build_clubs_block() -> str:
             continue
         lines.append(f"### {league_display}")
         for club in clubs:
-            url = club.get("careers_url") or SEARCH_ONLY
-            lines.append(f"{_demojibake(club['name'])} | {url}")
+            careers = club.get("careers_url") or SEARCH_ONLY
+            linkedin = club.get("linkedin_jobs_url") or "—"
+            lines.append(
+                f"{_demojibake(club['name'])} | careers: {careers} | linkedin: {linkedin}"
+            )
             total += 1
         lines.append("")
     lines.append(f"_Total: {total} clubs across {len(CLUBS_BY_LEAGUE)} league groups._")
