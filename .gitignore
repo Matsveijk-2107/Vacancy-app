@@ -20,6 +20,11 @@ venv/
 # Editor / OS / agent tooling
 .vscode/
 .idea/
-.claude/
+# Ignore local Claude settings, but keep shareable slash commands in the repo.
+.claude/*
+!.claude/commands/
 .DS_Store
 Thumbs.db
+
+# Generated agent-scan reports (dated outputs, regenerated each run)
+football_jobs/agent_scan/scan-*.md
