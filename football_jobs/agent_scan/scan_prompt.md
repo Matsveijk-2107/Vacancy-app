@@ -60,7 +60,7 @@ FC Utrecht | careers: https://www.fcutrecht.nl/vacatures/ | linkedin: https://ww
 
 ### Belgium
 Royal Antwerp FC | careers: https://www.royalantwerpfc.be/club/vacatures | linkedin: https://www.linkedin.com/company/royal-antwerp-fc/jobs/
-Royale Union Saint-Gilloise | careers: https://rusg.brussels/en/jobs | linkedin: https://www.linkedin.com/company/royale-union-saint-gilloise/jobs/
+Royale Union Saint-Gilloise | careers: https://rusg.brussels/en/jobs | linkedin: https://www.linkedin.com/company/royale-union-saint-gilloise-srl/jobs/
 RSC Anderlecht | careers: https://www.rsca.be/en/club/jobs | linkedin: https://www.linkedin.com/company/rsc-anderlecht/jobs/
 KRC Genk | careers: https://www.krcgenk.be/nl/vacatures | linkedin: https://www.linkedin.com/company/krc-genk/jobs/
 Club Brugge | careers: https://jobs.clubbrugge.be/nl | linkedin: https://www.linkedin.com/company/club-brugge-kv/jobs/

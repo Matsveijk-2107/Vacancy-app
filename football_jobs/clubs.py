@@ -96,7 +96,7 @@ CLUBS = [
         "careers_url": "https://rusg.brussels/en/jobs",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Royale Union Saint-Gilloise",
-        "linkedin_jobs_url": "https://www.linkedin.com/company/royale-union-saint-gilloise/jobs/",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/royale-union-saint-gilloise-srl/jobs/",  # official page is the -srl slug
         "notes": "Brighton-affiliated.",
     },
     {
