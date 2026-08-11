@@ -63,7 +63,7 @@ Royal Antwerp FC | careers: https://www.royalantwerpfc.be/club/vacatures | linke
 Royale Union Saint-Gilloise | careers: https://rusg.brussels/en/jobs | linkedin: https://www.linkedin.com/company/royale-union-saint-gilloise-srl/jobs/
 RSC Anderlecht | careers: https://www.rsca.be/en/club/jobs | linkedin: https://www.linkedin.com/company/rsc-anderlecht/jobs/
 KRC Genk | careers: https://www.krcgenk.be/nl/vacatures | linkedin: https://www.linkedin.com/company/krc-genk/jobs/
-Club Brugge | careers: https://jobs.clubbrugge.be/nl | linkedin: https://www.linkedin.com/company/club-brugge-kv/jobs/
+Club Brugge | careers: https://jobs.clubbrugge.be/nl | linkedin: https://www.linkedin.com/company/club-brugge-k.v./jobs/
 
 ### Germany
 FC Bayern Munich | careers: https://careers.fcbayern.com/go/Alle-Jobangebote-anzeigen/8774701/ | linkedin: https://www.linkedin.com/company/fcbayern/jobs/
@@ -80,7 +80,7 @@ FC Augsburg | careers: https://jobs.fcaugsburg.de/de | linkedin: https://www.lin
 Werder Bremen | careers: https://karriere.werder.de/ | linkedin: https://www.linkedin.com/company/svwerderbremen/jobs/
 TSG Hoffenheim | careers: https://www.tsg-hoffenheim.de/tsg/karriere/stellenangebote | linkedin: https://www.linkedin.com/company/tsg-1899-hoffenheim-fu%C3%9Fball-spielbetriebs-gmbh/jobs/
 1. FC Union Berlin | careers: https://www.altefoersterei.berlin/en/career-OIiJ | linkedin: https://www.linkedin.com/company/fc-union-berlin/jobs/
-FC St. Pauli | careers: https://jobs.fcstpauli.com/de | linkedin: https://www.linkedin.com/company/football-cooperative-st-pauli-von-2024-eg/jobs/
+FC St. Pauli | careers: https://jobs.fcstpauli.com/de | linkedin: https://www.linkedin.com/company/fc-st-pauli/jobs/
 1. FC Heidenheim | careers: https://www.fc-heidenheim.de/jobs | linkedin: https://www.linkedin.com/company/fch1846/jobs/
 Holstein Kiel | careers: https://www.holstein-kiel.de/verein/karriere/ | linkedin: https://www.linkedin.com/company/holstein-kiel/jobs/
 VfL Bochum | careers: https://jobs.vfl-bochum.de/jobs | linkedin: https://www.linkedin.com/company/vflbochum1848/jobs/

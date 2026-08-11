@@ -126,7 +126,7 @@ CLUBS = [
         "careers_url": "https://jobs.clubbrugge.be/nl",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "Club Brugge KV",
-        "linkedin_jobs_url": "https://www.linkedin.com/company/club-brugge-kv/jobs/",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/club-brugge-k.v./jobs/",  # official page uses the dotted -k.v. slug
         "notes": "Also accessible via clubbrugge.be/en/vacancies.",
     },
 
@@ -287,7 +287,7 @@ CLUBS = [
         "careers_url": "https://jobs.fcstpauli.com/de",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "FC St. Pauli",
-        "linkedin_jobs_url": "https://www.linkedin.com/company/football-cooperative-st-pauli-von-2024-eg/jobs/",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-st-pauli/jobs/",  # was a 2024 fan-cooperative entity; official club page is fc-st-pauli
         "notes": "Uses HRworks ATS at jobs.fcstpauli.com.",
     },
     {
