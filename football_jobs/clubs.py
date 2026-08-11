@@ -52,7 +52,7 @@ CLUBS = [
         "careers_url": "https://www.werkenbijaz.nl/vacatures",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "AZ",
-        "linkedin_jobs_url": "https://www.linkedin.com/company/az/jobs/",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/az-alkmaar/jobs/",  # was /company/az (a 30-follower consultancy)
         "notes": "Strong data culture.",
     },
     {
@@ -72,7 +72,7 @@ CLUBS = [
         "careers_url": "https://www.fcutrecht.nl/vacatures/",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "FC Utrecht",
-        "linkedin_jobs_url": "https://www.linkedin.com/company/fc-utrecht/jobs/",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/fcutrecht/jobs/",  # was /company/fc-utrecht (nonexistent slug)
         "notes": None,
     },
 

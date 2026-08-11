@@ -54,9 +54,9 @@ page found — lean on LinkedIn + L3/L4 (and find the club's live careers page f
 ### Netherlands
 PSV | careers: https://werkenbij.psv.nl/ | linkedin: https://www.linkedin.com/company/psv/jobs/
 Ajax | careers: https://werkenbij.ajax.nl/vacatures | linkedin: https://www.linkedin.com/company/afc-ajax/jobs/
-AZ Alkmaar | careers: https://www.werkenbijaz.nl/vacatures | linkedin: https://www.linkedin.com/company/az/jobs/
+AZ Alkmaar | careers: https://www.werkenbijaz.nl/vacatures | linkedin: https://www.linkedin.com/company/az-alkmaar/jobs/
 Feyenoord | careers: https://www.feyenoord.com/nl/vacatures | linkedin: https://www.linkedin.com/company/feyenoord-rotterdam-nv/jobs/
-FC Utrecht | careers: https://www.fcutrecht.nl/vacatures/ | linkedin: https://www.linkedin.com/company/fc-utrecht/jobs/
+FC Utrecht | careers: https://www.fcutrecht.nl/vacatures/ | linkedin: https://www.linkedin.com/company/fcutrecht/jobs/
 
 ### Belgium
 Royal Antwerp FC | careers: https://www.royalantwerpfc.be/club/vacatures | linkedin: https://www.linkedin.com/company/royal-antwerp-fc/jobs/
