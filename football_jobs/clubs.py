@@ -620,7 +620,7 @@ CLUBS = [
         "careers_url": None,  # [search-only]
         "teamtailor_slug": None,
         "linkedin_company": "Real Sociedad",
-        "linkedin_jobs_url": "https://www.linkedin.com/company/real-sociedad/jobs/",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/real-sociedad-de-f%C3%BAtbol-s.a.d/jobs/",  # official page is the full legal-entity slug
         "notes": (
             "No public careers portal. Posts via InfoJobs (infojobs.net) and LaLiga talent pool "
             "(laliga.com/trabaja-con-nosotros). Open applications via realsoc@realsociedad.eus. "
