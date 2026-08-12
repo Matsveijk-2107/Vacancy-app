@@ -133,7 +133,7 @@ RCD Espanyol | careers: https://www.rcdespanyol.com/en/work-with-us | linkedin: 
 Real Racing Santander | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/realracingclub/jobs/
 UD Las Palmas | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/ud-las-palmas-sad/jobs/
 UD Almeria | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/ud-almer%C3%ADa/jobs/
-Malaga CF | careers: https://www.impulsyn.com/organizacion/malaga-club-de-futbol/empleo | linkedin: https://www.linkedin.com/company/m%C3%A1laga-cf/jobs/
+Malaga CF | careers: https://www.impulsyn.com/organizacion/malaga-club-de-futbol/empleo | linkedin: https://www.linkedin.com/company/malaga-club-de-futbol-s-a-d-/jobs/
 CD Castellon | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/club-deportivo-castell%C3%B3n-sad/jobs/
 RC Deportivo de La Coruna | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/rcdeportivo/jobs/
 Burgos CF | careers: https://www.burgoscf.es/forma-parte-del-equipo-del-burgos-club-de-futbol | linkedin: https://www.linkedin.com/company/burgos-cf/jobs/

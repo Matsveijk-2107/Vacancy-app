@@ -825,7 +825,7 @@ CLUBS = [
         "careers_url": "https://www.impulsyn.com/organizacion/malaga-club-de-futbol/empleo",  # [live]
         "teamtailor_slug": None,
         "linkedin_company": "MÃ¡laga CF",
-        "linkedin_jobs_url": "https://www.linkedin.com/company/m%C3%A1laga-cf/jobs/",
+        "linkedin_jobs_url": "https://www.linkedin.com/company/malaga-club-de-futbol-s-a-d-/jobs/",  # was m%C3%A1laga-cf (not the club's page)
         "notes": "Posts via Impulsyn (confirmed). Open applications/internships via malagacf.com/en/contacta-con-nosotros. LinkedIn for management roles.",
     },
     {
