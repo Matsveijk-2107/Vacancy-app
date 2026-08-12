@@ -114,7 +114,7 @@ Valencia CF | careers: https://www.valenciacf.com/rrhh | linkedin: https://www.l
 Club Atletico de Madrid | careers: https://www.atleticodemadrid.com/ofertas-de-trabajo | linkedin: https://www.linkedin.com/company/atleticodemadrid/jobs/
 Real Betis Balompie | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/real-betis-balompie/jobs/
 Sevilla FC | careers: https://sevillafc.es/es/el-club/trabaja-con-nosotros | linkedin: https://www.linkedin.com/company/sevillafc/jobs/
-Real Sociedad | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/real-sociedad/jobs/
+Real Sociedad | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/real-sociedad-de-f%C3%BAtbol-s.a.d/jobs/
 Athletic Club Bilbao | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/athleticclub/jobs/
 RCD Mallorca | careers: (no careers page — search layers only) | linkedin: https://www.linkedin.com/company/real-mallorca/jobs/
 Villarreal CF | careers: https://villarrealcf.es/trabaja-con-nosotros/ | linkedin: https://www.linkedin.com/company/villarreal-cf-sad/jobs/
